@@ -1,0 +1,8 @@
+* text=auto
+*.java text eol=lf
+*.py text eol=lf
+*.cjs text eol=lf
+*.yml text eol=lf
+mvnw text eol=lf
+mvnw.cmd text eol=crlf
+*.docx binary
