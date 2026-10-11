@@ -1,0 +1,93 @@
+{
+  "pricing": {
+    "unlockFee": "5.00",
+    "rates": {
+      "CASUAL": "0.50",
+      "MEMBER": "0.20",
+      "STUDENT": "0.20"
+    },
+    "samePricesForAllVehicles": true,
+    "deposit": "50.00",
+    "billingUnit": "MINUTE",
+    "rounding": "UP",
+    "minimumTripCharge": null,
+    "surcharge": "15.00",
+    "studentDiscountAppliesTo": "PER_MINUTE_ONLY"
+  },
+  "students": {
+    "emailDomain": "ucalgary.ca",
+    "ageRestriction": null,
+    "monthlyMembershipAllowed": false
+  },
+  "membership": {
+    "price": "15.00",
+    "durationDays": 30,
+    "startsAt": "REGISTRATION"
+  },
+  "riders": {
+    "accountRequired": true,
+    "registrationFields": [
+      "EMAIL_OR_USERNAME",
+      "PASSWORD",
+      "ACCOUNT_TYPE",
+      "PAYMENT_METHOD"
+    ],
+    "accountTypes": [
+      "CASUAL",
+      "MEMBER",
+      "STUDENT"
+    ],
+    "stationIdentification": "EMAIL_OR_USERNAME_AND_PASSWORD",
+    "maximumActiveTrips": 1
+  },
+  "trips": {
+    "billableTimeStartsAt": "VEHICLE_UNLOCKED",
+    "removalTimeoutMinutes": 2,
+    "notRemovedAction": "STOP_TRIP_NO_CHARGE",
+    "pausingAllowed": false,
+    "maximumDurationHours": 12,
+    "overdueAction": "MARK_LOST_NOTIFY_OPERATORS_CHARGE_DEPOSIT",
+    "lostOrStolenAction": "MARK_LOST_BLOCK_RENTAL_CHARGE_LAST_USER_DEPOSIT",
+    "emptyBatteryAction": "DIRECT_TO_NEAREST_STATION_FOR_CHARGING"
+  },
+  "stations": {
+    "count": 5,
+    "stationsPerZone": [
+      3,
+      2
+    ],
+    "dockingPointsPerStation": 5,
+    "allDocksAcceptAllVehicleTypes": true
+  },
+  "faults": {
+    "outOfServiceTiming": "AFTER_CURRENT_RIDE",
+    "reportedBrokenRentable": false,
+    "duplicateReports": "DISCARD"
+  },
+  "operators": {
+    "manualTripClosureAllowed": true,
+    "batteryOverrideAllowed": true,
+    "faultOverrideAllowed": true
+  },
+  "interfaces": {
+    "supportedLanguages": [
+      "en",
+      "fr"
+    ],
+    "defaultLanguage": "en",
+    "audioEnabledBy": "SCREEN_BUTTON"
+  },
+  "receipts": {
+    "destinations": [
+      "EMAIL",
+      "APP"
+    ],
+    "fields": [
+      "UNLOCK_FEE",
+      "DURATION",
+      "RATE",
+      "SURCHARGE",
+      "DEPOSIT_RELEASE"
+    ]
+  }
+}
