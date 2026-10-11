@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GoCycle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["pricing", "students", "membership", "riders", "trips", "stations", "faults", "operators", "interfaces", "receipts"],
+  "properties": {
+    "pricing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unlockFee", "rates", "samePricesForAllVehicles", "deposit", "billingUnit", "rounding", "minimumTripCharge", "surcharge", "studentDiscountAppliesTo"],
+      "properties": {
+        "unlockFee": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$"},
+        "rates": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["CASUAL", "MEMBER", "STUDENT"],
+          "properties": {
+            "CASUAL": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$", "not": {"const": "0.00"}},
+            "MEMBER": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$", "not": {"const": "0.00"}},
+            "STUDENT": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$", "not": {"const": "0.00"}}
+          }
+        },
+        "samePricesForAllVehicles": {"const": true},
+        "deposit": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$", "not": {"const": "0.00"}},
+        "billingUnit": {"const": "MINUTE"},
+        "rounding": {"const": "UP"},
+        "minimumTripCharge": {"const": null},
+        "surcharge": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$", "not": {"const": "0.00"}},
+        "studentDiscountAppliesTo": {"const": "PER_MINUTE_ONLY"}
+      }
+    },
+    "students": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["emailDomain", "ageRestriction", "monthlyMembershipAllowed"],
+      "properties": {
+        "emailDomain": {"const": "ucalgary.ca"},
+        "ageRestriction": {"const": null},
+        "monthlyMembershipAllowed": {"const": false}
+      }
+    },
+    "membership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["price", "durationDays", "startsAt"],
+      "properties": {
+        "price": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$", "not": {"const": "0.00"}},
+        "durationDays": {"const": 30},
+        "startsAt": {"const": "REGISTRATION"}
+      }
+    },
+    "riders": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["accountRequired", "registrationFields", "accountTypes", "stationIdentification", "maximumActiveTrips"],
+      "properties": {
+        "accountRequired": {"const": true},
+        "registrationFields": {"type": "array", "items": {"type": "string"}, "const": ["EMAIL_OR_USERNAME", "PASSWORD", "ACCOUNT_TYPE", "PAYMENT_METHOD"]},
+        "accountTypes": {"type": "array", "items": {"type": "string"}, "const": ["CASUAL", "MEMBER", "STUDENT"]},
+        "stationIdentification": {"const": "EMAIL_OR_USERNAME_AND_PASSWORD"},
+        "maximumActiveTrips": {"const": 1}
+      }
+    },
+    "trips": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["billableTimeStartsAt", "removalTimeoutMinutes", "notRemovedAction", "pausingAllowed", "maximumDurationHours", "overdueAction", "lostOrStolenAction", "emptyBatteryAction"],
+      "properties": {
+        "billableTimeStartsAt": {"const": "VEHICLE_UNLOCKED"},
+        "removalTimeoutMinutes": {"const": 2},
+        "notRemovedAction": {"const": "STOP_TRIP_NO_CHARGE"},
+        "pausingAllowed": {"const": false},
+        "maximumDurationHours": {"const": 12},
+        "overdueAction": {"const": "MARK_LOST_NOTIFY_OPERATORS_CHARGE_DEPOSIT"},
+        "lostOrStolenAction": {"const": "MARK_LOST_BLOCK_RENTAL_CHARGE_LAST_USER_DEPOSIT"},
+        "emptyBatteryAction": {"const": "DIRECT_TO_NEAREST_STATION_FOR_CHARGING"}
+      }
+    },
+    "stations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["count", "stationsPerZone", "dockingPointsPerStation", "allDocksAcceptAllVehicleTypes"],
+      "properties": {
+        "count": {"const": 5},
+        "stationsPerZone": {"type": "array", "items": {"type": "integer"}, "const": [3, 2]},
+        "dockingPointsPerStation": {"const": 5},
+        "allDocksAcceptAllVehicleTypes": {"const": true}
+      }
+    },
+    "faults": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["outOfServiceTiming", "reportedBrokenRentable", "duplicateReports"],
+      "properties": {
+        "outOfServiceTiming": {"const": "AFTER_CURRENT_RIDE"},
+        "reportedBrokenRentable": {"const": false},
+        "duplicateReports": {"const": "DISCARD"}
+      }
+    },
+    "operators": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["manualTripClosureAllowed", "batteryOverrideAllowed", "faultOverrideAllowed"],
+      "properties": {
+        "manualTripClosureAllowed": {"const": true},
+        "batteryOverrideAllowed": {"const": true},
+        "faultOverrideAllowed": {"const": true}
+      }
+    },
+    "interfaces": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["supportedLanguages", "defaultLanguage", "audioEnabledBy"],
+      "properties": {
+        "supportedLanguages": {"type": "array", "items": {"type": "string"}, "const": ["en", "fr"]},
+        "defaultLanguage": {"const": "en"},
+        "audioEnabledBy": {"const": "SCREEN_BUTTON"}
+      }
+    },
+    "receipts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["destinations", "fields"],
+      "properties": {
+        "destinations": {"type": "array", "items": {"type": "string"}, "const": ["EMAIL", "APP"]},
+        "fields": {"type": "array", "items": {"type": "string"}, "const": ["UNLOCK_FEE", "DURATION", "RATE", "SURCHARGE", "DEPOSIT_RELEASE"]}
+      }
+    }
+  }
+}
