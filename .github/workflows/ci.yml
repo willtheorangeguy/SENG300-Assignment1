@@ -1,0 +1,23 @@
+name: GoCycle CI
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: gocycle-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Run Java tests
+        run: ./mvnw --batch-mode --no-transfer-progress test
