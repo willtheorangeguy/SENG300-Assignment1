@@ -38,7 +38,6 @@ public class OperatorDashboard implements FaultObserver {
     /**
      * Receive the complete report; notifier/dashboard failures must not prevent delivery to other observers.
      * @param report required input; validate malformed values before mutation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
      * @throws IllegalArgumentException for malformed input in the completed implementation
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
@@ -53,7 +52,6 @@ public class OperatorDashboard implements FaultObserver {
     /**
      * Show shared station/vehicle state and visible unresolved faults to the simulated operator.
      * @return the documented result after successful implementation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
      * @throws IllegalArgumentException for malformed input in the completed implementation
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
