@@ -120,8 +120,8 @@ public class ConsoleApplication {
                 case "quit", "exit", "quitter" -> { return; }
                 case "help", "aide" -> {
                     System.out.println(language.equals("fr")
-                            ? "Choisissez: help, audio on, audio off, network, quit"
-                            : "Choose: help, audio on, audio off, network, quit");
+                            ? "Choisissez: register, start, return, settle, fault, repair, preferences, network, audio on/off, quit"
+                            : "Choose: register, start, return, settle, fault, repair, preferences, network, audio on/off, quit");
                     showBranding();
                     if (audioEnabled) System.out.println("[audio]");
                 }
@@ -135,6 +135,13 @@ public class ConsoleApplication {
                     System.out.println(language.equals("fr") ? "Audio désactivé" : "Audio disabled");
                 }
                 case "network" -> System.out.println(dashboard.showNetworkState());
+                case "register" -> registerRider(scanner, language);
+                case "start" -> startTrip(scanner, language);
+                case "return" -> returnTrip(scanner, language);
+                case "settle" -> settleTrip(scanner, language);
+                case "fault" -> reportFault(scanner, language);
+                case "repair" -> changeServiceStatus(scanner, language);
+                case "preferences" -> updatePreferences(scanner, language);
                 default -> System.out.println(language.equals("fr") ? "Commande inconnue" : "Unknown command");
             }
         }
@@ -145,6 +152,112 @@ public class ConsoleApplication {
             var display = station.getZone().getDisplay();
             System.out.println(display.primaryColour() + " " + display.logoPath());
         }
+    }
+
+    private void registerRider(Scanner scanner, String language) {
+        try {
+            System.out.print(language.equals("fr") ? "Nom: " : "Name: ");
+            var name = scanner.nextLine().trim();
+            System.out.print(language.equals("fr") ? "Courriel: " : "Email: ");
+            var email = scanner.nextLine().trim();
+            System.out.print(language.equals("fr") ? "Date de naissance (AAAA-MM-JJ): " : "Birth date (YYYY-MM-DD): ");
+            var birthDate = LocalDate.parse(scanner.nextLine().trim());
+            var rider = riderService.register(name, email, birthDate);
+            System.out.println("Rider ID: " + rider.getId());
+        } catch (RuntimeException exception) {
+            showError(exception, language);
+        }
+    }
+
+    private void startTrip(Scanner scanner, String language) {
+        try {
+            System.out.print(language.equals("fr") ? "ID du client, ID du vélo, mode de paiement: "
+                    : "Rider ID, vehicle ID, payment method: ");
+            var fields = scanner.nextLine().trim().split("\\s+");
+            if (fields.length != 3) throw new IllegalArgumentException("Enter all three values");
+            var trip = tripService.startTrip(UUID.fromString(fields[0]), UUID.fromString(fields[1]),
+                    PaymentMethod.valueOf(fields[2].toUpperCase(Locale.ROOT)));
+            System.out.println("Trip ID: " + trip.getId());
+        } catch (RuntimeException exception) {
+            showError(exception, language);
+        }
+    }
+
+    private void returnTrip(Scanner scanner, String language) {
+        try {
+            System.out.print(language.equals("fr") ? "ID du trajet et ID de la station: " : "Trip ID and station ID: ");
+            var fields = scanner.nextLine().trim().split("\\s+");
+            if (fields.length != 2) throw new IllegalArgumentException("Enter both values");
+            var suggested = tripService.returnVehicle(UUID.fromString(fields[0]), fields[1]);
+            System.out.println(suggested.map(station -> "Suggested station: " + station.getId())
+                    .orElse(language.equals("fr") ? "Vélo retourné" : "Vehicle returned"));
+        } catch (RuntimeException exception) {
+            showError(exception, language);
+        }
+    }
+
+    private void settleTrip(Scanner scanner, String language) {
+        try {
+            System.out.print(language.equals("fr") ? "ID du trajet et destination (APP/EMAIL): "
+                    : "Trip ID and receipt destination (APP/EMAIL): ");
+            var fields = scanner.nextLine().trim().split("\\s+");
+            if (fields.length != 2) throw new IllegalArgumentException("Enter both values");
+            var result = tripService.settleTrip(UUID.fromString(fields[0]),
+                    ReceiptChannel.valueOf(fields[1].toUpperCase(Locale.ROOT)));
+            System.out.println(result.success() ? (language.equals("fr") ? "Paiement terminé" : "Payment complete")
+                    : result.failureMessage());
+        } catch (RuntimeException exception) {
+            showError(exception, language);
+        }
+    }
+
+    private void reportFault(Scanner scanner, String language) {
+        try {
+            System.out.print(language.equals("fr") ? "ID du vélo, type, description: " : "Vehicle ID, fault type, description: ");
+            var fields = scanner.nextLine().trim().split("\\s+", 3);
+            if (fields.length != 3) throw new IllegalArgumentException("Enter all three fields");
+            var report = faultService.reportProblem(UUID.fromString(fields[0]),
+                    FaultType.valueOf(fields[1].toUpperCase(Locale.ROOT)), fields[2]);
+            System.out.println("Fault ID: " + report.getId());
+        } catch (RuntimeException exception) {
+            showError(exception, language);
+        }
+    }
+
+    private void changeServiceStatus(Scanner scanner, String language) {
+        try {
+            System.out.print(language.equals("fr") ? "ID du vélo, état, note de réparation: "
+                    : "Vehicle ID, service status, repair note: ");
+            var fields = scanner.nextLine().trim().split("\\s+", 3);
+            if (fields.length != 3) throw new IllegalArgumentException("Enter all three fields");
+            faultService.changeServiceStatus(UUID.fromString(fields[0]),
+                    VehicleServiceStatus.valueOf(fields[1].toUpperCase(Locale.ROOT)), fields[2]);
+            System.out.println(language.equals("fr") ? "État mis à jour" : "Service status updated");
+        } catch (RuntimeException exception) {
+            showError(exception, language);
+        }
+    }
+
+    private void updatePreferences(Scanner scanner, String language) {
+        try {
+            System.out.print(language.equals("fr") ? "ID du client, langue (en/fr), audio (on/off): "
+                    : "Rider ID, language (en/fr), audio (on/off): ");
+            var fields = scanner.nextLine().trim().split("\\s+");
+            if (fields.length != 3 || !(fields[2].equalsIgnoreCase("on") || fields[2].equalsIgnoreCase("off"))) {
+                throw new IllegalArgumentException("Enter an ID, language, and on/off value");
+            }
+            riderService.updatePreferences(UUID.fromString(fields[0]),
+                    new InterfacePreferences(fields[1].toLowerCase(Locale.ROOT), fields[2].equalsIgnoreCase("on")));
+            System.out.println(language.equals("fr") ? "Préférences enregistrées" : "Preferences saved");
+        } catch (RuntimeException exception) {
+            showError(exception, language);
+        }
+    }
+
+    private void showError(RuntimeException exception, String language) {
+        String message = exception.getMessage();
+        System.out.println((language.equals("fr") ? "Erreur: " : "Error: ")
+                + (message == null ? exception.getClass().getSimpleName() : message));
     }
 
     /**
