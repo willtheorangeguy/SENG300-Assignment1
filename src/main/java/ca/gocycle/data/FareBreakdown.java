@@ -24,4 +24,13 @@ import ca.gocycle.simulation.*;
 
 
 public record FareBreakdown(BigDecimal unlockCharge, long billableMinutes, BigDecimal durationCharge, BigDecimal surcharge, BigDecimal total) {
+    public FareBreakdown {
+        if (unlockCharge == null || durationCharge == null || surcharge == null || total == null) {
+            throw new IllegalArgumentException("Fare amounts are required");
+        }
+        if (billableMinutes < 0 || unlockCharge.signum() < 0 || durationCharge.signum() < 0
+                || surcharge.signum() < 0 || total.signum() < 0) {
+            throw new IllegalArgumentException("Fare amounts and minutes cannot be negative");
+        }
+    }
 }

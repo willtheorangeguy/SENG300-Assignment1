@@ -24,4 +24,14 @@ import ca.gocycle.simulation.*;
 
 
 public record PaymentResult(boolean success, String reference, String failureCode, String failureMessage) {
+    public PaymentResult {
+        if (success) {
+            if (reference == null || reference.isBlank() || failureCode != null || failureMessage != null) {
+                throw new IllegalArgumentException("Successful payments require a reference and no failure details");
+            }
+        } else if (reference != null || failureCode == null || failureCode.isBlank()
+                || failureMessage == null || failureMessage.isBlank()) {
+            throw new IllegalArgumentException("Failed payments require failure details and no reference");
+        }
+    }
 }
