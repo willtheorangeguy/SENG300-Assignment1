@@ -47,7 +47,16 @@ public class SimulatedReceiptDelivery implements ReceiptDelivery {
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
     public boolean deliver(Receipt receipt, ReceiptChannel channel, Rider rider) {
-        throw new UnsupportedOperationException("TODO: implement SimulatedReceiptDelivery.deliver");
+        if (receipt == null || channel == null || rider == null) {
+            throw new IllegalArgumentException("Receipt, channel, and rider are required");
+        }
+        if (channel == ReceiptChannel.EMAIL && (rider.getEmail() == null || rider.getEmail().isBlank())) {
+            throw new IllegalArgumentException("An email address is required for email delivery");
+        }
+        if (deliveryOutcome) {
+            deliveredReceipts.add(receipt);
+        }
+        return deliveryOutcome;
     }
 
     /**
