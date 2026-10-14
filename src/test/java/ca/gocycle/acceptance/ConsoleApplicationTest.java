@@ -110,6 +110,11 @@ class ConsoleApplicationTest {
         var payments = new PaymentService(new SimulatedPaymentGateway(true, true, true),
                 new SimulatedReceiptDelivery(true), configuration, clock);
         var riders = new RiderService(payments, configuration, clock) {
+            @Override public Rider register(String name, String email, LocalDate birthDate) {
+                assertEquals("Test Rider", name);
+                assertEquals("rider@ucalgary.ca", email);
+                return rider;
+            }
             @Override public Optional<Rider> findRider(UUID id) { return Optional.of(rider); }
         };
         var pricing = new PricingService(List.of(new StudentPricingPolicy(), new MemberPricingPolicy(),
@@ -125,7 +130,8 @@ class ConsoleApplicationTest {
         var dashboard = new OperatorDashboard(stations);
         var faults = new FaultService(List.of(dashboard), stations, configuration, clock);
         var app = new ConsoleApplication(configuration, riders, trips, faults, stations, dashboard);
-        var output = run(app, "login\n" + rider.getId() + "\nsettle\n" + trip.getId() + " APP\nquit\n");
+        var output = run(app, "register\nTest Rider\n2000-01-01\nrider@ucalgary.ca\nsecret\nCASUAL\nCREDIT_CARD\n"
+                + "login\nrider@ucalgary.ca\nsecret\nsettle\n" + trip.getId() + " APP\nquit\n");
         assertTrue(output.contains("Bienvenue, Test Rider"));
         assertTrue(output.contains("[audio]"));
         assertTrue(output.contains("Frais de déverrouillage: 5.00"), output);

@@ -42,6 +42,10 @@ public class ConsoleApplication {
 
     private boolean audioEnabled;
 
+    private final Map<String, ConsoleAccount> accountsByLogin;
+
+    private record ConsoleAccount(UUID riderId, String password, String accountType, PaymentMethod paymentMethod) { }
+
     /** Store the application dependencies. */
     public ConsoleApplication(DeploymentConfiguration configuration, RiderService riderService, TripService tripService, FaultService faultService, StationService stationService, OperatorDashboard dashboard) {
         this.configuration = configuration;
@@ -50,6 +54,7 @@ public class ConsoleApplication {
         this.faultService = faultService;
         this.stationService = stationService;
         this.dashboard = dashboard;
+        this.accountsByLogin = new LinkedHashMap<>();
     }
 
     /**
@@ -153,15 +158,52 @@ public class ConsoleApplication {
         try {
             System.out.print(language.equals("fr") ? "Nom: " : "Name: ");
             var name = scanner.nextLine().trim();
-            System.out.print(language.equals("fr") ? "Courriel: " : "Email: ");
-            var email = scanner.nextLine().trim();
             System.out.print(language.equals("fr") ? "Date de naissance (AAAA-MM-JJ): " : "Birth date (YYYY-MM-DD): ");
             var birthDate = LocalDate.parse(scanner.nextLine().trim());
-            var rider = riderService.register(name, email, birthDate);
+            var fields = new LinkedHashMap<String, String>();
+            for (var field : configuration.getRiders().registrationFields()) {
+                System.out.print(registrationPrompt(field, language));
+                fields.put(field, scanner.nextLine().trim());
+            }
+            String login = fields.get("EMAIL_OR_USERNAME");
+            String password = fields.get("PASSWORD");
+            String accountType = fields.get("ACCOUNT_TYPE");
+            if (accountType != null) accountType = accountType.toUpperCase(Locale.ROOT);
+            String paymentText = fields.get("PAYMENT_METHOD");
+            if (login == null || login.isBlank() || password == null || password.isBlank()
+                    || accountType == null || paymentText == null) {
+                throw new IllegalArgumentException("Required registration fields are missing");
+            }
+            if (!configuration.getRiders().accountTypes().contains(accountType)) {
+                throw new IllegalArgumentException("Unsupported account type: " + accountType);
+            }
+            var method = PaymentMethod.valueOf(paymentText.toUpperCase(Locale.ROOT));
+            var rider = riderService.register(name, login, birthDate);
+            accountsByLogin.put(login, new ConsoleAccount(rider.getId(), password, accountType, method));
+            if ("STUDENT".equals(accountType)) {
+                System.out.print(language.equals("fr") ? "Établissement: " : "Institution: ");
+                var institution = scanner.nextLine().trim();
+                riderService.verifyStudent(rider.getId(), institution, false);
+            } else if ("MEMBER".equals(accountType)) {
+                var station = stationService.listStations().stream().findFirst()
+                        .orElseThrow(() -> new IllegalStateException("No station is available for membership"));
+                riderService.activateMembership(rider.getId(), method, station.getZone());
+            }
             System.out.println("Rider ID: " + rider.getId());
         } catch (RuntimeException exception) {
             showError(exception, language);
         }
+    }
+
+    private String registrationPrompt(String field, String language) {
+        String prompt = switch (field) {
+            case "EMAIL_OR_USERNAME" -> language.equals("fr") ? "Courriel ou nom d'utilisateur: " : "Email or username: ";
+            case "PASSWORD" -> language.equals("fr") ? "Mot de passe: " : "Password: ";
+            case "ACCOUNT_TYPE" -> language.equals("fr") ? "Type de compte: " : "Account type: ";
+            case "PAYMENT_METHOD" -> language.equals("fr") ? "Mode de paiement: " : "Payment method: ";
+            default -> throw new IllegalArgumentException("Unsupported registration field: " + field);
+        };
+        return prompt;
     }
 
     private void startTrip(Scanner scanner, String language) {
@@ -257,10 +299,17 @@ public class ConsoleApplication {
 
     private String loginRider(Scanner scanner, String language) {
         try {
-            System.out.print(language.equals("fr") ? "ID du client: " : "Rider ID: ");
-            var riderId = UUID.fromString(scanner.nextLine().trim());
-            activeRider = riderService.findRider(riderId)
-                    .orElseThrow(() -> new NoSuchElementException("Rider not found: " + riderId));
+            System.out.print(language.equals("fr") ? "Courriel ou nom d'utilisateur: " : "Email or username: ");
+            var login = scanner.nextLine().trim();
+            System.out.print(language.equals("fr") ? "Mot de passe: " : "Password: ");
+            var password = scanner.nextLine();
+            var account = accountsByLogin.get(login);
+            if (account == null || !account.password().equals(password)) {
+                throw new IllegalArgumentException(language.equals("fr")
+                        ? "Identifiants invalides" : "Invalid login details");
+            }
+            activeRider = riderService.findRider(account.riderId())
+                    .orElseThrow(() -> new NoSuchElementException("Rider not found: " + account.riderId()));
             var preferences = activeRider.getPreferences();
             audioEnabled = preferences.audioEnabled();
             String preferredLanguage = configuration.getInterfaces().supportedLanguages().contains(preferences.language())
