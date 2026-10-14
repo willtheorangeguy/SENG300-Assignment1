@@ -21,11 +21,7 @@ import ca.gocycle.fault.*;
 import ca.gocycle.integration.*;
 import ca.gocycle.pricing.*;
 import ca.gocycle.simulation.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.time.Clock;
 import java.nio.file.Files;
-import java.util.concurrent.locks.ReentrantLock;
 
 
 public class ConsoleApplication {
@@ -42,7 +38,11 @@ public class ConsoleApplication {
 
     private OperatorDashboard dashboard;
 
-    /** Assign required attributes/dependencies; no business rules are implemented here. */
+    private Rider activeRider;
+
+    private boolean audioEnabled;
+
+    /** Store the application dependencies. */
     public ConsoleApplication(DeploymentConfiguration configuration, RiderService riderService, TripService tripService, FaultService faultService, StationService stationService, OperatorDashboard dashboard) {
         this.configuration = configuration;
         this.riderService = riderService;
@@ -53,9 +53,8 @@ public class ConsoleApplication {
     }
 
     /**
-     * Select --config PATH over GOCYCLE_CONFIG over the example, then validate before wiring shared services, Clock, lock, strategies, observers and simulators. Startup remains TODO.
+     * Load the selected configuration and start the application.
      * @param args required input; validate malformed values before mutation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
      * @throws IllegalArgumentException for malformed input in the completed implementation
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
@@ -69,35 +68,25 @@ public class ConsoleApplication {
         if (!Files.isRegularFile(path)) {
             throw new IllegalArgumentException("Configuration file not found: " + path);
         }
-        try {
-            var mapper = new ObjectMapper().findAndRegisterModules();
-            var configuration = mapper.readValue(path.toFile(), DeploymentConfiguration.class);
-            var validationErrors = new ConfigurationValidator().validate(configuration);
-            if (!validationErrors.isEmpty()) {
-                throw new IllegalArgumentException(String.join("; ", validationErrors));
-            }
-            var clock = Clock.systemUTC();
-            var lock = new ReentrantLock();
-            var gateway = new SimulatedPaymentGateway(true, true, true);
-            var delivery = new SimulatedReceiptDelivery(true);
-            var payments = new PaymentService(gateway, delivery, configuration, clock);
-            var riders = new RiderService(payments, configuration, clock);
-            var stations = new StationService(Map.of(), Map.of(), configuration, clock, lock);
-            var pricing = new PricingService(List.of(new StudentPricingPolicy(), new MemberPricingPolicy(),
-                    new CasualPricingPolicy()), configuration);
-            var trips = new TripService(riders, stations, pricing, payments,
-                    new SimulatedDockingGateway(true, true), configuration, clock, lock);
-            var dashboard = new OperatorDashboard(stations);
-            var faults = new FaultService(List.of(dashboard, new MaintenanceNotifier()), stations, configuration, clock);
-            new ConsoleApplication(configuration, riders, trips, faults, stations, dashboard).run();
-        } catch (IOException exception) {
-            throw new IllegalArgumentException("Unable to read configuration: " + path, exception);
-        }
+        var configuration = new ConfigurationLoader(new ConfigurationValidator()).load(path);
+        var clock = Clock.systemUTC();
+        var lock = new ReentrantLock();
+        var gateway = new SimulatedPaymentGateway(true, true, true);
+        var delivery = new SimulatedReceiptDelivery(true);
+        var payments = new PaymentService(gateway, delivery, configuration, clock);
+        var riders = new RiderService(payments, configuration, clock);
+        var stations = new StationService(Map.of(), Map.of(), configuration, clock, lock);
+        var pricing = new PricingService(List.of(new StudentPricingPolicy(), new MemberPricingPolicy(),
+                new CasualPricingPolicy()), configuration);
+        var trips = new TripService(riders, stations, pricing, payments,
+                new SimulatedDockingGateway(true, true), configuration, clock, lock);
+        var dashboard = new OperatorDashboard(stations);
+        var faults = new FaultService(List.of(dashboard, new MaintenanceNotifier()), stations, configuration, clock);
+        new ConsoleApplication(configuration, riders, trips, faults, stations, dashboard).run();
     }
 
     /**
      * Provide registration/start/return/fault/operator flows in at least en/fr, zone branding, saved preferences and visible simulated audio.
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
      * @throws IllegalArgumentException for malformed input in the completed implementation
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
@@ -105,10 +94,10 @@ public class ConsoleApplication {
     public void run() {
         var language = configuration.getInterfaces().defaultLanguage();
         if (!configuration.getInterfaces().supportedLanguages().contains(language)) {
-            language = configuration.getInterfaces().defaultLanguage();
+            language = "en";
         }
+        audioEnabled = false;
         var scanner = new Scanner(System.in);
-        boolean audioEnabled = false;
         showBranding();
         while (true) {
             System.out.print(language.equals("fr") ? "Commande (aide pour les options): " : "Command (help for options): ");
@@ -120,18 +109,22 @@ public class ConsoleApplication {
                 case "quit", "exit", "quitter" -> { return; }
                 case "help", "aide" -> {
                     System.out.println(language.equals("fr")
-                            ? "Choisissez: register, start, return, settle, fault, repair, preferences, network, audio on/off, quit"
-                            : "Choose: register, start, return, settle, fault, repair, preferences, network, audio on/off, quit");
+                            ? "Choisissez: register, login, start, return, close, settle, fault, repair, battery, preferences, language, network, audio on/off, quit"
+                            : "Choose: register, login, start, return, close, settle, fault, repair, battery, preferences, language, network, audio on/off, quit");
                     showBranding();
                     if (audioEnabled) System.out.println("[audio]");
                 }
+                case "login" -> language = loginRider(scanner, language);
+                case "language" -> language = selectLanguage(scanner, language);
                 case "audio on" -> {
                     audioEnabled = true;
+                    savePreferences(language);
                     System.out.println(language.equals("fr") ? "Audio activé" : "Audio enabled");
                     System.out.println("[audio]");
                 }
                 case "audio off" -> {
                     audioEnabled = false;
+                    savePreferences(language);
                     System.out.println(language.equals("fr") ? "Audio désactivé" : "Audio disabled");
                 }
                 case "network" -> System.out.println(dashboard.showNetworkState());
@@ -139,9 +132,11 @@ public class ConsoleApplication {
                 case "start" -> startTrip(scanner, language);
                 case "return" -> returnTrip(scanner, language);
                 case "settle" -> settleTrip(scanner, language);
+                case "close" -> closeTrip(scanner, language);
                 case "fault" -> reportFault(scanner, language);
                 case "repair" -> changeServiceStatus(scanner, language);
-                case "preferences" -> updatePreferences(scanner, language);
+                case "battery" -> updateBattery(scanner, language);
+                case "preferences" -> language = updatePreferences(scanner, language);
                 default -> System.out.println(language.equals("fr") ? "Commande inconnue" : "Unknown command");
             }
         }
@@ -202,10 +197,113 @@ public class ConsoleApplication {
                     : "Trip ID and receipt destination (APP/EMAIL): ");
             var fields = scanner.nextLine().trim().split("\\s+");
             if (fields.length != 2) throw new IllegalArgumentException("Enter both values");
-            var result = tripService.settleTrip(UUID.fromString(fields[0]),
-                    ReceiptChannel.valueOf(fields[1].toUpperCase(Locale.ROOT)));
+            var tripId = UUID.fromString(fields[0]);
+            var result = tripService.settleTrip(tripId, ReceiptChannel.valueOf(fields[1].toUpperCase(Locale.ROOT)));
             System.out.println(result.success() ? (language.equals("fr") ? "Paiement terminé" : "Payment complete")
                     : result.failureMessage());
+            if (result.success()) {
+                tripService.findTrip(tripId).ifPresent(trip -> showReceipt(trip, language));
+            }
+        } catch (RuntimeException exception) {
+            showError(exception, language);
+        }
+    }
+
+    private void closeTrip(Scanner scanner, String language) {
+        try {
+            if (!configuration.getOperators().manualTripClosureAllowed()) {
+                throw new IllegalStateException(language.equals("fr")
+                        ? "La fermeture manuelle est désactivée" : "Manual trip closure is disabled");
+            }
+            System.out.print(language.equals("fr") ? "ID du trajet, station de retour, destination du reçu: "
+                    : "Trip ID, return station, receipt destination: ");
+            var fields = scanner.nextLine().trim().split("\\s+");
+            if (fields.length != 3) throw new IllegalArgumentException("Enter all three values");
+            var tripId = UUID.fromString(fields[0]);
+            tripService.returnVehicle(tripId, fields[1]);
+            var result = tripService.settleTrip(tripId, ReceiptChannel.valueOf(fields[2].toUpperCase(Locale.ROOT)));
+            System.out.println(result.success()
+                    ? (language.equals("fr") ? "Trajet fermé" : "Trip closed") : result.failureMessage());
+            if (result.success()) tripService.findTrip(tripId).ifPresent(trip -> showReceipt(trip, language));
+        } catch (RuntimeException exception) {
+            showError(exception, language);
+        }
+    }
+
+    private void showReceipt(Trip trip, String language) {
+        var fare = trip.getFare();
+        var terms = trip.getPricingTerms();
+        if (fare == null || terms == null) return;
+        for (var field : configuration.getReceipts().fields()) {
+            switch (field) {
+                case "UNLOCK_FEE" -> printReceiptField(language.equals("fr") ? "Frais de déverrouillage" : "Unlock fee",
+                        fare.unlockCharge());
+                case "DURATION" -> printReceiptField(language.equals("fr") ? "Durée" : "Duration",
+                        fare.billableMinutes() + (language.equals("fr") ? " minutes" : " minutes"));
+                case "RATE" -> printReceiptField(language.equals("fr") ? "Tarif" : "Rate",
+                        terms.perMinute() + " / minute");
+                case "SURCHARGE" -> printReceiptField(language.equals("fr") ? "Supplément" : "Surcharge",
+                        fare.surcharge());
+                case "DEPOSIT_RELEASE" -> printReceiptField(language.equals("fr") ? "Dépôt" : "Deposit",
+                        terms.deposit() + " " + trip.getDepositStatus());
+                default -> { }
+            }
+        }
+    }
+
+    private void printReceiptField(String label, Object value) {
+        System.out.println(label + ": " + value);
+    }
+
+    private String loginRider(Scanner scanner, String language) {
+        try {
+            System.out.print(language.equals("fr") ? "ID du client: " : "Rider ID: ");
+            var riderId = UUID.fromString(scanner.nextLine().trim());
+            activeRider = riderService.findRider(riderId)
+                    .orElseThrow(() -> new NoSuchElementException("Rider not found: " + riderId));
+            var preferences = activeRider.getPreferences();
+            audioEnabled = preferences.audioEnabled();
+            String preferredLanguage = configuration.getInterfaces().supportedLanguages().contains(preferences.language())
+                    ? preferences.language() : language;
+            System.out.println((preferredLanguage.equals("fr") ? "Bienvenue, " : "Welcome, ") + activeRider.getName());
+            if (audioEnabled) System.out.println("[audio]");
+            return preferredLanguage;
+        } catch (RuntimeException exception) {
+            showError(exception, language);
+            return language;
+        }
+    }
+
+    private String selectLanguage(Scanner scanner, String language) {
+        System.out.print(language.equals("fr") ? "Langue: " : "Language: ");
+        var selected = scanner.nextLine().trim().toLowerCase(Locale.ROOT);
+        if (!configuration.getInterfaces().supportedLanguages().contains(selected)) {
+            System.out.println(language.equals("fr") ? "Langue non prise en charge" : "Unsupported language");
+            return language;
+        }
+        savePreferences(selected);
+        return selected;
+    }
+
+    private void savePreferences(String language) {
+        if (activeRider != null) {
+            riderService.updatePreferences(activeRider.getId(), new InterfacePreferences(language, audioEnabled));
+        }
+    }
+
+    private void updateBattery(Scanner scanner, String language) {
+        try {
+            if (!configuration.getOperators().batteryOverrideAllowed()) {
+                throw new IllegalStateException(language.equals("fr")
+                        ? "La modification de batterie est désactivée" : "Battery override is disabled");
+            }
+            System.out.print(language.equals("fr") ? "ID du vélo et pourcentage de batterie: "
+                    : "Vehicle ID and battery percentage: ");
+            var fields = scanner.nextLine().trim().split("\\s+");
+            if (fields.length != 2) throw new IllegalArgumentException("Enter both values");
+            faultService.reportTelemetry(UUID.fromString(fields[0]), Integer.parseInt(fields[1]),
+                    FaultType.LOW_BATTERY, faultService.getClock().instant());
+            System.out.println(language.equals("fr") ? "Batterie mise à jour" : "Battery updated");
         } catch (RuntimeException exception) {
             showError(exception, language);
         }
@@ -226,6 +324,10 @@ public class ConsoleApplication {
 
     private void changeServiceStatus(Scanner scanner, String language) {
         try {
+            if (!configuration.getOperators().faultOverrideAllowed()) {
+                throw new IllegalStateException(language.equals("fr")
+                        ? "La modification des pannes est désactivée" : "Fault override is disabled");
+            }
             System.out.print(language.equals("fr") ? "ID du vélo, état, note de réparation: "
                     : "Vehicle ID, service status, repair note: ");
             var fields = scanner.nextLine().trim().split("\\s+", 3);
@@ -238,7 +340,7 @@ public class ConsoleApplication {
         }
     }
 
-    private void updatePreferences(Scanner scanner, String language) {
+    private String updatePreferences(Scanner scanner, String language) {
         try {
             System.out.print(language.equals("fr") ? "ID du client, langue (en/fr), audio (on/off): "
                     : "Rider ID, language (en/fr), audio (on/off): ");
@@ -248,10 +350,15 @@ public class ConsoleApplication {
             }
             riderService.updatePreferences(UUID.fromString(fields[0]),
                     new InterfacePreferences(fields[1].toLowerCase(Locale.ROOT), fields[2].equalsIgnoreCase("on")));
+            if (activeRider != null && activeRider.getId().equals(UUID.fromString(fields[0]))) {
+                audioEnabled = fields[2].equalsIgnoreCase("on");
+                language = fields[1].toLowerCase(Locale.ROOT);
+            }
             System.out.println(language.equals("fr") ? "Préférences enregistrées" : "Preferences saved");
         } catch (RuntimeException exception) {
             showError(exception, language);
         }
+        return language;
     }
 
     private void showError(RuntimeException exception, String language) {
