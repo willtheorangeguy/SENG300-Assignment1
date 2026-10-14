@@ -38,25 +38,47 @@ public class OperatorDashboard implements FaultObserver {
     /**
      * Receive the complete report; notifier/dashboard failures must not prevent delivery to other observers.
      * @param report required input; validate malformed values before mutation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
      * @throws IllegalArgumentException for malformed input in the completed implementation
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
     public void onFault(FaultReport report) {
-        throw new UnsupportedOperationException("TODO: implement OperatorDashboard.onFault");
+        if (report == null) {
+            throw new IllegalArgumentException("Fault report is required");
+        }
+        faultReports.add(report);
     }
 
     /**
      * Show shared station/vehicle state and visible unresolved faults to the simulated operator.
      * @return the documented result after successful implementation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
      * @throws IllegalArgumentException for malformed input in the completed implementation
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
     public String showNetworkState() {
-        throw new UnsupportedOperationException("TODO: implement OperatorDashboard.showNetworkState");
+        StringBuilder output = new StringBuilder("Network state\nStations:\n");
+        for (var station : stationService.listStations()) {
+            output.append("- ").append(station.getName())
+                    .append(" (").append(station.getId()).append(")")
+                    .append(station.getOpen() ? " open" : " closed")
+                    .append('\n');
+        }
+        output.append("Vehicles:\n");
+        for (var vehicle : stationService.listVehicles()) {
+            output.append("- ").append(vehicle.getId()).append(" ")
+                    .append(vehicle.getType()).append(" ")
+                    .append(vehicle.getAvailability()).append(" ")
+                    .append(vehicle.getServiceStatus()).append('\n');
+        }
+        output.append("Unresolved faults:\n");
+        for (var report : faultReports) {
+            if (report.getResolvedAt() == null) {
+                output.append("- ").append(report.getType()).append(": ")
+                        .append(report.getDescription()).append('\n');
+            }
+        }
+        return output.toString();
     }
 
     /**
