@@ -21,6 +21,11 @@ import ca.gocycle.fault.*;
 import ca.gocycle.integration.*;
 import ca.gocycle.pricing.*;
 import ca.gocycle.simulation.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.time.Clock;
+import java.nio.file.Files;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 public class ConsoleApplication {
@@ -56,7 +61,38 @@ public class ConsoleApplication {
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
     public static void main(String[] args) {
-        throw new UnsupportedOperationException("TODO: implement ConsoleApplication.main");
+        if (args == null || (args.length != 0 && (args.length != 2 || !"--config".equals(args[0])))) {
+            throw new IllegalArgumentException("Usage: ConsoleApplication [--config PATH]");
+        }
+        String selected = args.length == 2 ? args[1] : System.getenv("GOCYCLE_CONFIG");
+        Path path = Path.of(selected == null || selected.isBlank() ? "config/gocycle.example.json" : selected);
+        if (!Files.isRegularFile(path)) {
+            throw new IllegalArgumentException("Configuration file not found: " + path);
+        }
+        try {
+            var mapper = new ObjectMapper().findAndRegisterModules();
+            var configuration = mapper.readValue(path.toFile(), DeploymentConfiguration.class);
+            var validationErrors = new ConfigurationValidator().validate(configuration);
+            if (!validationErrors.isEmpty()) {
+                throw new IllegalArgumentException(String.join("; ", validationErrors));
+            }
+            var clock = Clock.systemUTC();
+            var lock = new ReentrantLock();
+            var gateway = new SimulatedPaymentGateway(true, true, true);
+            var delivery = new SimulatedReceiptDelivery(true);
+            var payments = new PaymentService(gateway, delivery, configuration, clock);
+            var riders = new RiderService(payments, configuration, clock);
+            var stations = new StationService(Map.of(), Map.of(), configuration, clock, lock);
+            var pricing = new PricingService(List.of(new StudentPricingPolicy(), new MemberPricingPolicy(),
+                    new CasualPricingPolicy()), configuration);
+            var trips = new TripService(riders, stations, pricing, payments,
+                    new SimulatedDockingGateway(true, true), configuration, clock, lock);
+            var dashboard = new OperatorDashboard(stations);
+            var faults = new FaultService(List.of(dashboard, new MaintenanceNotifier()), stations, configuration, clock);
+            new ConsoleApplication(configuration, riders, trips, faults, stations, dashboard).run();
+        } catch (IOException exception) {
+            throw new IllegalArgumentException("Unable to read configuration: " + path, exception);
+        }
     }
 
     /**
@@ -67,7 +103,48 @@ public class ConsoleApplication {
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
     public void run() {
-        throw new UnsupportedOperationException("TODO: implement ConsoleApplication.run");
+        var language = configuration.getInterfaces().defaultLanguage();
+        if (!configuration.getInterfaces().supportedLanguages().contains(language)) {
+            language = configuration.getInterfaces().defaultLanguage();
+        }
+        var scanner = new Scanner(System.in);
+        boolean audioEnabled = false;
+        showBranding();
+        while (true) {
+            System.out.print(language.equals("fr") ? "Commande (aide pour les options): " : "Command (help for options): ");
+            if (!scanner.hasNextLine()) {
+                return;
+            }
+            String command = scanner.nextLine().trim().toLowerCase(Locale.ROOT);
+            switch (command) {
+                case "quit", "exit", "quitter" -> { return; }
+                case "help", "aide" -> {
+                    System.out.println(language.equals("fr")
+                            ? "Choisissez: help, audio on, audio off, network, quit"
+                            : "Choose: help, audio on, audio off, network, quit");
+                    showBranding();
+                    if (audioEnabled) System.out.println("[audio]");
+                }
+                case "audio on" -> {
+                    audioEnabled = true;
+                    System.out.println(language.equals("fr") ? "Audio activé" : "Audio enabled");
+                    System.out.println("[audio]");
+                }
+                case "audio off" -> {
+                    audioEnabled = false;
+                    System.out.println(language.equals("fr") ? "Audio désactivé" : "Audio disabled");
+                }
+                case "network" -> System.out.println(dashboard.showNetworkState());
+                default -> System.out.println(language.equals("fr") ? "Commande inconnue" : "Unknown command");
+            }
+        }
+    }
+
+    private void showBranding() {
+        for (var station : stationService.listStations()) {
+            var display = station.getZone().getDisplay();
+            System.out.println(display.primaryColour() + " " + display.logoPath());
+        }
     }
 
     /**
