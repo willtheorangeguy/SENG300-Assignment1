@@ -4,6 +4,7 @@ import ca.gocycle.application.StationService;
 import ca.gocycle.domain.FaultSource;
 import ca.gocycle.domain.FaultType;
 import ca.gocycle.domain.fault.FaultReport;
+import ca.gocycle.domain.station.Station;
 import ca.gocycle.fault.MaintenanceNotifier;
 import ca.gocycle.presentation.OperatorDashboard;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,12 @@ class FaultDashboardTest {
 
     @Test
     void dashboardStoresFaultReports() {
-        var stations = new StationService(Map.of(), Map.of(), null, Clock.systemUTC(), new ReentrantLock());
+        var station = Fixtures.station("central", 51.0, -114.0, true, List.of());
+        var stations = new StationService(Map.of("central", station), Map.of(), null,
+                Clock.systemUTC(), new ReentrantLock()) {
+            @Override public List<Station> listStations() { return List.of(station); }
+            @Override public List<ca.gocycle.domain.vehicle.Vehicle> listVehicles() { return List.of(); }
+        };
         var dashboard = new OperatorDashboard(stations);
         var report = report();
         dashboard.onFault(report);
@@ -38,6 +44,11 @@ class FaultDashboardTest {
         assertEquals(List.of(report), dashboard.getFaultReports());
         assertThrows(UnsupportedOperationException.class, () -> dashboard.getFaultReports().clear());
         assertThrows(IllegalArgumentException.class, () -> dashboard.onFault(null));
+        var state = dashboard.showNetworkState();
+        assertTrue(state.contains("Network state"));
+        assertTrue(state.contains("central"));
+        assertTrue(state.contains("Unresolved faults"));
+        assertTrue(state.contains("Flat tire"));
     }
 
     private FaultReport report() {
