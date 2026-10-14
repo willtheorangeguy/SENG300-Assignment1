@@ -24,4 +24,10 @@ import ca.gocycle.simulation.*;
 
 
 public record Receipt(UUID id, UUID tripId, Instant paidAt, String currency, FareBreakdown fare, DepositStatus depositStatus) {
+    public Receipt {
+        if (id == null || tripId == null || paidAt == null || fare == null || depositStatus == null
+                || currency == null || currency.isBlank()) {
+            throw new IllegalArgumentException("Receipt fields are required");
+        }
+    }
 }

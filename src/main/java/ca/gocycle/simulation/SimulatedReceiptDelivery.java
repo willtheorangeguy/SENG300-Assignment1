@@ -41,13 +41,21 @@ public class SimulatedReceiptDelivery implements ReceiptDelivery {
      * @param channel required input; validate malformed values before mutation
      * @param rider required input; validate malformed values before mutation
      * @return the documented result after successful implementation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
      * @throws IllegalArgumentException for malformed input in the completed implementation
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
     public boolean deliver(Receipt receipt, ReceiptChannel channel, Rider rider) {
-        throw new UnsupportedOperationException("TODO: implement SimulatedReceiptDelivery.deliver");
+        if (receipt == null || channel == null || rider == null) {
+            throw new IllegalArgumentException("Receipt, channel, and rider are required");
+        }
+        if (channel == ReceiptChannel.EMAIL && (rider.getEmail() == null || rider.getEmail().isBlank())) {
+            throw new IllegalArgumentException("An email address is required for email delivery");
+        }
+        if (deliveryOutcome) {
+            deliveredReceipts.add(receipt);
+        }
+        return deliveryOutcome;
     }
 
     /**
