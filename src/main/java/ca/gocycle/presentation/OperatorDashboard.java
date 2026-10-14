@@ -44,7 +44,10 @@ public class OperatorDashboard implements FaultObserver {
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
     public void onFault(FaultReport report) {
-        throw new UnsupportedOperationException("TODO: implement OperatorDashboard.onFault");
+        if (report == null) {
+            throw new IllegalArgumentException("Fault report is required");
+        }
+        faultReports.add(report);
     }
 
     /**
@@ -56,7 +59,28 @@ public class OperatorDashboard implements FaultObserver {
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
     public String showNetworkState() {
-        throw new UnsupportedOperationException("TODO: implement OperatorDashboard.showNetworkState");
+        StringBuilder output = new StringBuilder("Network state\nStations:\n");
+        for (var station : stationService.listStations()) {
+            output.append("- ").append(station.getName())
+                    .append(" (").append(station.getId()).append(")")
+                    .append(station.getOpen() ? " open" : " closed")
+                    .append('\n');
+        }
+        output.append("Vehicles:\n");
+        for (var vehicle : stationService.listVehicles()) {
+            output.append("- ").append(vehicle.getId()).append(" ")
+                    .append(vehicle.getType()).append(" ")
+                    .append(vehicle.getAvailability()).append(" ")
+                    .append(vehicle.getServiceStatus()).append('\n');
+        }
+        output.append("Unresolved faults:\n");
+        for (var report : faultReports) {
+            if (report.getResolvedAt() == null) {
+                output.append("- ").append(report.getType()).append(": ")
+                        .append(report.getDescription()).append('\n');
+            }
+        }
+        return output.toString();
     }
 
     /**

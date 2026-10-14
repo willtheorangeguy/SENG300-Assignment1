@@ -41,7 +41,10 @@ public class MaintenanceNotifier implements FaultObserver {
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
     public void onFault(FaultReport report) {
-        throw new UnsupportedOperationException("TODO: implement MaintenanceNotifier.onFault");
+        if (report == null) {
+            throw new IllegalArgumentException("Fault report is required");
+        }
+        receivedReports.add(report);
     }
 
     /**
