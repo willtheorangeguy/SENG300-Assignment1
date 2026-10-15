@@ -1,39 +1,37 @@
 package ca.gocycle.simulation;
 
-import java.util.*;
-import java.time.*;
-import java.math.*;
-import java.nio.file.Path;
-import java.util.concurrent.locks.ReentrantLock;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import ca.gocycle.application.*;
-import ca.gocycle.config.*;
-import ca.gocycle.data.*;
-import ca.gocycle.domain.*;
-import ca.gocycle.domain.fault.*;
-import ca.gocycle.domain.rider.*;
-import ca.gocycle.domain.station.*;
-import ca.gocycle.domain.trip.*;
-import ca.gocycle.domain.vehicle.*;
-import ca.gocycle.fault.*;
-import ca.gocycle.integration.*;
-import ca.gocycle.presentation.*;
-import ca.gocycle.pricing.*;
+import ca.gocycle.data.PaymentResult;
+import ca.gocycle.domain.PaymentMethod;
+import ca.gocycle.integration.PaymentGateway;
 
+import java.math.BigDecimal;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
+/**
+ * A pretend payment provider for development and tests.
+ *
+ * <p>The three constructor flags decide whether every hold, charge or release succeeds or is
+ * declined. Each result is remembered under its {@code requestId}; asking again with the same
+ * {@code requestId} returns the remembered result without doing the operation a second time
+ * (this is how a real provider avoids charging twice). A retry after a failure must therefore
+ * use a new {@code requestId}.
+ *
+ * <p>Because results are kept in one map, a {@code requestId} should not be reused for a
+ * different operation.
+ */
 public class SimulatedPaymentGateway implements PaymentGateway {
 
     private final boolean holdOutcome;
-
     private final boolean chargeOutcome;
-
     private final boolean releaseOutcome;
+    private final Map<String, PaymentResult> resultsByRequestId;
 
-    private Map<String, PaymentResult> resultsByRequestId;
-
-    /** Assign required attributes/dependencies; no business rules are implemented here. */
+    /**
+     * @param holdOutcome    true if every hold authorization succeeds
+     * @param chargeOutcome  true if every charge succeeds
+     * @param releaseOutcome true if every hold release succeeds
+     */
     public SimulatedPaymentGateway(boolean holdOutcome, boolean chargeOutcome, boolean releaseOutcome) {
         this.holdOutcome = holdOutcome;
         this.chargeOutcome = chargeOutcome;
@@ -42,80 +40,91 @@ public class SimulatedPaymentGateway implements PaymentGateway {
     }
 
     /**
-     * Authorize the quoted amount with the selected method/currency and stable request ID; return structured provider failure.
-     * @param amount required input; validate malformed values before mutation
-     * @param currency required input; validate malformed values before mutation
-     * @param method required input; validate malformed values before mutation
-     * @param requestId required input; validate malformed values before mutation
-     * @return the documented result after successful implementation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
-     * @throws IllegalArgumentException for malformed input in the completed implementation
-     * @throws NoSuchElementException for unknown IDs in the completed implementation
-     * @throws IllegalStateException for rejected business/state transitions in the completed implementation
+     * Authorize the quoted amount with the selected method/currency and stable request ID.
+     *
+     * @return the stored result for this request ID, or a new success/failure result
+     * @throws IllegalArgumentException if the amount is null or not positive, or the currency or request ID is
+     *                                  blank, or the method is null
      */
-    public PaymentResult authorizeHold(BigDecimal amount, String currency, PaymentMethod method, String requestId) {
-        throw new UnsupportedOperationException("TODO: implement SimulatedPaymentGateway.authorizeHold");
+    @Override
+    public synchronized PaymentResult authorizeHold(BigDecimal amount, String currency, PaymentMethod method, String requestId) {
+        requirePayment(amount, currency, method, requestId);
+        return resultFor(requestId, holdOutcome, "hold-", "Simulated hold was declined");
     }
 
     /**
      * Charge once per stable logical request; an explicit new retry may use a new attempt key.
-     * @param amount required input; validate malformed values before mutation
-     * @param currency required input; validate malformed values before mutation
-     * @param method required input; validate malformed values before mutation
-     * @param requestId required input; validate malformed values before mutation
-     * @return the documented result after successful implementation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
-     * @throws IllegalArgumentException for malformed input in the completed implementation
-     * @throws NoSuchElementException for unknown IDs in the completed implementation
-     * @throws IllegalStateException for rejected business/state transitions in the completed implementation
+     *
+     * @return the stored result for this request ID, or a new success/failure result
+     * @throws IllegalArgumentException if the amount is null or not positive, or the currency or request ID is
+     *                                  blank, or the method is null
      */
-    public PaymentResult charge(BigDecimal amount, String currency, PaymentMethod method, String requestId) {
-        throw new UnsupportedOperationException("TODO: implement SimulatedPaymentGateway.charge");
+    @Override
+    public synchronized PaymentResult charge(BigDecimal amount, String currency, PaymentMethod method, String requestId) {
+        requirePayment(amount, currency, method, requestId);
+        return resultFor(requestId, chargeOutcome, "charge-", "Simulated charge was declined");
     }
 
     /**
-     * Release the identified hold once per logical request; provider failures must remain retryable.
-     * @param reference nullable only where documented
-     * @param requestId required input; validate malformed values before mutation
-     * @return the documented result after successful implementation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
-     * @throws IllegalArgumentException for malformed input in the completed implementation
-     * @throws NoSuchElementException for unknown IDs in the completed implementation
-     * @throws IllegalStateException for rejected business/state transitions in the completed implementation
+     * Release the identified hold once per logical request.
+     *
+     * @return the stored result for this request ID, or a new success/failure result
+     * @throws IllegalArgumentException if the hold reference or request ID is blank
      */
-    public PaymentResult releaseHold(String reference, String requestId) {
-        throw new UnsupportedOperationException("TODO: implement SimulatedPaymentGateway.releaseHold");
+    @Override
+    public synchronized PaymentResult releaseHold(String reference, String requestId) {
+        if (reference == null || reference.isBlank()) {
+            throw new IllegalArgumentException("reference must not be blank");
+        }
+        requireRequestId(requestId);
+        return resultFor(requestId, releaseOutcome, "release-", "Simulated release was declined");
     }
 
-    /**
-     * Mechanical accessor; collections are immutable snapshots.
-     * @return the recorded attribute
-     */
     public boolean getHoldOutcome() {
         return holdOutcome;
     }
 
-    /**
-     * Mechanical accessor; collections are immutable snapshots.
-     * @return the recorded attribute
-     */
     public boolean getChargeOutcome() {
         return chargeOutcome;
     }
 
-    /**
-     * Mechanical accessor; collections are immutable snapshots.
-     * @return the recorded attribute
-     */
     public boolean getReleaseOutcome() {
         return releaseOutcome;
     }
 
-    /**
-     * Mechanical accessor; collections are immutable snapshots.
-     * @return the recorded attribute
-     */
-    public Map<String, PaymentResult> getResultsByRequestId() {
+    /** @return an immutable snapshot of every result handed out so far, keyed by request ID */
+    public synchronized Map<String, PaymentResult> getResultsByRequestId() {
         return Map.copyOf(resultsByRequestId);
+    }
+
+    private PaymentResult resultFor(String requestId, boolean outcome, String referencePrefix, String failureMessage) {
+        PaymentResult existing = resultsByRequestId.get(requestId);
+        if (existing != null) {
+            return existing;
+        }
+        PaymentResult created = outcome
+                ? new PaymentResult(true, referencePrefix + requestId, null, null)
+                : new PaymentResult(false, null, "DECLINED", failureMessage);
+        resultsByRequestId.put(requestId, created);
+        return created;
+    }
+
+    private static void requirePayment(BigDecimal amount, String currency, PaymentMethod method, String requestId) {
+        if (amount == null || amount.signum() <= 0) {
+            throw new IllegalArgumentException("amount must be greater than zero");
+        }
+        if (currency == null || currency.isBlank()) {
+            throw new IllegalArgumentException("currency must not be blank");
+        }
+        if (method == null) {
+            throw new IllegalArgumentException("method must not be null");
+        }
+        requireRequestId(requestId);
+    }
+
+    private static void requireRequestId(String requestId) {
+        if (requestId == null || requestId.isBlank()) {
+            throw new IllegalArgumentException("requestId must not be blank");
+        }
     }
 }
