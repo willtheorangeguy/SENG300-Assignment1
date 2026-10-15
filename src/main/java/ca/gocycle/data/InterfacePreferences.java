@@ -1,27 +1,21 @@
 package ca.gocycle.data;
 
-import java.util.*;
-import java.time.*;
-import java.math.*;
-import java.nio.file.Path;
-import java.util.concurrent.locks.ReentrantLock;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import ca.gocycle.application.*;
-import ca.gocycle.config.*;
-import ca.gocycle.domain.*;
-import ca.gocycle.domain.fault.*;
-import ca.gocycle.domain.rider.*;
-import ca.gocycle.domain.station.*;
-import ca.gocycle.domain.trip.*;
-import ca.gocycle.domain.vehicle.*;
-import ca.gocycle.fault.*;
-import ca.gocycle.integration.*;
-import ca.gocycle.presentation.*;
-import ca.gocycle.pricing.*;
-import ca.gocycle.simulation.*;
-
-
+/**
+ * A rider's screen preferences: which language to show and whether to read information aloud.
+ *
+ * <p>This record only checks that a language was given. Whether the language is one of the
+ * supported languages is decided by the code that has the deployment configuration
+ * (see {@code interfaces.supportedLanguages}), not here.
+ *
+ * @param language     language code such as {@code en} or {@code fr}; must not be blank
+ * @param audioEnabled true if information should also be read aloud
+ * @throws IllegalArgumentException if the language is null or blank
+ */
 public record InterfacePreferences(String language, boolean audioEnabled) {
+
+    public InterfacePreferences {
+        if (language == null || language.isBlank()) {
+            throw new IllegalArgumentException("language must not be blank");
+        }
+    }
 }
