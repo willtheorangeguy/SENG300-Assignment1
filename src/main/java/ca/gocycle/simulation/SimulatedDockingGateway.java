@@ -46,9 +46,16 @@ public class SimulatedDockingGateway implements DockingGateway {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public boolean requestUnlock(String dockId, UUID vehicleId, String requestId) {
-        throw new UnsupportedOperationException("TODO: implement SimulatedDockingGateway.requestUnlock");
+public boolean requestUnlock(String dockId, UUID vehicleId, String requestId) {
+
+    if (dockId == null || dockId.isBlank() ||
+        vehicleId == null ||
+        requestId == null || requestId.isBlank()) {
+        throw new IllegalArgumentException("Invalid unlock request");
     }
+
+    return unlockOutcome;
+}
 
     /**
      * Return confirmation only for the requested vehicle/dock; false keeps the trip active.
@@ -60,10 +67,14 @@ public class SimulatedDockingGateway implements DockingGateway {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public boolean confirmLocked(String dockId, UUID vehicleId) {
-        throw new UnsupportedOperationException("TODO: implement SimulatedDockingGateway.confirmLocked");
+public boolean confirmLocked(String dockId, UUID vehicleId) {
+
+    if (dockId == null || dockId.isBlank() || vehicleId == null) {
+        throw new IllegalArgumentException("Invalid lock request");
     }
 
+    return lockOutcome;
+}
     /**
      * Mechanical accessor; collections are immutable snapshots.
      * @return the recorded attribute

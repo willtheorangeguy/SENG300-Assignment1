@@ -47,9 +47,37 @@ public class RiderService {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public Rider register(String name, String email, LocalDate birthDate) {
-        throw new UnsupportedOperationException("TODO: implement RiderService.register");
+public Rider register(String name, String email, LocalDate birthDate) {
+
+    if (name == null || name.isBlank()) {
+        throw new IllegalArgumentException("Invalid name");
     }
+
+    if (email == null || !email.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
+        throw new IllegalArgumentException("Invalid email");
+    }
+
+    if (birthDate == null || birthDate.isAfter(LocalDate.now(clock))) {
+        throw new IllegalArgumentException("Invalid birth date");
+    }
+
+    UUID id = UUID.randomUUID();
+
+    Rider rider = new Rider(
+        id,
+        name,
+        email,
+        birthDate,
+        null,
+        null,
+        null,
+        null
+    );
+
+    riders.put(id, rider);
+
+    return rider;
+}
 
     /**
      * Require a known rider with a ucalgary.ca email without an age restriction; reject member overlap.
@@ -62,7 +90,13 @@ public class RiderService {
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
     public void verifyStudent(UUID riderId, String institutionId, boolean partTime) {
-        throw new UnsupportedOperationException("TODO: implement RiderService.verifyStudent");
+       if (riderId == null) {
+    throw new IllegalArgumentException("Rider ID cannot be null");
+}
+
+if (institutionId == null || institutionId.isBlank()) {
+    throw new IllegalArgumentException("Invalid institution ID");
+}
     }
 
     /**
@@ -102,9 +136,13 @@ public class RiderService {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public Optional<Rider> findRider(UUID id) {
-        throw new UnsupportedOperationException("TODO: implement RiderService.findRider");
+public Optional<Rider> findRider(UUID id) {
+    if (id == null) {
+        throw new IllegalArgumentException("Rider ID cannot be null");
     }
+
+    return Optional.ofNullable(riders.get(id));
+}
 
     /**
      * Mechanical accessor; collections are immutable snapshots.

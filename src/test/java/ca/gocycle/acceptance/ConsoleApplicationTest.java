@@ -174,6 +174,23 @@ class ConsoleApplicationTest {
         assertEquals(0, returned.get());
     }
 
+    @Test
+void simulatedDockingGatewayWorks() {
+    UUID vehicleId = UUID.randomUUID();
+
+    SimulatedDockingGateway success =
+            new SimulatedDockingGateway(true, true);
+
+    assertTrue(success.requestUnlock("dock-1", vehicleId, "request-1"));
+    assertTrue(success.confirmLocked("dock-1", vehicleId));
+
+    SimulatedDockingGateway failure =
+            new SimulatedDockingGateway(false, false);
+
+    assertFalse(failure.requestUnlock("dock-1", vehicleId, "request-2"));
+    assertFalse(failure.confirmLocked("dock-1", vehicleId));
+}
+
     private String run(ConsoleApplication app, String input) {
         var oldInput = System.in;
         var oldOutput = System.out;
