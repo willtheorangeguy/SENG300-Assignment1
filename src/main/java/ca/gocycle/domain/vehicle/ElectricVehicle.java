@@ -1,91 +1,69 @@
 package ca.gocycle.domain.vehicle;
 
-import java.util.*;
-import java.time.*;
-import java.math.*;
-import java.nio.file.Path;
-import java.util.concurrent.locks.ReentrantLock;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import ca.gocycle.application.*;
-import ca.gocycle.config.*;
-import ca.gocycle.data.*;
-import ca.gocycle.domain.*;
-import ca.gocycle.domain.fault.*;
-import ca.gocycle.domain.rider.*;
-import ca.gocycle.domain.station.*;
-import ca.gocycle.domain.trip.*;
-import ca.gocycle.fault.*;
-import ca.gocycle.integration.*;
-import ca.gocycle.presentation.*;
-import ca.gocycle.pricing.*;
-import ca.gocycle.simulation.*;
+import ca.gocycle.domain.VehicleAvailability;
+import ca.gocycle.domain.VehicleServiceStatus;
+import ca.gocycle.domain.VehicleType;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.UUID;
 
-
+/** Shared battery eligibility for electric bikes and scooters. */
 public abstract class ElectricVehicle extends Vehicle {
-    /** Nullable until supplied/recorded; see the operation contract. */
+    private static final int MINIMUM_RENTAL_BATTERY_PERCENT = 20;
     private Integer batteryPercent;
-    /** Nullable until supplied/recorded; see the operation contract. */
     private Instant batteryObservedAt;
+    private final long batteryMaxAgeSeconds;
 
-    private long batteryMaxAgeSeconds;
-
-    /** Assign required attributes/dependencies; no business rules are implemented here. */
-    public ElectricVehicle(UUID id, VehicleType type, VehicleServiceStatus serviceStatus, VehicleAvailability availability, Integer batteryPercent, Instant batteryObservedAt, long batteryMaxAgeSeconds) {
+    /**
+     * A missing reading is represented by two nulls. The maximum age is deployment supplied.
+     * @throws IllegalArgumentException for invalid type, percentage, age or incomplete reading
+     */
+    public ElectricVehicle(UUID id, VehicleType type, VehicleServiceStatus serviceStatus,
+            VehicleAvailability availability, Integer batteryPercent, Instant batteryObservedAt,
+            long batteryMaxAgeSeconds) {
         super(id, type, serviceStatus, availability);
+        if (type == VehicleType.PEDAL_BIKE || batteryMaxAgeSeconds <= 0) {
+            throw new IllegalArgumentException("Electric type and positive battery maximum age required");
+        }
+        if ((batteryPercent == null) != (batteryObservedAt == null)) {
+            throw new IllegalArgumentException("Battery percentage and observation time must be supplied together");
+        }
+        if (batteryPercent != null) validateReading(batteryPercent, batteryObservedAt);
         this.batteryPercent = batteryPercent;
         this.batteryObservedAt = batteryObservedAt;
         this.batteryMaxAgeSeconds = batteryMaxAgeSeconds;
     }
 
     /**
-     * Reject values outside 0..100 and invalid observation times; update the reading without ending an active trip.
-     * @param percent required input; validate malformed values before mutation
-     * @param observedAt required input; validate malformed values before mutation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
-     * @throws IllegalArgumentException for malformed input in the completed implementation
-     * @throws NoSuchElementException for unknown IDs in the completed implementation
-     * @throws IllegalStateException for rejected business/state transitions in the completed implementation
+     * Accepts chronological telemetry, including corrections at the same instant.
+     * Never changes service status or ends an active trip.
+     * @throws IllegalArgumentException for invalid or out-of-order telemetry
      */
-    public void updateBattery(int percent, Instant observedAt) {
-        throw new UnsupportedOperationException("TODO: implement ElectricVehicle.updateBattery");
+    public synchronized void updateBattery(int percent, Instant observedAt) {
+        validateReading(percent, observedAt);
+        if (batteryObservedAt != null && observedAt.isBefore(batteryObservedAt)) {
+            throw new IllegalArgumentException("Battery observation must not precede the current reading");
+        }
+        batteryPercent = percent;
+        batteryObservedAt = observedAt;
     }
 
-    /**
-     * Combine service/availability checks. Electric vehicles reject readings below 20%, missing or stale readings; exactly 20% passes the battery threshold.
-     * @param at required input; validate malformed values before mutation
-     * @return the documented result after successful implementation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
-     * @throws IllegalArgumentException for malformed input in the completed implementation
-     * @throws NoSuchElementException for unknown IDs in the completed implementation
-     * @throws IllegalStateException for rejected business/state transitions in the completed implementation
-     */
-    public boolean isRentable(Instant at) {
-        throw new UnsupportedOperationException("TODO: implement ElectricVehicle.isRentable");
+    private static void validateReading(int percent, Instant observedAt) {
+        if (percent < 0 || percent > 100 || observedAt == null) {
+            throw new IllegalArgumentException("Battery percentage must be 0..100 with an observation time");
+        }
     }
 
-    /**
-     * Mechanical accessor; collections are immutable snapshots.
-     * @return the recorded attribute
-     */
-    public Integer getBatteryPercent() {
-        return batteryPercent;
+    /** Exactly 20% and exactly the configured maximum age pass; future readings do not. */
+    @Override
+    public synchronized boolean isRentable(Instant at) {
+        return super.isRentable(at) && batteryPercent != null
+                && batteryPercent >= MINIMUM_RENTAL_BATTERY_PERCENT
+                && !batteryObservedAt.isAfter(at)
+                && Duration.between(batteryObservedAt, at).compareTo(Duration.ofSeconds(batteryMaxAgeSeconds)) <= 0;
     }
 
-    /**
-     * Mechanical accessor; collections are immutable snapshots.
-     * @return the recorded attribute
-     */
-    public Instant getBatteryObservedAt() {
-        return batteryObservedAt;
-    }
-
-    /**
-     * Mechanical accessor; collections are immutable snapshots.
-     * @return the recorded attribute
-     */
-    public long getBatteryMaxAgeSeconds() {
-        return batteryMaxAgeSeconds;
-    }
+    public synchronized Integer getBatteryPercent() { return batteryPercent; }
+    public synchronized Instant getBatteryObservedAt() { return batteryObservedAt; }
+    public long getBatteryMaxAgeSeconds() { return batteryMaxAgeSeconds; }
 }

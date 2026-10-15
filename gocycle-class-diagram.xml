@@ -6,13 +6,13 @@
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="Vehicle" value="«abstract»&lt;br&gt;Vehicle" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="80" y="100" width="710" height="419" />
+          <mxGeometry as="geometry" x="80" y="100" width="710" height="437" />
         </mxCell>
         <mxCell id="Vehicle-fields" value="- id: UUID&lt;br&gt;- type: VehicleType&lt;br&gt;- serviceStatus: VehicleServiceStatus&lt;br&gt;- availability: VehicleAvailability" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="Vehicle">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="96" />
         </mxCell>
-        <mxCell id="Vehicle-operations" value="+ Vehicle(id: UUID, type: VehicleType, serviceStatus: VehicleServiceStatus,&lt;br&gt;availability: VehicleAvailability)&lt;br&gt;+ getId(): UUID&lt;br&gt;+ getType(): VehicleType&lt;br&gt;+ isRentable(at: Instant): boolean&lt;br&gt;+ setServiceStatus(status: VehicleServiceStatus): void&lt;br&gt;+ reserve(): void&lt;br&gt;+ releaseReservation(): void&lt;br&gt;+ markRented(): void&lt;br&gt;+ markRelocating(): void&lt;br&gt;+ markDocked(): void&lt;br&gt;+ getServiceStatus(): VehicleServiceStatus&lt;br&gt;+ getAvailability(): VehicleAvailability" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="Vehicle">
-          <mxGeometry as="geometry" x="0" y="156" width="710" height="258" />
+        <mxCell id="Vehicle-operations" value="+ Vehicle(id: UUID, type: VehicleType, serviceStatus: VehicleServiceStatus,&lt;br&gt;availability: VehicleAvailability)&lt;br&gt;+ getId(): UUID&lt;br&gt;+ getType(): VehicleType&lt;br&gt;+ isRentable(at: Instant): boolean&lt;br&gt;+ setServiceStatus(status: VehicleServiceStatus): void&lt;br&gt;+ reserve(): void&lt;br&gt;+ reserve(at: Instant): void&lt;br&gt;+ releaseReservation(): void&lt;br&gt;+ markRented(): void&lt;br&gt;+ markRelocating(): void&lt;br&gt;+ markDocked(): void&lt;br&gt;+ getServiceStatus(): VehicleServiceStatus&lt;br&gt;+ getAvailability(): VehicleAvailability" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="Vehicle">
+          <mxGeometry as="geometry" x="0" y="156" width="710" height="276" />
         </mxCell>
         <mxCell id="PedalBike" value="PedalBike" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="960" y="100" width="710" height="185" />
@@ -165,13 +165,13 @@
           <mxGeometry as="geometry" x="0" y="138" width="710" height="168" />
         </mxCell>
         <mxCell id="Vehicle" value="«reference»&lt;br&gt;«abstract»&lt;br&gt;Vehicle" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#eaf2f8;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1840" y="591" width="710" height="419" />
+          <mxGeometry as="geometry" x="1840" y="591" width="710" height="437" />
         </mxCell>
         <mxCell id="Vehicle-fields" value="- id: UUID&lt;br&gt;- type: VehicleType&lt;br&gt;- serviceStatus: VehicleServiceStatus&lt;br&gt;- availability: VehicleAvailability" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="Vehicle">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="96" />
         </mxCell>
-        <mxCell id="Vehicle-operations" value="+ Vehicle(id: UUID, type: VehicleType, serviceStatus: VehicleServiceStatus,&lt;br&gt;availability: VehicleAvailability)&lt;br&gt;+ getId(): UUID&lt;br&gt;+ getType(): VehicleType&lt;br&gt;+ isRentable(at: Instant): boolean&lt;br&gt;+ setServiceStatus(status: VehicleServiceStatus): void&lt;br&gt;+ reserve(): void&lt;br&gt;+ releaseReservation(): void&lt;br&gt;+ markRented(): void&lt;br&gt;+ markRelocating(): void&lt;br&gt;+ markDocked(): void&lt;br&gt;+ getServiceStatus(): VehicleServiceStatus&lt;br&gt;+ getAvailability(): VehicleAvailability" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="Vehicle">
-          <mxGeometry as="geometry" x="0" y="156" width="710" height="258" />
+        <mxCell id="Vehicle-operations" value="+ Vehicle(id: UUID, type: VehicleType, serviceStatus: VehicleServiceStatus,&lt;br&gt;availability: VehicleAvailability)&lt;br&gt;+ getId(): UUID&lt;br&gt;+ getType(): VehicleType&lt;br&gt;+ isRentable(at: Instant): boolean&lt;br&gt;+ setServiceStatus(status: VehicleServiceStatus): void&lt;br&gt;+ reserve(): void&lt;br&gt;+ reserve(at: Instant): void&lt;br&gt;+ releaseReservation(): void&lt;br&gt;+ markRented(): void&lt;br&gt;+ markRelocating(): void&lt;br&gt;+ markDocked(): void&lt;br&gt;+ getServiceStatus(): VehicleServiceStatus&lt;br&gt;+ getAvailability(): VehicleAvailability" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="Vehicle">
+          <mxGeometry as="geometry" x="0" y="156" width="710" height="276" />
         </mxCell>
         <mxCell id="DisplayConfiguration" value="«record»&lt;br&gt;DisplayConfiguration" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="960" y="681" width="710" height="203" />

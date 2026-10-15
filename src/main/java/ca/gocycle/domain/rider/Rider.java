@@ -1,28 +1,13 @@
 package ca.gocycle.domain.rider;
 
-import java.util.*;
-import java.time.*;
-import java.math.*;
-import java.nio.file.Path;
-import java.util.concurrent.locks.ReentrantLock;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import ca.gocycle.application.*;
-import ca.gocycle.config.*;
-import ca.gocycle.data.*;
-import ca.gocycle.domain.*;
-import ca.gocycle.domain.fault.*;
-import ca.gocycle.domain.station.*;
-import ca.gocycle.domain.trip.*;
-import ca.gocycle.domain.vehicle.*;
-import ca.gocycle.fault.*;
-import ca.gocycle.integration.*;
-import ca.gocycle.presentation.*;
-import ca.gocycle.pricing.*;
-import ca.gocycle.simulation.*;
+import ca.gocycle.data.InterfacePreferences;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.Locale;
+import java.util.IllformedLocaleException;
+import java.util.UUID;
 
-
+/** Account identity and eligibility; deployment-specific registration rules belong to RiderService. */
 public class Rider {
 
     private final UUID id;
@@ -33,16 +18,34 @@ public class Rider {
 
     private final LocalDate birthDate;
     /** Nullable until supplied/recorded; see the operation contract. */
-    private String studentInstitutionId;
+    private final String studentInstitutionId;
     /** Nullable until supplied/recorded; see the operation contract. */
-    private Instant studentVerifiedUntil;
+    private final Instant studentVerifiedUntil;
     /** Nullable until supplied/recorded; see the operation contract. */
-    private Membership membership;
+    private final Membership membership;
 
     private InterfacePreferences preferences;
 
-    /** Assign required attributes/dependencies; no business rules are implemented here. */
+    /**
+     * Validates account values and rejects overlapping paid membership/student evidence.
+     * Institution eligibility, age rules and supported languages are checked by RiderService.
+     * @throws IllegalArgumentException for malformed identity, evidence or preferences
+     * @throws IllegalStateException for overlapping student and paid membership eligibility
+     */
     public Rider(UUID id, String name, String email, LocalDate birthDate, String studentInstitutionId, Instant studentVerifiedUntil, Membership membership, InterfacePreferences preferences) {
+        if (id == null || name == null || name.isBlank() || email == null
+                || !email.matches("[^\\s@]+@[^\\s@]+\\.[^\\s@]+") || birthDate == null) {
+            throw new IllegalArgumentException("Rider requires an ID, name, email address and birth date");
+        }
+        if ((studentInstitutionId == null) != (studentVerifiedUntil == null)
+                || (studentInstitutionId != null && studentInstitutionId.isBlank())) {
+            throw new IllegalArgumentException("Student institution and evidence expiry must be supplied together");
+        }
+        validatePreferences(preferences);
+        if (membership != null && membership.getPaymentReference() != null
+                && studentVerifiedUntil != null && membership.getValidFrom().isBefore(studentVerifiedUntil)) {
+            throw new IllegalStateException("Student eligibility cannot overlap a paid monthly membership");
+        }
         this.id = id;
         this.name = name;
         this.email = email;
@@ -53,42 +56,25 @@ public class Rider {
         this.preferences = preferences;
     }
 
-    /**
-     * Require a known identifier; return the matching domain object/snapshot without leaking mutable stores.
-     * @param at required input; validate malformed values before mutation
-     * @return the documented result after successful implementation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
-     * @throws IllegalArgumentException for malformed input in the completed implementation
-     * @throws NoSuchElementException for unknown IDs in the completed implementation
-     * @throws IllegalStateException for rejected business/state transitions in the completed implementation
-     */
+    /** Evaluates eligibility at the supplied time; null times are illegal arguments. */
     public boolean hasActiveMembership(Instant at) {
-        throw new UnsupportedOperationException("TODO: implement Rider.hasActiveMembership");
+        if (at == null) throw new IllegalArgumentException("Evaluation time is required");
+        return membership != null && membership.isActiveAt(at);
     }
 
-    /**
-     * Require a known identifier; return the matching domain object/snapshot without leaking mutable stores.
-     * @param at required input; validate malformed values before mutation
-     * @return the documented result after successful implementation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
-     * @throws IllegalArgumentException for malformed input in the completed implementation
-     * @throws NoSuchElementException for unknown IDs in the completed implementation
-     * @throws IllegalStateException for rejected business/state transitions in the completed implementation
-     */
+    /** Evaluates eligibility at the supplied time; null times are illegal arguments. */
     public boolean hasValidStudentEvidence(Instant at) {
-        throw new UnsupportedOperationException("TODO: implement Rider.hasValidStudentEvidence");
+        if (at == null) throw new IllegalArgumentException("Evaluation time is required");
+        return studentInstitutionId != null && at.isBefore(studentVerifiedUntil);
     }
 
     /**
-     * Require a supported language; save language/audio preferences for the identified rider.
-     * @param value required input; validate malformed values before mutation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
-     * @throws IllegalArgumentException for malformed input in the completed implementation
-     * @throws NoSuchElementException for unknown IDs in the completed implementation
-     * @throws IllegalStateException for rejected business/state transitions in the completed implementation
+     * Stores valid preferences; RiderService must check the configured supported languages first.
+     * @throws IllegalArgumentException for null preferences or a malformed language tag
      */
-    public void updatePreferences(InterfacePreferences value) {
-        throw new UnsupportedOperationException("TODO: implement Rider.updatePreferences");
+    public synchronized void updatePreferences(InterfacePreferences value) {
+        validatePreferences(value);
+        preferences = value;
     }
 
     /**
@@ -151,7 +137,17 @@ public class Rider {
      * Mechanical accessor; collections are immutable snapshots.
      * @return the recorded attribute
      */
-    public InterfacePreferences getPreferences() {
+    public synchronized InterfacePreferences getPreferences() {
         return preferences;
+    }
+    private static void validatePreferences(InterfacePreferences value) {
+        if (value == null || value.language() == null || value.language().isBlank()) {
+            throw new IllegalArgumentException("Preferences require a language tag");
+        }
+        try {
+            new Locale.Builder().setLanguageTag(value.language()).build();
+        } catch (IllformedLocaleException ex) {
+            throw new IllegalArgumentException("Invalid language tag: " + value.language(), ex);
+        }
     }
 }
