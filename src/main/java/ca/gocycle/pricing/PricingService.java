@@ -46,9 +46,19 @@ public class PricingService {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public PricingConfiguration.FareTerms quoteTerms(Rider rider, VehicleType type, Instant at) {
-        throw new UnsupportedOperationException("TODO: implement PricingService.quoteTerms");
+public PricingConfiguration.FareTerms quoteTerms(Rider rider, VehicleType type, Instant at) {
+
+    if (rider == null || type == null || at == null) {
+        throw new IllegalArgumentException("Invalid pricing inputs");
     }
+
+    for (PricingPolicy policy : policies) {
+    if (policy.supports(rider, at, configuration)) {
+        return policy.termsFor(type, configuration.getPricing());
+    }
+}
+throw new IllegalStateException("No matching pricing policy found");
+}
 
     /**
      * Use snapshotted fees and started-minute rounding. Apply one surcharge only when actual elapsed duration exceeds 120 minutes.
@@ -59,9 +69,53 @@ public class PricingService {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public FareBreakdown calculateFare(Trip trip) {
-        throw new UnsupportedOperationException("TODO: implement PricingService.calculateFare");
+public FareBreakdown calculateFare(Trip trip) {
+
+    if (trip == null) {
+        throw new IllegalArgumentException("Trip cannot be null");
     }
+
+    PricingConfiguration.FareTerms terms = trip.getPricingTerms();
+
+if (terms == null) {
+    throw new IllegalStateException("Trip has no pricing terms");
+}
+Instant start = trip.getStartedAt();
+Instant end = trip.getEndedAt();
+
+if (start == null || end == null) {
+    throw new IllegalStateException("Trip must have a start and end time");
+}
+
+if (end.isBefore(start)) {
+    throw new IllegalStateException("End time cannot be before start time");
+}
+long seconds = Duration.between(start, end).getSeconds();
+
+long minutes = (seconds + 59) / 60;
+
+BigDecimal unlockCharge = terms.unlockFee();
+
+BigDecimal durationCharge = terms.perMinute()
+        .multiply(BigDecimal.valueOf(minutes));
+
+        BigDecimal surcharge = BigDecimal.ZERO;
+
+if (seconds > 120 * 60) {
+    surcharge = terms.surcharge();
+}
+
+BigDecimal total = unlockCharge.add(durationCharge).add(surcharge);
+
+if (total.compareTo(terms.minimumTripCharge()) < 0) {
+    total = terms.minimumTripCharge();
+}
+
+return new FareBreakdown(
+    unlockCharge, minutes, durationCharge, surcharge, total
+);
+
+}
 
     /**
      * Mechanical accessor; collections are immutable snapshots.
