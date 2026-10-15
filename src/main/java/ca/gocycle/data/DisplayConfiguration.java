@@ -1,27 +1,34 @@
 package ca.gocycle.data;
 
-import java.util.*;
-import java.time.*;
-import java.math.*;
-import java.nio.file.Path;
-import java.util.concurrent.locks.ReentrantLock;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import ca.gocycle.application.*;
-import ca.gocycle.config.*;
-import ca.gocycle.domain.*;
-import ca.gocycle.domain.fault.*;
-import ca.gocycle.domain.rider.*;
-import ca.gocycle.domain.station.*;
-import ca.gocycle.domain.trip.*;
-import ca.gocycle.domain.vehicle.*;
-import ca.gocycle.fault.*;
-import ca.gocycle.integration.*;
-import ca.gocycle.presentation.*;
-import ca.gocycle.pricing.*;
-import ca.gocycle.simulation.*;
+import java.util.regex.Pattern;
 
-
+/**
+ * Branding shown on a zone's screens: two colours and a logo file.
+ *
+ * <p>Colours must be written as {@code #RRGGBB} (for example {@code #176B56}). The logo path is
+ * kept as supplied (for example {@code assets/central-logo.svg}); this record does not check that
+ * the file exists, because the path is resolved by whoever displays it.
+ *
+ * @param primaryColour   main brand colour, {@code #RRGGBB}
+ * @param secondaryColour secondary brand colour, {@code #RRGGBB}
+ * @param logoPath        non-blank path to the zone logo
+ * @throws IllegalArgumentException if a colour is null or not {@code #RRGGBB}, or the logo path is null or blank
+ */
 public record DisplayConfiguration(String primaryColour, String secondaryColour, String logoPath) {
+
+    private static final Pattern HEX_COLOUR = Pattern.compile("^#[0-9A-Fa-f]{6}$");
+
+    public DisplayConfiguration {
+        requireColour("primaryColour", primaryColour);
+        requireColour("secondaryColour", secondaryColour);
+        if (logoPath == null || logoPath.isBlank()) {
+            throw new IllegalArgumentException("logoPath must not be blank");
+        }
+    }
+
+    private static void requireColour(String field, String value) {
+        if (value == null || !HEX_COLOUR.matcher(value).matches()) {
+            throw new IllegalArgumentException(field + " must be a colour written as #RRGGBB but was: " + value);
+        }
+    }
 }
