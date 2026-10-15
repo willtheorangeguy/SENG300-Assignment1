@@ -1,76 +1,59 @@
 package ca.gocycle.simulation;
 
-import java.util.*;
-import java.time.*;
-import java.math.*;
-import java.nio.file.Path;
-import java.util.concurrent.locks.ReentrantLock;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import ca.gocycle.application.*;
-import ca.gocycle.config.*;
-import ca.gocycle.data.*;
-import ca.gocycle.domain.*;
-import ca.gocycle.domain.fault.*;
-import ca.gocycle.domain.rider.*;
-import ca.gocycle.domain.station.*;
-import ca.gocycle.domain.trip.*;
-import ca.gocycle.domain.vehicle.*;
-import ca.gocycle.fault.*;
-import ca.gocycle.integration.*;
-import ca.gocycle.presentation.*;
-import ca.gocycle.pricing.*;
+import ca.gocycle.data.Receipt;
+import ca.gocycle.domain.ReceiptChannel;
+import ca.gocycle.domain.rider.Rider;
+import ca.gocycle.integration.ReceiptDelivery;
 
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * A pretend receipt sender (app or email) for development and tests.
+ *
+ * <p>When the constructor flag is true, every receipt is "delivered" and remembered. When it is
+ * false, delivery reports failure and nothing is remembered. Either way the payment itself is
+ * not affected.
+ */
 public class SimulatedReceiptDelivery implements ReceiptDelivery {
 
     private final boolean deliveryOutcome;
+    private final List<Receipt> deliveredReceipts;
 
-    private List<Receipt> deliveredReceipts;
-
-    /** Assign required attributes/dependencies; no business rules are implemented here. */
+    /** @param deliveryOutcome true if every delivery succeeds */
     public SimulatedReceiptDelivery(boolean deliveryOutcome) {
         this.deliveryOutcome = deliveryOutcome;
         this.deliveredReceipts = new ArrayList<>();
     }
 
     /**
-     * Deliver the complete receipt via the chosen simulated channel; false must not undo payment.
-     * @param receipt required input; validate malformed values before mutation
-     * @param channel required input; validate malformed values before mutation
-     * @param rider required input; validate malformed values before mutation
-     * @return the documented result after successful implementation
-     * @throws IllegalArgumentException for malformed input in the completed implementation
-     * @throws NoSuchElementException for unknown IDs in the completed implementation
-     * @throws IllegalStateException for rejected business/state transitions in the completed implementation
+     * @return true if the receipt was delivered, false if the simulation is set to fail
+     * @throws IllegalArgumentException if the receipt, channel or rider is null
      */
-    public boolean deliver(Receipt receipt, ReceiptChannel channel, Rider rider) {
-        if (receipt == null || channel == null || rider == null) {
-            throw new IllegalArgumentException("Receipt, channel, and rider are required");
+    @Override
+    public synchronized boolean deliver(Receipt receipt, ReceiptChannel channel, Rider rider) {
+        if (receipt == null) {
+            throw new IllegalArgumentException("receipt must not be null");
         }
-        if (channel == ReceiptChannel.EMAIL && (rider.getEmail() == null || rider.getEmail().isBlank())) {
-            throw new IllegalArgumentException("An email address is required for email delivery");
+        if (channel == null) {
+            throw new IllegalArgumentException("channel must not be null");
         }
-        if (deliveryOutcome) {
-            deliveredReceipts.add(receipt);
+        if (rider == null) {
+            throw new IllegalArgumentException("rider must not be null");
         }
-        return deliveryOutcome;
+        if (!deliveryOutcome) {
+            return false;
+        }
+        deliveredReceipts.add(receipt);
+        return true;
     }
 
-    /**
-     * Mechanical accessor; collections are immutable snapshots.
-     * @return the recorded attribute
-     */
     public boolean getDeliveryOutcome() {
         return deliveryOutcome;
     }
 
-    /**
-     * Mechanical accessor; collections are immutable snapshots.
-     * @return the recorded attribute
-     */
-    public List<Receipt> getDeliveredReceipts() {
+    /** @return an immutable snapshot of the receipts delivered so far, oldest first */
+    public synchronized List<Receipt> getDeliveredReceipts() {
         return List.copyOf(deliveredReceipts);
     }
 }

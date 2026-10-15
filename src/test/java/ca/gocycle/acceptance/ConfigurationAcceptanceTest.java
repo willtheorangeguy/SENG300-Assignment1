@@ -10,16 +10,16 @@ import java.nio.file.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ConfigurationAcceptanceTest {
-    @Test @Tag("pending-implementation") void loaderReturnsTypedValidatedExample() {
+    @Test void loaderReturnsTypedValidatedExample() {
         var loaded=new ConfigurationLoader(new ConfigurationValidator()).load(Path.of("config/gocycle.example.json"));
         assertEquals(new java.math.BigDecimal("5.00"),loaded.getPricing().getUnlockFee());assertEquals(5,loaded.getStations().count());
     }
-    @Test @Tag("pending-implementation") void selectedMissingFileDoesNotFallBack() {
+    @Test void selectedMissingFileDoesNotFallBack() {
         Path path=Path.of("config/no-such-deployment.json");
         var error=assertThrows(IllegalArgumentException.class,()->new ConfigurationLoader(new ConfigurationValidator()).load(path));
         assertTrue(error.getMessage().contains("no-such-deployment"));
     }
-    @ParameterizedTest @Tag("pending-implementation") @ValueSource(strings={"bad-money","nonpositive-deposit","missing-rate","equal-reduced-rate","per-vehicle-price","student-membership","age-restriction","membership-duration","registration-field","removal-timeout","maximum-duration","operator-override","languages","unknown-section"})
+    @ParameterizedTest @ValueSource(strings={"bad-money","nonpositive-deposit","missing-rate","equal-reduced-rate","per-vehicle-price","student-membership","age-restriction","membership-duration","registration-field","removal-timeout","maximum-duration","operator-override","languages","unknown-section"})
     void invalidProfilesRejectWithFieldPaths(String invalid) throws Exception {
         ObjectMapper json=new ObjectMapper();ObjectNode d=(ObjectNode)json.readTree(Path.of("config/gocycle.example.json").toFile());
         String expected;
@@ -46,10 +46,10 @@ class ConfigurationAcceptanceTest {
             assertTrue(error.getMessage().contains(expected),error.getMessage());
         } finally {Files.deleteIfExists(path);}
     }
-    @Test @Tag("pending-implementation") void validatorAcceptsExample() throws Exception {
+    @Test void validatorAcceptsExample() throws Exception {
         assertTrue(new ConfigurationValidator().validate(Fixtures.config()).isEmpty());
     }
-    @Test @Tag("pending-implementation") void unknownKeyAndMalformedSelectedJsonReject() throws Exception {
+    @Test void unknownKeyAndMalformedSelectedJsonReject() throws Exception {
         for(String value:new String[]{"{broken-json}","{\"unrecognized\":true}"}) {
             var path=Files.createTempFile("gocycle-malformed-",".json");
             try {Files.writeString(path,value);assertThrows(IllegalArgumentException.class,()->new ConfigurationLoader(new ConfigurationValidator()).load(path));}
