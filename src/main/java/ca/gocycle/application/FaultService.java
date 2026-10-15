@@ -50,10 +50,41 @@ public class FaultService {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public FaultReport reportProblem(UUID vehicleId, FaultType type, String description) {
-        throw new UnsupportedOperationException("TODO: implement FaultService.reportProblem");
-    }
+public FaultReport reportProblem(UUID vehicleId, FaultType type, String description) {
 
+    if (vehicleId == null || type == null ||
+        description == null || description.isBlank()) {
+        throw new IllegalArgumentException("Invalid fault report");
+    }
+    Vehicle vehicle = stations.findVehicle(vehicleId)
+        .orElseThrow(() -> new NoSuchElementException("Vehicle not found"));
+
+        for (FaultReport report : reports.values()) {
+    if (report.getVehicle().getId().equals(vehicleId)
+            && report.getType() == type
+            && report.getResolvedAt() == null) {
+        return report;
+    }
+}
+
+FaultReport report = new FaultReport(
+    UUID.randomUUID(),
+    vehicle,
+    FaultSource.RIDER,
+    type,
+    description,
+    clock.instant(),
+    null,
+    null
+);
+
+reports.put(report.getId(), report);
+vehicle.setServiceStatus(VehicleServiceStatus.OUT_OF_SERVICE);
+
+publish(report);
+
+return report;
+}
     /**
      * Validate telemetry; update battery and emit relevant faults. Preserve active trips and reject invalid values/times.
      * @param vehicleId required input; validate malformed values before mutation
@@ -92,9 +123,16 @@ public class FaultService {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public void subscribe(FaultObserver observer) {
-        throw new UnsupportedOperationException("TODO: implement FaultService.subscribe");
+public void subscribe(FaultObserver observer) {
+
+    if (observer == null) {
+        throw new IllegalArgumentException("Observer cannot be null");
     }
+
+    if (!observers.contains(observer)) {
+        observers.add(observer);
+    }
+}
 
     /**
      * Remove the observer registration without changing existing reports.
