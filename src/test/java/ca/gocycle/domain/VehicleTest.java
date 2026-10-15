@@ -136,6 +136,17 @@ class VehicleTest {
         assertThrows(IllegalStateException.class, future::reserve);
     }
 
+    @ParameterizedTest @MethodSource("electricVehicles")
+    void reservationUsesTheApplicationClockAndRejectsStaleReadings(ElectricVehicle v) {
+        assertThrows(IllegalArgumentException.class, () -> v.reserve(null));
+        assertThrows(IllegalStateException.class, () -> v.reserve(AT.minusNanos(1)));
+        assertThrows(IllegalStateException.class, () -> v.reserve(AT.plusSeconds(601)));
+        assertEquals(VehicleAvailability.AVAILABLE, v.getAvailability());
+        v.reserve(AT.plusSeconds(600));
+        assertEquals(VehicleAvailability.RESERVED, v.getAvailability());
+        assertThrows(IllegalStateException.class, () -> v.reserve(AT.plusSeconds(600)));
+    }
+
     @Test void invalidAttributesFailEarly() {
         assertThrows(IllegalArgumentException.class, () -> new PedalBike(null, VehicleServiceStatus.IN_SERVICE, VehicleAvailability.AVAILABLE));
         assertThrows(IllegalArgumentException.class, () -> new PedalBike(UUID.randomUUID(), null, VehicleAvailability.AVAILABLE));

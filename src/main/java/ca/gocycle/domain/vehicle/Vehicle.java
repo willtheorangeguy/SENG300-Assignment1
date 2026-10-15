@@ -42,7 +42,16 @@ public abstract class Vehicle {
 
     /** Atomically reserves a currently rentable vehicle; rejects competing requests. */
     public synchronized void reserve() {
-        if (!isRentable(Instant.now())) throw new IllegalStateException("Vehicle is not rentable");
+        reserve(Instant.now());
+    }
+
+    /**
+     * Atomically rechecks eligibility using the application's clock, including battery freshness.
+     * @throws IllegalArgumentException if the evaluation time is null
+     * @throws IllegalStateException if the vehicle is not rentable at that instant
+     */
+    public synchronized void reserve(Instant at) {
+        if (!isRentable(at)) throw new IllegalStateException("Vehicle is not rentable");
         availability = VehicleAvailability.RESERVED;
     }
 
