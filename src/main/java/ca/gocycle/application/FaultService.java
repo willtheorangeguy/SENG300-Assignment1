@@ -51,6 +51,11 @@ public class FaultService {
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
 public FaultReport reportProblem(UUID vehicleId, FaultType type, String description) {
+    return createFaultReport(vehicleId, type, description, FaultSource.RIDER);
+}
+
+private FaultReport createFaultReport(UUID vehicleId, FaultType type,
+                                     String description, FaultSource source) {
 
     if (vehicleId == null || type == null ||
         description == null || description.isBlank()) {
@@ -70,7 +75,7 @@ public FaultReport reportProblem(UUID vehicleId, FaultType type, String descript
 FaultReport report = new FaultReport(
     UUID.randomUUID(),
     vehicle,
-    FaultSource.RIDER,
+    source,
     type,
     description,
     clock.instant(),
@@ -97,9 +102,32 @@ return report;
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public Optional<FaultReport> reportTelemetry(UUID vehicleId, Integer battery, FaultType type, Instant observedAt) {
-        throw new UnsupportedOperationException("TODO: implement FaultService.reportTelemetry");
+public Optional<FaultReport> reportTelemetry(UUID vehicleId, Integer battery, FaultType type, Instant observedAt) {
+
+    if (vehicleId == null || observedAt == null ||
+        (battery == null && type == null)) {
+        throw new IllegalArgumentException("Invalid telemetry");
     }
+    Vehicle vehicle = stations.findVehicle(vehicleId)
+        .orElseThrow(() -> new NoSuchElementException("Vehicle not found"));
+
+
+
+if (battery != null) {
+    if (!(vehicle instanceof ElectricVehicle)) {
+        throw new IllegalArgumentException("Vehicle is not electric");
+    }
+
+    ElectricVehicle electric = (ElectricVehicle) vehicle;
+    electric.updateBattery(battery, observedAt);
+}
+
+if (type != null) {
+FaultReport report = createFaultReport(vehicleId, type, "Telemetry fault", FaultSource.TELEMETRY);    return Optional.of(report);
+}
+
+return Optional.empty();
+}
 
     /**
      * Require an operator repair note when restoring service; preserve battery cutoff and active trip state.
@@ -111,9 +139,22 @@ return report;
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public void changeServiceStatus(UUID vehicleId, VehicleServiceStatus status, String repairNote) {
-        throw new UnsupportedOperationException("TODO: implement FaultService.changeServiceStatus");
+public void changeServiceStatus(UUID vehicleId, VehicleServiceStatus status, String repairNote) {
+
+    if (vehicleId == null || status == null) {
+        throw new IllegalArgumentException("Invalid vehicle or status");
     }
+
+    if (status == VehicleServiceStatus.IN_SERVICE &&
+        (repairNote == null || repairNote.isBlank())) {
+        throw new IllegalArgumentException("Repair note is required");
+    }
+
+    Vehicle vehicle = stations.findVehicle(vehicleId)
+            .orElseThrow(() -> new NoSuchElementException("Vehicle not found"));
+
+    vehicle.setServiceStatus(status);
+}
 
     /**
      * Register an observer once; do not duplicate notifications.
@@ -142,9 +183,14 @@ public void subscribe(FaultObserver observer) {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public void unsubscribe(FaultObserver observer) {
-        throw new UnsupportedOperationException("TODO: implement FaultService.unsubscribe");
+public void unsubscribe(FaultObserver observer) {
+
+    if (observer == null) {
+        throw new IllegalArgumentException("Observer cannot be null");
     }
+
+    observers.remove(observer);
+}
 
     /**
      * Attempt every observer even when one fails; retain delivery failures for manual retry without reverting service state.
@@ -154,22 +200,31 @@ public void subscribe(FaultObserver observer) {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public void publish(FaultReport report) {
-        throw new UnsupportedOperationException("TODO: implement FaultService.publish");
+
+
+public void publish(FaultReport report) {
+
+    if (report == null) {
+        throw new IllegalArgumentException("Report cannot be null");
     }
 
+    for (FaultObserver observer : observers) {
+        try {
+            observer.onFault(report);
+        } catch (Exception e) {
+            failedDeliveries.computeIfAbsent(
+                report.getId(), id -> new ArrayList<>()
+            ).add(observer);
+        }
+    }
+}
     /**
      * Mechanical accessor; collections are immutable snapshots.
      * @return the recorded attribute
      */
     public List<FaultObserver> getObservers() {
-        return List.copyOf(observers);
-    }
-
-    /**
-     * Mechanical accessor; collections are immutable snapshots.
-     * @return the recorded attribute
-     */
+    return List.copyOf(observers);
+}
     public StationService getStations() {
         return stations;
     }
