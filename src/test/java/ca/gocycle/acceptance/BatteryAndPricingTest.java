@@ -14,14 +14,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import static ca.gocycle.acceptance.Fixtures.*;
 
 class BatteryAndPricingTest {
-    @ParameterizedTest @Tag("pending-implementation") @CsvSource({"19,false","20,true","21,true"})
+    @ParameterizedTest @CsvSource({"19,false","20,true","21,true"})
     void batteryBoundary(int percent,boolean rentable) { assertEquals(rentable,electric(percent,NOW).isRentable(NOW)); }
-    @Test @Tag("pending-implementation") void unknownAndStaleBatteryReject() {
+    @Test void unknownAndStaleBatteryReject() {
         assertFalse(electric(null,null).isRentable(NOW));assertFalse(electric(80,NOW.minusSeconds(601)).isRentable(NOW));
     }
-    @Test @Tag("pending-implementation") void outOfServiceAndRentedVehicleReject() {
+    @Test void outOfServiceAndRentedVehicleReject() {
         var v=electric(20,NOW);v.setServiceStatus(VehicleServiceStatus.OUT_OF_SERVICE);assertFalse(v.isRentable(NOW));
-        var rented=electric(80,NOW);rented.reserve();rented.markRented();assertFalse(rented.isRentable(NOW));
+        var rented=electric(80,Instant.now());rented.reserve();rented.markRented();assertFalse(rented.isRentable(NOW));
     }
     @ParameterizedTest @Tag("pending-implementation") @CsvSource({"0,0,0.00,5.00","1,1,0.00,5.50","60,1,0.00,5.50","61,2,0.00,6.00","7200,120,0.00,65.00","7201,121,15.00,80.50"})
     void fareRoundingAndActualDurationSurcharge(long seconds,long minutes,String surcharge,String total) throws Exception {
