@@ -1,5 +1,5 @@
 package ca.gocycle.application;
-
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.time.*;
 import java.math.*;
@@ -61,6 +61,7 @@ public Rider register(String name, String email, LocalDate birthDate) {
         throw new IllegalArgumentException("Invalid birth date");
     }
 
+
     UUID id = UUID.randomUUID();
 
     Rider rider = new Rider(
@@ -97,6 +98,26 @@ public Rider register(String name, String email, LocalDate birthDate) {
 if (institutionId == null || institutionId.isBlank()) {
     throw new IllegalArgumentException("Invalid institution ID");
 }
+Rider rider = riders.get(riderId);
+
+if (rider == null) {
+    throw new NoSuchElementException("Rider not found");
+}
+String domain = configuration.getStudents().emailDomain();
+
+if (!rider.getEmail().toLowerCase(Locale.ROOT)
+        .endsWith("@" + domain.toLowerCase(Locale.ROOT))) {
+    throw new IllegalStateException("Student email must be from " + domain);
+
+        }
+
+if (rider.getMembership() != null &&
+        rider.hasActiveMembership(clock.instant())) {
+    throw new IllegalStateException("Rider already has an active membership");
+}
+Instant verifiedUntil = clock.instant().plus(365, ChronoUnit.DAYS);
+
+//rider.setStudentVerification(institutionId, verifiedUntil);
     }
 
     /**
@@ -124,7 +145,26 @@ if (institutionId == null || institutionId.isBlank()) {
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
     public void updatePreferences(UUID riderId, InterfacePreferences value) {
-        throw new UnsupportedOperationException("TODO: implement RiderService.updatePreferences");
+        if (riderId == null) {
+    throw new IllegalArgumentException("Rider ID cannot be null");
+}
+
+if (value == null) {
+    throw new IllegalArgumentException("Preferences cannot be null");
+
+}
+Rider rider = riders.get(riderId);
+
+if (rider == null) {
+    throw new NoSuchElementException("Rider not found");
+}
+String language = value.language();
+
+if (language == null ||
+        !configuration.getInterfaces().supportedLanguages().contains(language)) {
+    throw new IllegalArgumentException("Unsupported language");
+}
+rider.updatePreferences(value);
     }
 
     /**
