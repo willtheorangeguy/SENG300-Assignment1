@@ -65,10 +65,25 @@ public Optional<Vehicle> findVehicle(UUID id) {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public Optional<DockingPoint> findVehicleDock(UUID id) {
-        throw new UnsupportedOperationException("TODO: implement StationService.findVehicleDock");
+public Optional<DockingPoint> findVehicleDock(UUID id) {
+
+    if (id == null) {
+        throw new IllegalArgumentException("Vehicle ID cannot be null");
     }
 
+    for (Station station : stations.values()) {
+        for (DockingPoint dock : station.getDockingPoints()) {
+
+            Vehicle vehicle = dock.getVehicle();
+
+            if (vehicle != null && vehicle.getId().equals(id)) {
+                return Optional.of(dock);
+            }
+        }
+    }
+
+    return Optional.empty();
+}
     /**
      * Require a known identifier; return the matching domain object/snapshot without leaking mutable stores.
      * @param id required input; validate malformed values before mutation
@@ -78,9 +93,14 @@ public Optional<Vehicle> findVehicle(UUID id) {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public Optional<Station> findStation(String id) {
-        throw new UnsupportedOperationException("TODO: implement StationService.findStation");
+public Optional<Station> findStation(String id) {
+
+    if (id == null || id.isBlank()) {
+        throw new IllegalArgumentException("Station ID cannot be blank");
     }
+
+    return Optional.ofNullable(stations.get(id));
+}
 
     /**
      * Use geographic straight-line distance with stable station-ID tie break; exclude closed/full/unusable/incompatible stations.
@@ -92,9 +112,51 @@ public Optional<Vehicle> findVehicle(UUID id) {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public Optional<Station> nearestAvailable(String fromId, VehicleType type) {
-        throw new UnsupportedOperationException("TODO: implement StationService.nearestAvailable");
+public Optional<Station> nearestAvailable(String fromId, VehicleType type) {
+
+    if (fromId == null || fromId.isBlank() || type == null) {
+        throw new IllegalArgumentException("Invalid station ID or vehicle type");
     }
+
+    Station startingStation = stations.get(fromId);
+
+    if (startingStation == null) {
+        throw new NoSuchElementException("Station not found");
+    }
+
+    Station nearest = null;
+    double shortestDistance = Double.MAX_VALUE;
+
+    for (Station station : stations.values()) {
+
+        if (station.getId().equals(fromId)) {
+            continue;
+        }
+
+        if (station.findFreeDock(type).isEmpty()) {
+            continue;
+        }
+
+        double latitudeDifference =
+                station.getLatitude() - startingStation.getLatitude();
+
+        double longitudeDifference =
+                station.getLongitude() - startingStation.getLongitude();
+
+        double distance = latitudeDifference * latitudeDifference
+                + longitudeDifference * longitudeDifference;
+
+        if (nearest == null || distance < shortestDistance
+                || (distance == shortestDistance
+                && station.getId().compareTo(nearest.getId()) < 0)) {
+
+            nearest = station;
+            shortestDistance = distance;
+        }
+    }
+
+    return Optional.ofNullable(nearest);
+}
 
     /**
      * Only relocate a docked vehicle; validate destination capacity/type before source detach and preserve source on failure.
@@ -105,9 +167,38 @@ public Optional<Vehicle> findVehicle(UUID id) {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public void relocate(UUID vehicleId, String destinationId) {
-        throw new UnsupportedOperationException("TODO: implement StationService.relocate");
+public void relocate(UUID vehicleId, String destinationId) {
+
+    if (vehicleId == null || destinationId == null || destinationId.isBlank()) {
+        throw new IllegalArgumentException("Invalid vehicle or destination ID");
     }
+
+    coordinationLock.lock();
+
+    try {
+        Vehicle vehicle = findVehicle(vehicleId)
+                .orElseThrow(() -> new NoSuchElementException("Vehicle not found"));
+
+        Station destination = findStation(destinationId)
+                .orElseThrow(() -> new NoSuchElementException("Destination station not found"));
+
+        DockingPoint sourceDock = findVehicleDock(vehicleId)
+                .orElseThrow(() -> new IllegalStateException("Vehicle is not docked"));
+
+        DockingPoint destinationDock = destination.findFreeDock(vehicle.getType())
+                .orElseThrow(() -> new IllegalStateException("Destination has no available dock"));
+
+        if (!sourceDock.getLockConfirmed()) {
+            throw new IllegalStateException("Vehicle is not securely docked");
+        }
+
+        sourceDock.detach();
+        destinationDock.attach(vehicle, true);
+
+    } finally {
+        coordinationLock.unlock();
+    }
+}
 
     /**
      * Validate nonempty methods and complete branding; affect future screens/trips while preserving active snapshots.
@@ -119,9 +210,35 @@ public Optional<Vehicle> findVehicle(UUID id) {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public void updateZone(String zoneId, Set<PaymentMethod> methods, DisplayConfiguration display) {
-        throw new UnsupportedOperationException("TODO: implement StationService.updateZone");
+public void updateZone(String zoneId, Set<PaymentMethod> methods, DisplayConfiguration display) {
+
+    if (zoneId == null || zoneId.isBlank() ||
+            methods == null || methods.isEmpty() || display == null) {
+        throw new IllegalArgumentException("Invalid zone configuration");
     }
+
+    if (methods.contains(null)) {
+        throw new IllegalArgumentException("Payment methods cannot contain null");
+    }
+
+    coordinationLock.lock();
+
+    try {
+        for (Station station : stations.values()) {
+            Zone zone = station.getZone();
+
+            if (zone != null && zone.getId().equals(zoneId)) {
+                zone.updateConfiguration(methods, display);
+                return;
+            }
+        }
+
+        throw new NoSuchElementException("Zone not found");
+
+    } finally {
+        coordinationLock.unlock();
+    }
+}
 
     /**
      * Require a known identifier; return the matching domain object/snapshot without leaking mutable stores.
@@ -131,10 +248,9 @@ public Optional<Vehicle> findVehicle(UUID id) {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public List<Station> listStations() {
-        throw new UnsupportedOperationException("TODO: implement StationService.listStations");
-    }
-
+public List<Station> listStations() {
+    return List.copyOf(stations.values());
+}
     /**
      * Require a known identifier; return the matching domain object/snapshot without leaking mutable stores.
      * @return the documented result after successful implementation
@@ -143,9 +259,9 @@ public Optional<Vehicle> findVehicle(UUID id) {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public List<Vehicle> listVehicles() {
-        throw new UnsupportedOperationException("TODO: implement StationService.listVehicles");
-    }
+public List<Vehicle> listVehicles() {
+    return List.copyOf(vehicles.values());
+}
 
     /**
      * Mechanical accessor; collections are immutable snapshots.
