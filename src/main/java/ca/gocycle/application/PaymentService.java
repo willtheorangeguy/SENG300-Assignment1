@@ -52,9 +52,21 @@ public class PaymentService {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public PaymentResult payMembership(Rider rider, PaymentMethod method, Zone zone, String requestId) {
-        throw new UnsupportedOperationException("TODO: implement PaymentService.payMembership");
+public PaymentResult payMembership(Rider rider, PaymentMethod method, Zone zone, String requestId) {
+
+    if (rider == null || method == null || zone == null ||
+            requestId == null || requestId.isBlank()) {
+        throw new IllegalArgumentException("Invalid membership payment");
     }
+
+    if (!zone.getAllowedPaymentMethods().contains(method)) {
+        throw new IllegalStateException("Payment method not allowed in this zone");
+    }
+
+    BigDecimal price = configuration.getMembership().price();
+
+    return gateway.charge(price, "CAD", method, requestId);
+}
 
     /**
      * Validate starting-zone methods before provider call; use a stable key per logical attempt and retain successful results.
@@ -66,10 +78,29 @@ public class PaymentService {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public PaymentResult holdDeposit(Trip trip, Zone zone) {
-        throw new UnsupportedOperationException("TODO: implement PaymentService.holdDeposit");
+public PaymentResult holdDeposit(Trip trip, Zone zone) {
+
+    if (trip == null || zone == null) {
+        throw new IllegalArgumentException("Trip and zone cannot be null");
     }
 
+    PaymentMethod method = trip.getPaymentMethod();
+
+    if (method == null) {
+        throw new IllegalArgumentException("Payment method cannot be null");
+    }
+
+    if (!trip.getAllowedMethodsAtStart().contains(method)
+            || !zone.getAllowedPaymentMethods().contains(method)) {
+        throw new IllegalStateException("Payment method not allowed");
+    }
+
+    BigDecimal deposit = configuration.getPricing().getDeposit();
+
+    String requestId = "hold-" + trip.getId();
+
+    return gateway.authorizeHold(deposit, "CAD", method, requestId);
+}
     /**
      * Release at confirmed trip end independent of fare collection; retry failures within limits without repeating success.
      * @param trip required input; validate malformed values before mutation
@@ -79,10 +110,43 @@ public class PaymentService {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public PaymentResult releaseDeposit(Trip trip) {
-        throw new UnsupportedOperationException("TODO: implement PaymentService.releaseDeposit");
+public PaymentResult releaseDeposit(Trip trip) {
+
+    if (trip == null) {
+        throw new IllegalArgumentException("Trip cannot be null");
     }
 
+    if (trip.getStatus() != TripStatus.ENDED) {
+        throw new IllegalStateException("Trip has not ended");
+    }
+
+    if (trip.getDepositStatus() == DepositStatus.RELEASED) {
+        throw new IllegalStateException("Deposit already released");
+    }
+
+    if (trip.getDepositStatus() != DepositStatus.HELD &&
+            trip.getDepositStatus() != DepositStatus.RELEASE_FAILED) {
+        throw new IllegalStateException("No deposit available to release");
+    }
+
+    String reference = trip.getDepositReference();
+
+    if (reference == null || reference.isBlank()) {
+        throw new IllegalStateException("Deposit reference is missing");
+    }
+
+    String requestId = "release-" + trip.getId();
+
+    PaymentResult result = gateway.releaseHold(reference, requestId);
+
+    if (result.success()) {
+        trip.recordDeposit(DepositStatus.RELEASED, reference);
+    } else {
+        trip.recordDeposit(DepositStatus.RELEASE_FAILED, reference);
+    }
+
+    return result;
+}
     /**
      * Require ended trip and immutable fare; keep ended/unpaid on failure, with stable keys and bounded explicit retries.
      * @param trip required input; validate malformed values before mutation
@@ -93,9 +157,38 @@ public class PaymentService {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public PaymentResult chargeFare(Trip trip, FareBreakdown fare) {
-        throw new UnsupportedOperationException("TODO: implement PaymentService.chargeFare");
+public PaymentResult chargeFare(Trip trip, FareBreakdown fare) {
+
+    if (trip == null || fare == null) {
+        throw new IllegalArgumentException("Trip and fare cannot be null");
     }
+
+    if (trip.getStatus() != TripStatus.ENDED) {
+        throw new IllegalStateException("Trip has not ended");
+    }
+
+    if (trip.getPaymentStatus() == PaymentStatus.PAID) {
+        throw new IllegalStateException("Trip already paid");
+    }
+
+    BigDecimal amount = fare.total();
+
+    PaymentMethod method = trip.getPaymentMethod();
+
+    if (method == null) {
+        throw new IllegalStateException("Payment method is missing");
+    }
+
+    String requestId = "fare-" + trip.getId();
+
+    PaymentResult result = gateway.charge(amount, "CAD", method, requestId);
+
+    if (result.success()) {
+        trip.recordPayment(PaymentStatus.PAID, result.reference());
+    }
+
+    return result;
+}
 
     /**
      * Require ended and paid trip; deliver at most one receipt per successful logical request, retaining failures for manual retry.
@@ -107,9 +200,37 @@ public class PaymentService {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public boolean sendReceipt(Trip trip, ReceiptChannel channel) {
-        throw new UnsupportedOperationException("TODO: implement PaymentService.sendReceipt");
+public boolean sendReceipt(Trip trip, ReceiptChannel channel) {
+
+    if (trip == null || channel == null) {
+        throw new IllegalArgumentException("Trip and channel cannot be null");
     }
+
+    if (trip.getStatus() != TripStatus.ENDED) {
+        throw new IllegalStateException("Trip has not ended");
+    }
+
+    if (trip.getPaymentStatus() != PaymentStatus.PAID) {
+        throw new IllegalStateException("Trip has not been paid");
+    }
+
+    Receipt receipt = receiptsByTrip.get(trip.getId());
+
+    if (receipt == null) {
+        receipt = new Receipt(
+                UUID.randomUUID(),
+                trip.getId(),
+                clock.instant(),
+                "CAD",
+                trip.getFare(),
+                trip.getDepositStatus()
+        );
+
+        receiptsByTrip.put(trip.getId(), receipt);
+    }
+
+    return receiptDelivery.deliver(receipt, channel, trip.getRider());
+}
 
     /**
      * Mechanical accessor; collections are immutable snapshots.
