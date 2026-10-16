@@ -137,14 +137,19 @@ public Optional<Station> nearestAvailable(String fromId, VehicleType type) {
             continue;
         }
 
-        double latitudeDifference =
-                station.getLatitude() - startingStation.getLatitude();
+double latitude1 = Math.toRadians(startingStation.getLatitude());
+double latitude2 = Math.toRadians(station.getLatitude());
 
-        double longitudeDifference =
-                station.getLongitude() - startingStation.getLongitude();
+double latitudeDifference = latitude2 - latitude1;
 
-        double distance = latitudeDifference * latitudeDifference
-                + longitudeDifference * longitudeDifference;
+double longitudeDifference = Math.toRadians(
+        station.getLongitude() - startingStation.getLongitude());
+
+double a = Math.sin(latitudeDifference / 2) * Math.sin(latitudeDifference / 2)
+        + Math.cos(latitude1) * Math.cos(latitude2)
+        * Math.sin(longitudeDifference / 2) * Math.sin(longitudeDifference / 2);
+
+double distance = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         if (nearest == null || distance < shortestDistance
                 || (distance == shortestDistance
@@ -192,8 +197,14 @@ public void relocate(UUID vehicleId, String destinationId) {
             throw new IllegalStateException("Vehicle is not securely docked");
         }
 
-        sourceDock.detach();
-        destinationDock.attach(vehicle, true);
+sourceDock.detach();
+
+try {
+    destinationDock.attach(vehicle, true);
+} catch (RuntimeException e) {
+    sourceDock.attach(vehicle, true);
+    throw e;
+}
 
     } finally {
         coordinationLock.unlock();
