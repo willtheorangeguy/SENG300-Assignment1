@@ -33,14 +33,14 @@ class StationsAndFaultsTest {
         var n=new Network();n.start(n.registered());
         assertThrows(IllegalStateException.class,()->n.stations.relocate(n.vehicle.getId(),"destination"));assertEquals(VehicleAvailability.RENTED,n.vehicle.getAvailability());
     }
-    @Test @Tag("pending-implementation") void faultBlocksRentalAndNotifiesBothObservers() throws Exception {
+    @Test void faultBlocksRentalAndNotifiesBothObservers() throws Exception {
         var n=new Network();var first=new ArrayList<FaultReport>();var second=new ArrayList<FaultReport>();
         var service=new FaultService(List.of(first::add,second::add),n.stations,n.config,n.clock);
         var report=service.reportProblem(n.vehicle.getId(),FaultType.BROKEN_BRAKES,"brakes failed");
         assertEquals(VehicleServiceStatus.OUT_OF_SERVICE,n.vehicle.getServiceStatus());assertFalse(n.vehicle.isRentable(NOW));
         assertEquals(List.of(report),first);assertEquals(List.of(report),second);
     }
-    @Test @Tag("pending-implementation") void failingObserverDoesNotStopAnotherOrUndoStatus() throws Exception {
+    @Test void failingObserverDoesNotStopAnotherOrUndoStatus() throws Exception {
         var n=new Network();var received=new ArrayList<FaultReport>();
         FaultObserver fails=report->{throw new IllegalStateException("controlled observer failure");};
         var service=new FaultService(List.of(fails,received::add),n.stations,n.config,n.clock);
@@ -53,7 +53,7 @@ class StationsAndFaultsTest {
         assertEquals(TripStatus.ACTIVE,t.getStatus());assertNull(t.getEndedAt());assertEquals(VehicleServiceStatus.OUT_OF_SERVICE,n.vehicle.getServiceStatus());
         assertFalse(n.vehicle.isRentable(NOW));
     }
-    @Test @Tag("pending-implementation") void duplicateFaultIsDiscarded() throws Exception {
+    @Test void duplicateFaultIsDiscarded() throws Exception {
         var n=new Network();var received=new ArrayList<FaultReport>();var service=new FaultService(List.of(received::add),n.stations,n.config,n.clock);
         var first=service.reportProblem(n.vehicle.getId(),FaultType.FLAT_TIRE,"flat");
         var duplicate=service.reportProblem(n.vehicle.getId(),FaultType.FLAT_TIRE,"flat");
