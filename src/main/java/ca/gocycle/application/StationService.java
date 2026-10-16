@@ -47,9 +47,14 @@ public class StationService {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public Optional<Vehicle> findVehicle(UUID id) {
-        throw new UnsupportedOperationException("TODO: implement StationService.findVehicle");
+public Optional<Vehicle> findVehicle(UUID id) {
+
+    if (id == null) {
+        throw new IllegalArgumentException("Vehicle ID cannot be null");
     }
+
+    return Optional.ofNullable(vehicles.get(id));
+}
 
     /**
      * Require a known identifier; return the matching domain object/snapshot without leaking mutable stores.
