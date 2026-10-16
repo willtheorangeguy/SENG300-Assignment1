@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static ca.gocycle.acceptance.Fixtures.*;
 
 class StationsAndFaultsTest {
-    @Test @Tag("pending-implementation") void nearestStationUsesIdTieAndExcludesClosedOrUnusable() throws Exception {
+    @Test void nearestStationUsesIdTieAndExcludesClosedOrUnusable() throws Exception {
         var source=station("source",51,-114,true,List.of(dock("source-dock",bike())));
         var a=station("a",51.01,-114,true,List.of(dock("a-dock",null)));
         var b=station("b",51.01,-114,true,List.of(dock("b-dock",null)));
@@ -23,7 +23,7 @@ class StationsAndFaultsTest {
         var service=new StationService(Map.of("source",source,"a",a,"b",b,"closed",closed,"unusable",unusable),Map.of(),config(),new MutableClock(),new ReentrantLock());
         assertEquals("a",service.nearestAvailable("source",VehicleType.PEDAL_BIKE).orElseThrow().getId());
     }
-    @Test @Tag("pending-implementation") void relocationFailurePreservesSourceOccupancy() throws Exception {
+    @Test void relocationFailurePreservesSourceOccupancy() throws Exception {
         var n=new Network();n.destination.getDockingPoints().getFirst().attach(bike(),true);
         assertThrows(IllegalStateException.class,()->n.stations.relocate(n.vehicle.getId(),"destination"));
         assertEquals(n.vehicle,n.origin.getDockingPoints().getFirst().getVehicle());
