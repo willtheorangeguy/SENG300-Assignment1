@@ -31,8 +31,16 @@ public class Zone {
 
     private DisplayConfiguration display;
 
-    /** Assign required attributes/dependencies; no business rules are implemented here. */
+    /**
+     * Create a zone with its own payment rules and screen branding.
+     * @throws IllegalArgumentException if the ID is blank, the payment methods are missing, empty or
+     *         contain null, or the display configuration is missing
+     */
     public Zone(String id, Set<PaymentMethod> allowedPaymentMethods, DisplayConfiguration display) {
+        if (id == null || id.isBlank()) {
+            throw new IllegalArgumentException("Zone ID is required");
+        }
+        validate(allowedPaymentMethods, display);
         this.id = id;
         this.allowedPaymentMethods = new LinkedHashSet<>(allowedPaymentMethods);
         this.display = display;
@@ -40,28 +48,43 @@ public class Zone {
 
     /**
      * Return whether the zone permits the selected method; empty permitted lists are invalid configuration.
-     * @param method required input; validate malformed values before mutation
-     * @return the documented result after successful implementation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
-     * @throws IllegalArgumentException for malformed input in the completed implementation
-     * @throws NoSuchElementException for unknown IDs in the completed implementation
-     * @throws IllegalStateException for rejected business/state transitions in the completed implementation
+     * @param method payment method the rider wants to use
+     * @return whether this zone accepts the method
+     * @throws IllegalArgumentException if the method is missing
      */
-    public boolean permits(PaymentMethod method) {
-        throw new UnsupportedOperationException("TODO: implement Zone.permits");
+    public synchronized boolean permits(PaymentMethod method) {
+        if (method == null) {
+            throw new IllegalArgumentException("Payment method is required");
+        }
+        return allowedPaymentMethods.contains(method);
     }
 
     /**
-     * Require a known identifier; return the matching domain object/snapshot without leaking mutable stores.
-     * @param methods required input; validate malformed values before mutation
-     * @param display required input; validate malformed values before mutation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
-     * @throws IllegalArgumentException for malformed input in the completed implementation
-     * @throws NoSuchElementException for unknown IDs in the completed implementation
-     * @throws IllegalStateException for rejected business/state transitions in the completed implementation
+     * Replace the zone's payment methods and branding together. Both values are validated before
+     * anything changes, so a rejected update leaves the previous configuration in place. Trips that
+     * already started keep the methods they captured at the start.
+     * @param methods new non-empty set of accepted payment methods
+     * @param display new screen colours and logo
+     * @throws IllegalArgumentException if the methods are missing, empty or contain null, or the display is missing
      */
-    public void updateConfiguration(Set<PaymentMethod> methods, DisplayConfiguration display) {
-        throw new UnsupportedOperationException("TODO: implement Zone.updateConfiguration");
+    public synchronized void updateConfiguration(Set<PaymentMethod> methods, DisplayConfiguration display) {
+        validate(methods, display);
+        this.allowedPaymentMethods = new LinkedHashSet<>(methods);
+        this.display = display;
+    }
+
+    private static void validate(Set<PaymentMethod> methods, DisplayConfiguration display) {
+        if (methods == null || methods.isEmpty()) {
+            throw new IllegalArgumentException("A zone must allow at least one payment method");
+        }
+        for (PaymentMethod method : methods) {
+            if (method == null) {
+                throw new IllegalArgumentException("Allowed payment methods must not contain null");
+            }
+        }
+        if (display == null) {
+            throw new IllegalArgumentException("Zone display configuration is required");
+        }
     }
 
     /**
@@ -76,7 +99,7 @@ public class Zone {
      * Mechanical accessor; collections are immutable snapshots.
      * @return the recorded attribute
      */
-    public Set<PaymentMethod> getAllowedPaymentMethods() {
+    public synchronized Set<PaymentMethod> getAllowedPaymentMethods() {
         return Set.copyOf(allowedPaymentMethods);
     }
 
@@ -84,7 +107,7 @@ public class Zone {
      * Mechanical accessor; collections are immutable snapshots.
      * @return the recorded attribute
      */
-    public DisplayConfiguration getDisplay() {
+    public synchronized DisplayConfiguration getDisplay() {
         return display;
     }
 }
