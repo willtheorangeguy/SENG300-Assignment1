@@ -99,7 +99,7 @@ BigDecimal unlockCharge = terms.unlockFee();
 BigDecimal durationCharge = terms.perMinute()
         .multiply(BigDecimal.valueOf(minutes));
 
-        BigDecimal surcharge = BigDecimal.ZERO;
+        BigDecimal surcharge = BigDecimal.ZERO.setScale(terms.surcharge().scale());
 
 if (seconds > 120 * 60) {
     surcharge = terms.surcharge();
@@ -107,7 +107,8 @@ if (seconds > 120 * 60) {
 
 BigDecimal total = unlockCharge.add(durationCharge).add(surcharge);
 
-if (total.compareTo(terms.minimumTripCharge()) < 0) {
+// A null minimum means the deployment has no minimum trip charge.
+if (terms.minimumTripCharge() != null && total.compareTo(terms.minimumTripCharge()) < 0) {
     total = terms.minimumTripCharge();
 }
 

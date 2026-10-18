@@ -10,11 +10,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static ca.gocycle.acceptance.Fixtures.*;
 
 class TripLifecycleTest {
-    @Test @Tag("pending-implementation") void pendingStartHasNoBillableTimestamp() {
+    @Test void pendingStartHasNoBillableTimestamp() {
         var t=trip(rider(),bike(),null,null,TripStatus.PENDING,PaymentStatus.NOT_DUE,DepositStatus.NONE,terms("CASUAL"));
         t.beginAt(NOW);assertEquals(TripStatus.ACTIVE,t.getStatus());assertEquals(NOW,t.getStartedAt());
     }
-    @Test @Tag("pending-implementation") void failedStartCancelsWithoutBillableTime() {
+    @Test void failedStartCancelsWithoutBillableTime() {
         var t=trip(rider(),bike(),null,null,TripStatus.PENDING,PaymentStatus.NOT_DUE,DepositStatus.NONE,terms("CASUAL"));
         t.cancelStart();assertEquals(TripStatus.CANCELLED,t.getStatus());assertNull(t.getStartedAt());
     }
