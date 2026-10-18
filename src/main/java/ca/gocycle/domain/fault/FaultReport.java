@@ -41,8 +41,24 @@ public class FaultReport {
     /** Nullable until supplied/recorded; see the operation contract. */
     private String resolution;
 
-    /** Assign required attributes/dependencies; no business rules are implemented here. */
+    /**
+     * Create an open report, or restore a resolved one when both resolution values are supplied.
+     * @throws IllegalArgumentException if a required value is missing, the description is blank, only one
+     *         resolution value is supplied, the resolution note is blank, or it was resolved before it was reported
+     */
     public FaultReport(UUID id, Vehicle vehicle, FaultSource source, FaultType type, String description, Instant reportedAt, Instant resolvedAt, String resolution) {
+        if (id == null || source == null || type == null || reportedAt == null) {
+            throw new IllegalArgumentException("Fault report requires an ID, source, type and report time");
+        }
+        if (description == null || description.isBlank()) {
+            throw new IllegalArgumentException("Fault description is required");
+        }
+        if ((resolvedAt == null) != (resolution == null)) {
+            throw new IllegalArgumentException("Resolution time and note must be supplied together");
+        }
+        if (resolvedAt != null) {
+            validateResolution(reportedAt, resolvedAt, resolution);
+        }
         this.id = id;
         this.vehicle = vehicle;
         this.source = source;
@@ -55,15 +71,31 @@ public class FaultReport {
 
     /**
      * Record resolution time/note once according to operator authority; reject invalid times or missing required notes.
-     * @param at required input; validate malformed values before mutation
-     * @param note required input; validate malformed values before mutation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
-     * @throws IllegalArgumentException for malformed input in the completed implementation
-     * @throws NoSuchElementException for unknown IDs in the completed implementation
-     * @throws IllegalStateException for rejected business/state transitions in the completed implementation
+     * Whether the caller may resolve faults, and putting the vehicle back in service, belong to the services.
+     * @param at time the fault was resolved; must not be before it was reported
+     * @param note what was done to fix it
+     * @throws IllegalArgumentException if the time or note is missing, or the time is before the report
+     * @throws IllegalStateException if the report is already resolved
      */
-    public void resolve(Instant at, String note) {
-        throw new UnsupportedOperationException("TODO: implement FaultReport.resolve");
+    public synchronized void resolve(Instant at, String note) {
+        if (at == null) {
+            throw new IllegalArgumentException("Resolution time is required");
+        }
+        validateResolution(reportedAt, at, note);
+        if (resolvedAt != null) {
+            throw new IllegalStateException("Fault report " + id + " is already resolved");
+        }
+        resolvedAt = at;
+        resolution = note;
+    }
+
+    private static void validateResolution(Instant reportedAt, Instant at, String note) {
+        if (note == null || note.isBlank()) {
+            throw new IllegalArgumentException("A resolution note is required");
+        }
+        if (at.isBefore(reportedAt)) {
+            throw new IllegalArgumentException("A fault cannot be resolved before it was reported");
+        }
     }
 
     /**
@@ -118,7 +150,7 @@ public class FaultReport {
      * Mechanical accessor; collections are immutable snapshots.
      * @return the recorded attribute
      */
-    public Instant getResolvedAt() {
+    public synchronized Instant getResolvedAt() {
         return resolvedAt;
     }
 
@@ -126,7 +158,7 @@ public class FaultReport {
      * Mechanical accessor; collections are immutable snapshots.
      * @return the recorded attribute
      */
-    public String getResolution() {
+    public synchronized String getResolution() {
         return resolution;
     }
 }

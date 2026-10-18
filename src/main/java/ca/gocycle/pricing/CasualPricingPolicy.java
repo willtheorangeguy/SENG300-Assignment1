@@ -23,38 +23,44 @@ import ca.gocycle.presentation.*;
 import ca.gocycle.simulation.*;
 
 
+/** Strategy for riders without a discount. It accepts everyone, so it must be registered last. */
 public class CasualPricingPolicy implements PricingPolicy {
+
+    /** Rate key in {@code pricing.rates}. */
+    private static final String CATEGORY = "CASUAL";
 
     /** Assign required attributes/dependencies; no business rules are implemented here. */
     public CasualPricingPolicy() {
     }
 
     /**
-     * Use configured eligibility and evidence at the supplied time. Reject student/member overlap according to report assumptions.
-     * @param rider required input; validate malformed values before mutation
-     * @param at required input; validate malformed values before mutation
-     * @param config required input; validate malformed values before mutation
-     * @return the documented result after successful implementation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
-     * @throws IllegalArgumentException for malformed input in the completed implementation
-     * @throws NoSuchElementException for unknown IDs in the completed implementation
-     * @throws IllegalStateException for rejected business/state transitions in the completed implementation
+     * Casual pricing is the fallback category, so it supports every rider. Register it after the
+     * discounted policies so they get the first chance to claim the rider.
+     * @param rider rider starting the trip
+     * @param at evaluation time
+     * @param config deployment configuration
+     * @return always {@code true} for valid input
+     * @throws IllegalArgumentException if any input is missing
      */
     public boolean supports(Rider rider, Instant at, DeploymentConfiguration config) {
-        throw new UnsupportedOperationException("TODO: implement CasualPricingPolicy.supports");
+        if (rider == null || at == null || config == null) {
+            throw new IllegalArgumentException("Rider, evaluation time and configuration are required");
+        }
+        return true;
     }
 
     /**
-     * Return configured category/type terms; missing terms are configuration errors, with no hard-coded fallback.
-     * @param type required input; validate malformed values before mutation
-     * @param config required input; validate malformed values before mutation
-     * @return the documented result after successful implementation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
-     * @throws IllegalArgumentException for malformed input in the completed implementation
-     * @throws NoSuchElementException for unknown IDs in the completed implementation
-     * @throws IllegalStateException for rejected business/state transitions in the completed implementation
+     * Return the configured CASUAL terms; missing terms are configuration errors, with no hard-coded fallback.
+     * @param type vehicle being quoted
+     * @param config pricing configuration to snapshot
+     * @return the CASUAL fare terms
+     * @throws IllegalArgumentException if any input is missing
+     * @throws NoSuchElementException if no CASUAL rate is configured
      */
     public PricingConfiguration.FareTerms termsFor(VehicleType type, PricingConfiguration config) {
-        throw new UnsupportedOperationException("TODO: implement CasualPricingPolicy.termsFor");
+        if (type == null || config == null) {
+            throw new IllegalArgumentException("Vehicle type and pricing configuration are required");
+        }
+        return config.snapshot(CATEGORY, type);
     }
 }
