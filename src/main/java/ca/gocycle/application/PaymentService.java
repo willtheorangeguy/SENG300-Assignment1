@@ -29,6 +29,7 @@ public class PaymentService {
     private final Clock clock;
     private final Map<String, Integer> attemptsByOperation;
     private final Map<UUID, Receipt> receiptsByTrip;
+    private final Set<UUID> deliveredReceipts = new HashSet<>();
 
     /** Assign required attributes/dependencies; no business rules are implemented here. */
     public PaymentService(PaymentGateway gateway, ReceiptDelivery receiptDelivery, DeploymentConfiguration configuration, Clock clock) {
@@ -120,9 +121,14 @@ public PaymentResult releaseDeposit(Trip trip) {
         throw new IllegalStateException("Trip has not ended");
     }
 
-    if (trip.getDepositStatus() == DepositStatus.RELEASED) {
-        throw new IllegalStateException("Deposit already released");
-    }
+if (trip.getDepositStatus() == DepositStatus.RELEASED) {
+    return new PaymentResult(
+        true,
+        trip.getDepositReference(),
+        null,
+        null
+    );
+}
 
     if (trip.getDepositStatus() != DepositStatus.HELD &&
             trip.getDepositStatus() != DepositStatus.RELEASE_FAILED) {
@@ -167,9 +173,18 @@ public PaymentResult chargeFare(Trip trip, FareBreakdown fare) {
         throw new IllegalStateException("Trip has not ended");
     }
 
-    if (trip.getPaymentStatus() == PaymentStatus.PAID) {
-        throw new IllegalStateException("Trip already paid");
+if (trip.getPaymentStatus() == PaymentStatus.PAID) {
+    if (!fare.equals(trip.getFare())) {
+        throw new IllegalStateException("Fare cannot change after payment");
     }
+
+    return new PaymentResult(
+        true,
+        trip.getPaymentReference(),
+        null,
+        null
+    );
+}
 
     BigDecimal amount = fare.total();
 
@@ -179,15 +194,25 @@ public PaymentResult chargeFare(Trip trip, FareBreakdown fare) {
         throw new IllegalStateException("Payment method is missing");
     }
 
-    String requestId = "fare-" + trip.getId();
+trip.recordFare(fare);
+
+String requestId = "fare-" + trip.getId();
+
+if (trip.getPaymentStatus() == PaymentStatus.FAILED) {
+    int attempt = attemptsByOperation.getOrDefault(requestId, 1) + 1;
+    attemptsByOperation.put(requestId, attempt);
+    requestId = requestId + "-attempt-" + attempt;
+}
 
     PaymentResult result = gateway.charge(amount, "CAD", method, requestId);
 
-    if (result.success()) {
-        trip.recordPayment(PaymentStatus.PAID, result.reference());
-    }
+if (result.success()) {
+    trip.recordPayment(PaymentStatus.PAID, result.reference());
+} else {
+    trip.recordPayment(PaymentStatus.FAILED, null);
+}
 
-    return result;
+return result;
 }
 
     /**
@@ -229,7 +254,17 @@ public boolean sendReceipt(Trip trip, ReceiptChannel channel) {
         receiptsByTrip.put(trip.getId(), receipt);
     }
 
-    return receiptDelivery.deliver(receipt, channel, trip.getRider());
+if (deliveredReceipts.contains(trip.getId())) {
+    return true;
+}
+
+boolean delivered = receiptDelivery.deliver(receipt, channel, trip.getRider());
+
+if (delivered) {
+    deliveredReceipts.add(trip.getId());
+}
+
+return delivered;
 }
 
     /**
