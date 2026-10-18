@@ -228,10 +228,11 @@ public void updateZone(String zoneId, Set<PaymentMethod> methods, DisplayConfigu
         throw new IllegalArgumentException("Invalid zone configuration");
     }
 
-    if (methods.contains(null)) {
+for (PaymentMethod method : methods) {
+    if (method == null) {
         throw new IllegalArgumentException("Payment methods cannot contain null");
     }
-
+}
     coordinationLock.lock();
 
     try {

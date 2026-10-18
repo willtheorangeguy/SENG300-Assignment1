@@ -112,7 +112,7 @@ Trip trip = new Trip(
     TripStatus.PENDING,
     PaymentStatus.NOT_DUE,
     DepositStatus.NONE,
-    configuration.getPricing().snapshot(startingZone.getId(), vehicle.getType()),
+configuration.getPricing().snapshot("CASUAL", vehicle.getType()),
     null,
     null,
     method,
@@ -217,10 +217,13 @@ public Optional<Station> returnVehicle(UUID tripId, String stationId) {
         Station station = stations.findStation(stationId)
             .orElseThrow(() -> new NoSuchElementException("Station not found"));
 
-        if (trip.getStatus() != TripStatus.ACTIVE) {
-            throw new IllegalStateException("Trip is not active");
-        }
+if (trip.getStatus() == TripStatus.ENDED) {
+    return Optional.empty();
+}
 
+if (trip.getStatus() != TripStatus.ACTIVE) {
+    throw new IllegalStateException("Trip is not active");
+}
         Vehicle vehicle = trip.getVehicle();
 
         Optional<DockingPoint> availableDock =
