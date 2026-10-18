@@ -24,6 +24,7 @@ import ca.gocycle.simulation.*;
 
 public class RiderService {
     private final Map<UUID, Rider> riders;
+    private final Map<UUID, Instant> registrationTimes = new HashMap<>();
     private final PaymentService paymentService;
     private final DeploymentConfiguration configuration;
     private final Clock clock;
@@ -64,18 +65,22 @@ public Rider register(String name, String email, LocalDate birthDate) {
 
     UUID id = UUID.randomUUID();
 
-    Rider rider = new Rider(
-        id,
-        name,
-        email,
-        birthDate,
-        null,
-        null,
-        null,
-        null
-    );
+Rider rider = new Rider(
+    id,
+    name,
+    email,
+    birthDate,
+    null,
+    null,
+    null,
+    new InterfacePreferences(
+        configuration.getInterfaces().defaultLanguage(),
+        false
+    )
+);
 
     riders.put(id, rider);
+    registrationTimes.put(id, clock.instant());
 
     return rider;
 }
@@ -107,7 +112,7 @@ String domain = configuration.getStudents().emailDomain();
 
 if (!rider.getEmail().toLowerCase(Locale.ROOT)
         .endsWith("@" + domain.toLowerCase(Locale.ROOT))) {
-    throw new IllegalStateException("Student email must be from " + domain);
+throw new IllegalArgumentException("Student email must be from " + domain);
 
         }
 
@@ -115,9 +120,11 @@ if (rider.getMembership() != null &&
         rider.hasActiveMembership(clock.instant())) {
     throw new IllegalStateException("Rider already has an active membership");
 }
-Instant verifiedUntil = clock.instant().plus(365, ChronoUnit.DAYS);
+rider.setStudentVerification(
+    institutionId,
+    clock.instant().plus(Duration.ofDays(365))
+);
 
-//rider.setStudentVerification(institutionId, verifiedUntil);
     }
 
     /**
@@ -132,7 +139,55 @@ Instant verifiedUntil = clock.instant().plus(365, ChronoUnit.DAYS);
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
     public Membership activateMembership(UUID riderId, PaymentMethod method, Zone zone) {
-        throw new UnsupportedOperationException("TODO: implement RiderService.activateMembership");
+        if (riderId == null) {
+    throw new IllegalArgumentException("Rider ID cannot be null");
+}
+
+if (method == null) {
+    throw new IllegalArgumentException("Payment method cannot be null");
+}
+
+if (zone == null) {
+    throw new IllegalArgumentException("Zone cannot be null");
+}
+Rider rider = riders.get(riderId);
+
+if (rider == null) {
+    throw new NoSuchElementException("Rider not found");
+}
+if (rider.hasValidStudentEvidence(clock.instant())) {
+    throw new IllegalStateException("Students cannot activate a monthly membership");
+}
+if (rider.hasActiveMembership(clock.instant())) {
+    throw new IllegalStateException("Rider already has an active membership");
+}
+
+PaymentResult result = paymentService.payMembership(
+    rider,
+    method,
+    zone,
+    "membership-" + riderId + "-" + UUID.randomUUID()
+);
+
+if (!result.success()) {
+    throw new IllegalStateException("Membership payment failed");
+}
+
+Instant start = registrationTimes.get(riderId);
+Instant end = start.plus(
+    Duration.ofDays(configuration.getMembership().durationDays())
+);
+
+Membership membership = new Membership(
+    start,
+    end,
+    result.reference()
+);
+
+rider.setMembership(membership);
+
+return membership;
+
     }
 
     /**
