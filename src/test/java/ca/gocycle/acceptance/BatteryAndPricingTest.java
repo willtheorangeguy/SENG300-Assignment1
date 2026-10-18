@@ -23,21 +23,21 @@ class BatteryAndPricingTest {
         var v=electric(20,NOW);v.setServiceStatus(VehicleServiceStatus.OUT_OF_SERVICE);assertFalse(v.isRentable(NOW));
         var rented=electric(80,NOW);rented.reserve(NOW);rented.markRented();assertFalse(rented.isRentable(NOW));
     }
-    @ParameterizedTest @Tag("pending-implementation") @CsvSource({"0,0,0.00,5.00","1,1,0.00,5.50","60,1,0.00,5.50","61,2,0.00,6.00","7200,120,0.00,65.00","7201,121,15.00,80.50"})
+    @ParameterizedTest @CsvSource({"0,0,0.00,5.00","1,1,0.00,5.50","60,1,0.00,5.50","61,2,0.00,6.00","7200,120,0.00,65.00","7201,121,15.00,80.50"})
     void fareRoundingAndActualDurationSurcharge(long seconds,long minutes,String surcharge,String total) throws Exception {
         var fare=pricing(config()).calculateFare(ended(seconds));
         assertEquals(minutes,fare.billableMinutes());assertEquals(new BigDecimal("5.00"),fare.unlockCharge());
         assertEquals(new BigDecimal(surcharge),fare.surcharge());assertEquals(new BigDecimal(total),fare.total());
         assertEquals(new BigDecimal("0.50").multiply(BigDecimal.valueOf(minutes)),fare.durationCharge());
     }
-    @Test @Tag("pending-implementation") void configuredCategoryRates() throws Exception {
+    @Test void configuredCategoryRates() throws Exception {
         var c=config();var p=pricing(c);
         assertEquals(new BigDecimal("0.50"),p.quoteTerms(rider(),VehicleType.PEDAL_BIKE,NOW).perMinute());
         var member=new Membership(NOW.minusSeconds(1),NOW.plusSeconds(30*86400),"paid");
         assertEquals(new BigDecimal("0.20"),p.quoteTerms(rider(null,null,member),VehicleType.ELECTRIC_BIKE,NOW).perMinute());
         assertEquals(new BigDecimal("0.20"),p.quoteTerms(rider("UCALGARY",NOW.plusSeconds(86400),null),VehicleType.ELECTRIC_SCOOTER,NOW).perMinute());
     }
-    @Test @Tag("pending-implementation") void registeredPolicyCanExtendPricing() throws Exception {
+    @Test void registeredPolicyCanExtendPricing() throws Exception {
         PricingPolicy added=new PricingPolicy() {
             public boolean supports(ca.gocycle.domain.rider.Rider r,Instant at,DeploymentConfiguration c){return true;}
             public PricingConfiguration.FareTerms termsFor(VehicleType t,PricingConfiguration c){return terms("ADDED");}
@@ -45,7 +45,7 @@ class BatteryAndPricingTest {
         var p=new PricingService(List.of(added,new CasualPricingPolicy()),config());
         assertEquals("ADDED",p.quoteTerms(rider(),VehicleType.PEDAL_BIKE,NOW).category());
     }
-    @Test @Tag("pending-implementation") void snapshotCopiesEveryMonetaryTerm() throws Exception {
+    @Test void snapshotCopiesEveryMonetaryTerm() throws Exception {
         var c=config().getPricing();Map<String,BigDecimal> rates=new HashMap<>(c.getRates());
         var mutable=new PricingConfiguration(c.getUnlockFee(),rates,c.getSamePricesForAllVehicles(),c.getDeposit(),c.getBillingUnit(),c.getRounding(),c.getMinimumTripCharge(),c.getSurcharge(),c.getStudentDiscountAppliesTo());
         var quote=mutable.snapshot("CASUAL",VehicleType.PEDAL_BIKE);

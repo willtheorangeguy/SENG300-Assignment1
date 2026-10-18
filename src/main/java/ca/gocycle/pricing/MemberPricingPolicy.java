@@ -23,38 +23,50 @@ import ca.gocycle.presentation.*;
 import ca.gocycle.simulation.*;
 
 
+/** Strategy for riders holding a paid monthly membership. */
 public class MemberPricingPolicy implements PricingPolicy {
+
+    /** Rate key in {@code pricing.rates}. */
+    private static final String CATEGORY = "MEMBER";
 
     /** Assign required attributes/dependencies; no business rules are implemented here. */
     public MemberPricingPolicy() {
     }
 
     /**
-     * Use configured eligibility and evidence at the supplied time. Reject student/member overlap according to report assumptions.
-     * @param rider required input; validate malformed values before mutation
-     * @param at required input; validate malformed values before mutation
-     * @param config required input; validate malformed values before mutation
-     * @return the documented result after successful implementation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
-     * @throws IllegalArgumentException for malformed input in the completed implementation
-     * @throws NoSuchElementException for unknown IDs in the completed implementation
-     * @throws IllegalStateException for rejected business/state transitions in the completed implementation
+     * Support riders with a paid monthly membership that is active at the supplied time.
+     * @param rider rider starting the trip
+     * @param at evaluation time
+     * @param config deployment configuration
+     * @return whether member pricing applies
+     * @throws IllegalArgumentException if any input is missing
+     * @throws IllegalStateException if the rider is both an active member and a verified student
      */
     public boolean supports(Rider rider, Instant at, DeploymentConfiguration config) {
-        throw new UnsupportedOperationException("TODO: implement MemberPricingPolicy.supports");
+        if (rider == null || at == null || config == null) {
+            throw new IllegalArgumentException("Rider, evaluation time and configuration are required");
+        }
+        if (!rider.hasActiveMembership(at)) {
+            return false;
+        }
+        if (rider.hasValidStudentEvidence(at)) {
+            throw new IllegalStateException("A rider cannot hold student and member pricing at the same time");
+        }
+        return true;
     }
 
     /**
-     * Return configured category/type terms; missing terms are configuration errors, with no hard-coded fallback.
-     * @param type required input; validate malformed values before mutation
-     * @param config required input; validate malformed values before mutation
-     * @return the documented result after successful implementation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
-     * @throws IllegalArgumentException for malformed input in the completed implementation
-     * @throws NoSuchElementException for unknown IDs in the completed implementation
-     * @throws IllegalStateException for rejected business/state transitions in the completed implementation
+     * Return the configured MEMBER terms; missing terms are configuration errors, with no hard-coded fallback.
+     * @param type vehicle being quoted
+     * @param config pricing configuration to snapshot
+     * @return the MEMBER fare terms
+     * @throws IllegalArgumentException if any input is missing
+     * @throws NoSuchElementException if no MEMBER rate is configured
      */
     public PricingConfiguration.FareTerms termsFor(VehicleType type, PricingConfiguration config) {
-        throw new UnsupportedOperationException("TODO: implement MemberPricingPolicy.termsFor");
+        if (type == null || config == null) {
+            throw new IllegalArgumentException("Vehicle type and pricing configuration are required");
+        }
+        return config.snapshot(CATEGORY, type);
     }
 }

@@ -50,16 +50,31 @@ public class PricingConfiguration {
 
     /**
      * Create immutable monetary terms from the selected category/type; preserve BigDecimal precision.
-     * @param category required input; validate malformed values before mutation
-     * @param type required input; validate malformed values before mutation
-     * @return the documented result after successful implementation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
-     * @throws IllegalArgumentException for malformed input in the completed implementation
-     * @throws NoSuchElementException for unknown IDs in the completed implementation
-     * @throws IllegalStateException for rejected business/state transitions in the completed implementation
+     * One unlock fee, deposit and surcharge apply to every vehicle; only the per-minute rate depends on
+     * the rider category. Because the values are copied into a record, later configuration changes never
+     * alter a quote that a trip has already taken.
+     * @param category rider category key in {@code rates}, for example {@code "CASUAL"}
+     * @param type vehicle being quoted; prices are shared, so it only has to be present
+     * @return the terms to snapshot onto a trip
+     * @throws IllegalArgumentException if the category is blank or the vehicle type is missing
+     * @throws NoSuchElementException if no rate is configured for the category
+     * @throws IllegalStateException if the configuration asks for per-vehicle prices, which are not supported
      */
     public FareTerms snapshot(String category, VehicleType type) {
-        throw new UnsupportedOperationException("TODO: implement PricingConfiguration.snapshot");
+        if (category == null || category.isBlank()) {
+            throw new IllegalArgumentException("Pricing category is required");
+        }
+        if (type == null) {
+            throw new IllegalArgumentException("Vehicle type is required");
+        }
+        if (!samePricesForAllVehicles) {
+            throw new IllegalStateException("Per-vehicle pricing is not supported; samePricesForAllVehicles must be true");
+        }
+        BigDecimal perMinute = rates.get(category);
+        if (perMinute == null) {
+            throw new NoSuchElementException("No per-minute rate is configured for category " + category);
+        }
+        return new FareTerms(category, unlockFee, perMinute, deposit, surcharge, billingUnit, rounding, minimumTripCharge);
     }
 
     /**
