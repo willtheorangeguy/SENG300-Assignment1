@@ -233,7 +233,7 @@ public void publish(FaultReport report) {
      * Mechanical accessor; collections are immutable snapshots.
      * @return the recorded attribute
      */
-    public DeploymentConfiguration getConfiguration() {
+public DeploymentConfiguration getConfiguration() {
         return configuration;
     }
 

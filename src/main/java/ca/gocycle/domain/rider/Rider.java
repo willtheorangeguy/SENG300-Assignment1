@@ -18,11 +18,11 @@ public class Rider {
 
     private final LocalDate birthDate;
     /** Nullable until supplied/recorded; see the operation contract. */
-    private final String studentInstitutionId;
+    private String studentInstitutionId;
     /** Nullable until supplied/recorded; see the operation contract. */
-    private final Instant studentVerifiedUntil;
+  private Instant studentVerifiedUntil;
     /** Nullable until supplied/recorded; see the operation contract. */
-    private final Membership membership;
+    private Membership membership;
 
     private InterfacePreferences preferences;
 
@@ -67,6 +67,15 @@ public class Rider {
         if (at == null) throw new IllegalArgumentException("Evaluation time is required");
         return studentInstitutionId != null && at.isBefore(studentVerifiedUntil);
     }
+
+    public void setStudentVerification(String institutionId, Instant verifiedUntil) {
+    if (institutionId == null || institutionId.isBlank() || verifiedUntil == null) {
+        throw new IllegalArgumentException("Invalid student verification");
+    }
+
+    this.studentInstitutionId = institutionId;
+    this.studentVerifiedUntil = verifiedUntil;
+}
 
     /**
      * Stores valid preferences; RiderService must check the configured supported languages first.
@@ -132,6 +141,14 @@ public class Rider {
     public Membership getMembership() {
         return membership;
     }
+
+    public void setMembership(Membership membership) {
+    if (membership == null) {
+        throw new IllegalArgumentException("Membership cannot be null");
+    }
+
+    this.membership = membership;
+}
 
     /**
      * Mechanical accessor; collections are immutable snapshots.

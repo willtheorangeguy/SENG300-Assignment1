@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static ca.gocycle.acceptance.Fixtures.*;
 
 class StationsAndFaultsTest {
-    @Test @Tag("pending-implementation") void nearestStationUsesIdTieAndExcludesClosedOrUnusable() throws Exception {
+    @Test void nearestStationUsesIdTieAndExcludesClosedOrUnusable() throws Exception {
         var source=station("source",51,-114,true,List.of(dock("source-dock",bike())));
         var a=station("a",51.01,-114,true,List.of(dock("a-dock",null)));
         var b=station("b",51.01,-114,true,List.of(dock("b-dock",null)));
@@ -23,7 +23,7 @@ class StationsAndFaultsTest {
         var service=new StationService(Map.of("source",source,"a",a,"b",b,"closed",closed,"unusable",unusable),Map.of(),config(),new MutableClock(),new ReentrantLock());
         assertEquals("a",service.nearestAvailable("source",VehicleType.PEDAL_BIKE).orElseThrow().getId());
     }
-    @Test @Tag("pending-implementation") void relocationFailurePreservesSourceOccupancy() throws Exception {
+    @Test void relocationFailurePreservesSourceOccupancy() throws Exception {
         var n=new Network();n.destination.getDockingPoints().getFirst().attach(bike(),true);
         assertThrows(IllegalStateException.class,()->n.stations.relocate(n.vehicle.getId(),"destination"));
         assertEquals(n.vehicle,n.origin.getDockingPoints().getFirst().getVehicle());
@@ -33,14 +33,14 @@ class StationsAndFaultsTest {
         var n=new Network();n.start(n.registered());
         assertThrows(IllegalStateException.class,()->n.stations.relocate(n.vehicle.getId(),"destination"));assertEquals(VehicleAvailability.RENTED,n.vehicle.getAvailability());
     }
-    @Test @Tag("pending-implementation") void faultBlocksRentalAndNotifiesBothObservers() throws Exception {
+    @Test void faultBlocksRentalAndNotifiesBothObservers() throws Exception {
         var n=new Network();var first=new ArrayList<FaultReport>();var second=new ArrayList<FaultReport>();
         var service=new FaultService(List.of(first::add,second::add),n.stations,n.config,n.clock);
         var report=service.reportProblem(n.vehicle.getId(),FaultType.BROKEN_BRAKES,"brakes failed");
         assertEquals(VehicleServiceStatus.OUT_OF_SERVICE,n.vehicle.getServiceStatus());assertFalse(n.vehicle.isRentable(NOW));
         assertEquals(List.of(report),first);assertEquals(List.of(report),second);
     }
-    @Test @Tag("pending-implementation") void failingObserverDoesNotStopAnotherOrUndoStatus() throws Exception {
+    @Test void failingObserverDoesNotStopAnotherOrUndoStatus() throws Exception {
         var n=new Network();var received=new ArrayList<FaultReport>();
         FaultObserver fails=report->{throw new IllegalStateException("controlled observer failure");};
         var service=new FaultService(List.of(fails,received::add),n.stations,n.config,n.clock);
@@ -53,7 +53,7 @@ class StationsAndFaultsTest {
         assertEquals(TripStatus.ACTIVE,t.getStatus());assertNull(t.getEndedAt());assertEquals(VehicleServiceStatus.OUT_OF_SERVICE,n.vehicle.getServiceStatus());
         assertFalse(n.vehicle.isRentable(NOW));
     }
-    @Test @Tag("pending-implementation") void duplicateFaultIsDiscarded() throws Exception {
+    @Test void duplicateFaultIsDiscarded() throws Exception {
         var n=new Network();var received=new ArrayList<FaultReport>();var service=new FaultService(List.of(received::add),n.stations,n.config,n.clock);
         var first=service.reportProblem(n.vehicle.getId(),FaultType.FLAT_TIRE,"flat");
         var duplicate=service.reportProblem(n.vehicle.getId(),FaultType.FLAT_TIRE,"flat");
