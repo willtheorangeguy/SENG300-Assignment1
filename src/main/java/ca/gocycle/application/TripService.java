@@ -57,10 +57,141 @@ public class TripService {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public Trip startTrip(UUID riderId, UUID vehicleId, PaymentMethod method) {
-        throw new UnsupportedOperationException("TODO: implement TripService.startTrip");
+public Trip startTrip(UUID riderId, UUID vehicleId, PaymentMethod method) {
+
+    if (riderId == null || vehicleId == null || method == null) {
+        throw new IllegalArgumentException("Invalid trip information");
+    }
+    coordinationLock.lock();
+
+try {
+
+   Rider rider = riders.findRider(riderId)
+    .orElseThrow(() -> new NoSuchElementException("Rider not found"));
+
+Vehicle vehicle = stations.findVehicle(vehicleId)
+    .orElseThrow(() -> new NoSuchElementException("Vehicle not found"));
+
+    DockingPoint dock = stations.findVehicleDock(vehicleId)
+    .orElseThrow(() -> new IllegalStateException("Vehicle is not docked"));
+
+    if (!dock.getLockConfirmed()) {
+    throw new IllegalStateException("Vehicle is not securely docked");
+}
+
+Station startingStation = null;
+
+for (Station station : stations.listStations()) {
+    if (station.getDockingPoints().contains(dock)) {
+        startingStation = station;
+        break;
+    }
+}
+
+if (startingStation == null) {
+    throw new IllegalStateException("Starting station not found");
+}
+Zone startingZone = startingStation.getZone();
+
+if (!startingZone.getAllowedPaymentMethods().contains(method)) {
+    throw new IllegalStateException("Payment method not allowed in starting zone");
+}
+
+    if (!vehicle.isRentable(clock.instant())) {
+    throw new IllegalStateException("Vehicle is not available for rental");
+}
+
+Trip trip = new Trip(
+    UUID.randomUUID(),
+    rider,
+    vehicle,
+    startingStation.getId(),
+    null,
+    null,
+    null,
+    TripStatus.PENDING,
+    PaymentStatus.NOT_DUE,
+    DepositStatus.NONE,
+    configuration.getPricing().snapshot(startingZone.getId(), vehicle.getType()),
+    null,
+    null,
+    method,
+    startingZone.getAllowedPaymentMethods(),
+    null
+);
+
+
+
+
+
+vehicle.reserve(clock.instant());
+
+try {
+    PaymentResult depositResult = payments.holdDeposit(trip, startingZone);
+
+    if (!depositResult.success()) {
+        throw new IllegalStateException("Deposit hold failed");
     }
 
+    trip.recordDeposit(DepositStatus.HELD, depositResult.reference());
+
+    boolean unlocked = docking.requestUnlock(
+        dock.getId(),
+        vehicleId,
+        "unlock-" + trip.getId()
+    );
+
+    if (!unlocked) {
+        throw new IllegalStateException("Vehicle unlock failed");
+    }
+dock.detach();
+    vehicle.markRented();
+    trip.beginAt(clock.instant());
+
+    trips.put(trip.getId(), trip);
+
+    return trip;
+
+} catch (RuntimeException e) {
+
+    if (trip.getStatus() == TripStatus.PENDING) {
+        trip.cancelStart();
+    }
+
+    if (trip.getDepositStatus() == DepositStatus.HELD) {
+        try {
+            PaymentResult release = payments.getGateway().releaseHold(
+                trip.getDepositReference(),
+                "cancel-" + trip.getId()
+            );
+
+            if (release.success()) {
+                trip.recordDeposit(DepositStatus.RELEASED, null);
+            } else {
+                trip.recordDeposit(DepositStatus.RELEASE_FAILED, null);
+            }
+        } catch (RuntimeException releaseError) {
+            trip.recordDeposit(DepositStatus.RELEASE_FAILED, null);
+            e.addSuppressed(releaseError);
+        }
+    }
+
+    if (vehicle.getAvailability() == VehicleAvailability.RESERVED) {
+        vehicle.releaseReservation();
+    }
+
+    throw e;
+}
+
+
+
+
+
+
+} finally {
+    coordinationLock.unlock();
+}
+}
     /**
      * Keep ACTIVE until confirmed compatible locking. Return Optional.empty on completion or Optional<Station> for nearest usable redirection (station-ID ties). No available station or failed lock raises a state error. Release the hold at confirmed end even if later fare collection fails.
      * @param tripId required input; validate malformed values before mutation
@@ -71,9 +202,59 @@ public class TripService {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public Optional<Station> returnVehicle(UUID tripId, String stationId) {
-        throw new UnsupportedOperationException("TODO: implement TripService.returnVehicle");
+public Optional<Station> returnVehicle(UUID tripId, String stationId) {
+
+    if (tripId == null || stationId == null || stationId.isBlank()) {
+        throw new IllegalArgumentException("Invalid trip or station ID");
     }
+
+    coordinationLock.lock();
+
+    try {
+        Trip trip = findTrip(tripId)
+            .orElseThrow(() -> new NoSuchElementException("Trip not found"));
+
+        Station station = stations.findStation(stationId)
+            .orElseThrow(() -> new NoSuchElementException("Station not found"));
+
+        if (trip.getStatus() != TripStatus.ACTIVE) {
+            throw new IllegalStateException("Trip is not active");
+        }
+
+        Vehicle vehicle = trip.getVehicle();
+
+        Optional<DockingPoint> availableDock =
+            station.findFreeDock(vehicle.getType());
+
+        if (availableDock.isEmpty()) {
+            Optional<Station> nearest =
+                stations.nearestAvailable(stationId, vehicle.getType());
+
+            if (nearest.isEmpty()) {
+                throw new IllegalStateException("No available return station");
+            }
+
+            return nearest;
+        }
+
+        DockingPoint dock = availableDock.get();
+
+        if (!docking.confirmLocked(dock.getId(), vehicle.getId())) {
+            throw new IllegalStateException("Vehicle locking failed");
+        }
+
+        dock.attach(vehicle, true);
+        trip.endAt(clock.instant(), dock.getId());
+        vehicle.markDocked();
+
+        payments.releaseDeposit(trip);
+
+        return Optional.empty();
+
+    } finally {
+        coordinationLock.unlock();
+    }
+}
 
     /**
      * Require ended trip; charge/release and deliver receipt using stable attempt keys. Never repeat successful operations.
@@ -85,9 +266,46 @@ public class TripService {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public PaymentResult settleTrip(UUID tripId, ReceiptChannel channel) {
-        throw new UnsupportedOperationException("TODO: implement TripService.settleTrip");
+public PaymentResult settleTrip(UUID tripId, ReceiptChannel channel) {
+
+    if (tripId == null || channel == null) {
+        throw new IllegalArgumentException("Invalid trip or receipt channel");
     }
+
+    coordinationLock.lock();
+
+    try {
+        Trip trip = findTrip(tripId)
+            .orElseThrow(() -> new NoSuchElementException("Trip not found"));
+
+        if (trip.getStatus() != TripStatus.ENDED) {
+            throw new IllegalStateException("Trip has not ended");
+        }
+
+        if (trip.getFare() == null) {
+            FareBreakdown fare = pricing.calculateFare(trip);
+            trip.recordFare(fare);
+        }
+
+
+if (trip.getPaymentStatus() == PaymentStatus.PAID) {
+    payments.sendReceipt(trip, channel);
+    return new PaymentResult(true, trip.getPaymentReference(), null, null);
+}
+
+
+        PaymentResult result = payments.chargeFare(trip, trip.getFare());
+
+        if (result.success()) {
+            payments.sendReceipt(trip, channel);
+        }
+
+        return result;
+
+    } finally {
+        coordinationLock.unlock();
+    }
+}
 
     /**
      * Require a known identifier; return the matching domain object/snapshot without leaking mutable stores.
@@ -98,10 +316,14 @@ public class TripService {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-    public Optional<Trip> findTrip(UUID id) {
-        throw new UnsupportedOperationException("TODO: implement TripService.findTrip");
+public Optional<Trip> findTrip(UUID id) {
+
+    if (id == null) {
+        throw new IllegalArgumentException("Trip ID cannot be null");
     }
 
+    return Optional.ofNullable(trips.get(id));
+}
     /**
      * Mechanical accessor; collections are immutable snapshots.
      * @return the recorded attribute
