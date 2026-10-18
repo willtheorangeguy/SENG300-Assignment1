@@ -23,38 +23,66 @@ import ca.gocycle.presentation.*;
 import ca.gocycle.simulation.*;
 
 
+/** Strategy for riders with current student evidence from the configured institution. */
 public class StudentPricingPolicy implements PricingPolicy {
+
+    /** Rate key in {@code pricing.rates}. */
+    private static final String CATEGORY = "STUDENT";
+
+    /** The only supported scope of the student discount. */
+    private static final String PER_MINUTE_ONLY = "PER_MINUTE_ONLY";
 
     /** Assign required attributes/dependencies; no business rules are implemented here. */
     public StudentPricingPolicy() {
     }
 
     /**
-     * Use configured eligibility and evidence at the supplied time. Reject student/member overlap according to report assumptions.
-     * @param rider required input; validate malformed values before mutation
-     * @param at required input; validate malformed values before mutation
-     * @param config required input; validate malformed values before mutation
-     * @return the documented result after successful implementation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
-     * @throws IllegalArgumentException for malformed input in the completed implementation
-     * @throws NoSuchElementException for unknown IDs in the completed implementation
-     * @throws IllegalStateException for rejected business/state transitions in the completed implementation
+     * Support riders whose student evidence is still valid at the supplied time and whose email
+     * belongs to the configured student domain.
+     * @param rider rider starting the trip
+     * @param at evaluation time
+     * @param config deployment configuration
+     * @return whether student pricing applies
+     * @throws IllegalArgumentException if any input is missing
+     * @throws IllegalStateException if the student rules are missing or the rider is also an active member
      */
     public boolean supports(Rider rider, Instant at, DeploymentConfiguration config) {
-        throw new UnsupportedOperationException("TODO: implement StudentPricingPolicy.supports");
+        if (rider == null || at == null || config == null) {
+            throw new IllegalArgumentException("Rider, evaluation time and configuration are required");
+        }
+        if (config.getStudents() == null || config.getStudents().emailDomain() == null) {
+            throw new IllegalStateException("Student rules are not configured");
+        }
+        if (!rider.hasValidStudentEvidence(at)) {
+            return false;
+        }
+        String domain = "@" + config.getStudents().emailDomain().toLowerCase(Locale.ROOT);
+        if (!rider.getEmail().toLowerCase(Locale.ROOT).endsWith(domain)) {
+            return false;
+        }
+        if (rider.hasActiveMembership(at)) {
+            throw new IllegalStateException("A rider cannot hold student and member pricing at the same time");
+        }
+        return true;
     }
 
     /**
-     * Return configured category/type terms; missing terms are configuration errors, with no hard-coded fallback.
-     * @param type required input; validate malformed values before mutation
-     * @param config required input; validate malformed values before mutation
-     * @return the documented result after successful implementation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
-     * @throws IllegalArgumentException for malformed input in the completed implementation
-     * @throws NoSuchElementException for unknown IDs in the completed implementation
-     * @throws IllegalStateException for rejected business/state transitions in the completed implementation
+     * Return the configured STUDENT terms. The student discount only lowers the per-minute rate, so
+     * every other amount comes from the shared configuration.
+     * @param type vehicle being quoted
+     * @param config pricing configuration to snapshot
+     * @return the STUDENT fare terms
+     * @throws IllegalArgumentException if any input is missing
+     * @throws IllegalStateException if the discount is configured to apply to anything but the per-minute rate
+     * @throws NoSuchElementException if no STUDENT rate is configured
      */
     public PricingConfiguration.FareTerms termsFor(VehicleType type, PricingConfiguration config) {
-        throw new UnsupportedOperationException("TODO: implement StudentPricingPolicy.termsFor");
+        if (type == null || config == null) {
+            throw new IllegalArgumentException("Vehicle type and pricing configuration are required");
+        }
+        if (!PER_MINUTE_ONLY.equals(config.getStudentDiscountAppliesTo())) {
+            throw new IllegalStateException("Student discount must apply to the per-minute rate only");
+        }
+        return config.snapshot(CATEGORY, type);
     }
 }
