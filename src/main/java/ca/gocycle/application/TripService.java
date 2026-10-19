@@ -69,6 +69,14 @@ try {
    Rider rider = riders.findRider(riderId)
     .orElseThrow(() -> new NoSuchElementException("Rider not found"));
 
+long activeTrips = trips.values().stream()
+    .filter(trip -> trip.getRider().getId().equals(riderId))
+    .filter(trip -> trip.getStatus() == TripStatus.ACTIVE || trip.getStatus() == TripStatus.PENDING)
+    .count();
+if (activeTrips >= configuration.getRiders().maximumActiveTrips()) {
+    throw new IllegalStateException("Rider already has an active trip");
+}
+
 Vehicle vehicle = stations.findVehicle(vehicleId)
     .orElseThrow(() -> new NoSuchElementException("Vehicle not found"));
 
