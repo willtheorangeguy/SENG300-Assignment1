@@ -80,7 +80,7 @@ public class ConsoleApplication {
         var delivery = new SimulatedReceiptDelivery(true);
         var payments = new PaymentService(gateway, delivery, configuration, clock);
         var riders = new RiderService(payments, configuration, clock);
-        var stations = new StationService(Map.of(), Map.of(), configuration, clock, lock);
+        var stations = DemoNetwork.create(configuration, clock, lock);
         var pricing = new PricingService(List.of(new StudentPricingPolicy(), new MemberPricingPolicy(),
                 new CasualPricingPolicy()), configuration);
         var trips = new TripService(riders, stations, pricing, payments,
