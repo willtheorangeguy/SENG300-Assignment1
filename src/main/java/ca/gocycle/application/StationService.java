@@ -197,6 +197,10 @@ public void relocate(UUID vehicleId, String destinationId) {
             throw new IllegalStateException("Vehicle is not securely docked");
         }
 
+        if (vehicle.getAvailability() != VehicleAvailability.AVAILABLE) {
+            throw new IllegalStateException("Only a docked, available vehicle can be relocated");
+        }
+
 sourceDock.detach();
 
 try {
