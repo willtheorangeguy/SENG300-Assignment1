@@ -105,7 +105,10 @@ public class ConsoleApplication {
         var scanner = new Scanner(System.in);
         showBranding();
         while (true) {
-            System.out.print(language.equals("fr") ? "Commande (aide pour les options): " : "Command (help for options): ");
+            System.out.print(withOptions(language.equals("fr") ? "Commande (aide pour les options)" : "Command (help for options)",
+                    List.of("help", "aide", "register", "login", "start", "return", "close", "settle", "fault",
+                            "repair", "battery", "preferences", "language", "network", "audio on", "audio off",
+                            "quit", "quitter", "exit")) + ": ");
             if (!scanner.hasNextLine()) {
                 return;
             }
@@ -199,17 +202,19 @@ public class ConsoleApplication {
         String prompt = switch (field) {
             case "EMAIL_OR_USERNAME" -> language.equals("fr") ? "Courriel ou nom d'utilisateur: " : "Email or username: ";
             case "PASSWORD" -> language.equals("fr") ? "Mot de passe: " : "Password: ";
-            case "ACCOUNT_TYPE" -> language.equals("fr") ? "Type de compte: " : "Account type: ";
-            case "PAYMENT_METHOD" -> language.equals("fr") ? "Mode de paiement: " : "Payment method: ";
+            case "ACCOUNT_TYPE" -> withOptions(language.equals("fr") ? "Type de compte" : "Account type",
+                    configuration.getRiders().accountTypes());
+            case "PAYMENT_METHOD" -> withOptions(language.equals("fr") ? "Mode de paiement" : "Payment method",
+                    enumOptions(PaymentMethod.values()));
             default -> throw new IllegalArgumentException("Unsupported registration field: " + field);
         };
-        return prompt;
+        return prompt.endsWith(": ") ? prompt : prompt + ": ";
     }
 
     private void startTrip(Scanner scanner, String language) {
         try {
-            System.out.print(language.equals("fr") ? "ID du client, ID du vélo, mode de paiement: "
-                    : "Rider ID, vehicle ID, payment method: ");
+            System.out.print(withOptions(language.equals("fr") ? "ID du client, ID du vélo, mode de paiement"
+                    : "Rider ID, vehicle ID, payment method", enumOptions(PaymentMethod.values())) + ": ");
             var fields = scanner.nextLine().trim().split("\\s+");
             if (fields.length != 3) throw new IllegalArgumentException("Enter all three values");
             var trip = tripService.startTrip(UUID.fromString(fields[0]), UUID.fromString(fields[1]),
@@ -222,7 +227,8 @@ public class ConsoleApplication {
 
     private void returnTrip(Scanner scanner, String language) {
         try {
-            System.out.print(language.equals("fr") ? "ID du trajet et ID de la station: " : "Trip ID and station ID: ");
+            System.out.print(withOptions(language.equals("fr") ? "ID du trajet et ID de la station" : "Trip ID and station ID",
+                    stationOptions()) + ": ");
             var fields = scanner.nextLine().trim().split("\\s+");
             if (fields.length != 2) throw new IllegalArgumentException("Enter both values");
             var suggested = tripService.returnVehicle(UUID.fromString(fields[0]), fields[1]);
@@ -235,8 +241,8 @@ public class ConsoleApplication {
 
     private void settleTrip(Scanner scanner, String language) {
         try {
-            System.out.print(language.equals("fr") ? "ID du trajet et destination (APP/EMAIL): "
-                    : "Trip ID and receipt destination (APP/EMAIL): ");
+            System.out.print(withOptions(language.equals("fr") ? "ID du trajet et destination du reçu"
+                    : "Trip ID and receipt destination", enumOptions(ReceiptChannel.values())) + ": ");
             var fields = scanner.nextLine().trim().split("\\s+");
             if (fields.length != 2) throw new IllegalArgumentException("Enter both values");
             var tripId = UUID.fromString(fields[0]);
@@ -257,8 +263,10 @@ public class ConsoleApplication {
                 throw new IllegalStateException(language.equals("fr")
                         ? "La fermeture manuelle est désactivée" : "Manual trip closure is disabled");
             }
-            System.out.print(language.equals("fr") ? "ID du trajet, station de retour, destination du reçu: "
-                    : "Trip ID, return station, receipt destination: ");
+            System.out.print(withOptions(language.equals("fr") ? "ID du trajet, station de retour, destination du reçu"
+                    : "Trip ID, return station, receipt destination",
+                    List.of("stations: " + String.join(", ", stationOptions()),
+                            "receipts: " + String.join(", ", enumOptions(ReceiptChannel.values())))) + ": ");
             var fields = scanner.nextLine().trim().split("\\s+");
             if (fields.length != 3) throw new IllegalArgumentException("Enter all three values");
             var tripId = UUID.fromString(fields[0]);
@@ -324,7 +332,8 @@ public class ConsoleApplication {
     }
 
     private String selectLanguage(Scanner scanner, String language) {
-        System.out.print(language.equals("fr") ? "Langue: " : "Language: ");
+        System.out.print(withOptions(language.equals("fr") ? "Langue" : "Language",
+                configuration.getInterfaces().supportedLanguages()) + ": ");
         var selected = scanner.nextLine().trim().toLowerCase(Locale.ROOT);
         if (!configuration.getInterfaces().supportedLanguages().contains(selected)) {
             System.out.println(language.equals("fr") ? "Langue non prise en charge" : "Unsupported language");
@@ -346,8 +355,8 @@ public class ConsoleApplication {
                 throw new IllegalStateException(language.equals("fr")
                         ? "La modification de batterie est désactivée" : "Battery override is disabled");
             }
-            System.out.print(language.equals("fr") ? "ID du vélo et pourcentage de batterie: "
-                    : "Vehicle ID and battery percentage: ");
+            System.out.print(withOptions(language.equals("fr") ? "ID du vélo et pourcentage de batterie"
+                    : "Vehicle ID and battery percentage", List.of("0-100")) + ": ");
             var fields = scanner.nextLine().trim().split("\\s+");
             if (fields.length != 2) throw new IllegalArgumentException("Enter both values");
             faultService.reportTelemetry(UUID.fromString(fields[0]), Integer.parseInt(fields[1]),
@@ -360,7 +369,8 @@ public class ConsoleApplication {
 
     private void reportFault(Scanner scanner, String language) {
         try {
-            System.out.print(language.equals("fr") ? "ID du vélo, type, description: " : "Vehicle ID, fault type, description: ");
+            System.out.print(withOptions(language.equals("fr") ? "ID du vélo, type de panne, description"
+                    : "Vehicle ID, fault type, description", enumOptions(FaultType.values())) + ": ");
             var fields = scanner.nextLine().trim().split("\\s+", 3);
             if (fields.length != 3) throw new IllegalArgumentException("Enter all three fields");
             var report = faultService.reportProblem(UUID.fromString(fields[0]),
@@ -377,8 +387,8 @@ public class ConsoleApplication {
                 throw new IllegalStateException(language.equals("fr")
                         ? "La modification des pannes est désactivée" : "Fault override is disabled");
             }
-            System.out.print(language.equals("fr") ? "ID du vélo, état, note de réparation: "
-                    : "Vehicle ID, service status, repair note: ");
+            System.out.print(withOptions(language.equals("fr") ? "ID du vélo, état, note de réparation"
+                    : "Vehicle ID, service status, repair note", enumOptions(VehicleServiceStatus.values())) + ": ");
             var fields = scanner.nextLine().trim().split("\\s+", 3);
             if (fields.length != 3) throw new IllegalArgumentException("Enter all three fields");
             faultService.changeServiceStatus(UUID.fromString(fields[0]),
@@ -391,8 +401,9 @@ public class ConsoleApplication {
 
     private String updatePreferences(Scanner scanner, String language) {
         try {
-            System.out.print(language.equals("fr") ? "ID du client, langue (en/fr), audio (on/off): "
-                    : "Rider ID, language (en/fr), audio (on/off): ");
+            var options = List.of(String.join("/", configuration.getInterfaces().supportedLanguages()), "on/off");
+            System.out.print(withOptions(language.equals("fr") ? "ID du client, langue, audio"
+                    : "Rider ID, language, audio", options) + ": ");
             var fields = scanner.nextLine().trim().split("\\s+");
             if (fields.length != 3 || !(fields[2].equalsIgnoreCase("on") || fields[2].equalsIgnoreCase("off"))) {
                 throw new IllegalArgumentException("Enter an ID, language, and on/off value");
@@ -414,6 +425,18 @@ public class ConsoleApplication {
         String message = exception.getMessage();
         System.out.println((language.equals("fr") ? "Erreur: " : "Error: ")
                 + (message == null ? exception.getClass().getSimpleName() : message));
+    }
+
+    private List<String> stationOptions() {
+        return stationService.listStations().stream().map(Station::getId).toList();
+    }
+
+    private static List<String> enumOptions(Enum<?>[] values) {
+        return Arrays.stream(values).map(Enum::name).toList();
+    }
+
+    private static String withOptions(String prompt, Collection<String> options) {
+        return prompt + " [" + String.join(", ", options) + "]";
     }
 
     /**
