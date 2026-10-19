@@ -1,13 +1,5 @@
 package ca.gocycle.pricing;
 
-import java.util.*;
-import java.time.*;
-import java.math.*;
-import java.nio.file.Path;
-import java.util.concurrent.locks.ReentrantLock;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import ca.gocycle.application.*;
 import ca.gocycle.config.*;
 import ca.gocycle.data.*;
@@ -22,6 +14,9 @@ import ca.gocycle.integration.*;
 import ca.gocycle.presentation.*;
 import ca.gocycle.simulation.*;
 
+import java.math.*;
+import java.time.*;
+import java.util.*;
 
 public class PricingService {
 
@@ -36,90 +31,91 @@ public class PricingService {
     }
 
     /**
-     * Choose the first supporting registered policy in configured order. Keep TripService independent of category switches.
+     * Choose the first supporting registered policy in configured order. Keep TripService
+     * independent of category switches.
+     *
      * @param rider required input; validate malformed values before mutation
      * @param type required input; validate malformed values before mutation
      * @param at required input; validate malformed values before mutation
      * @return the documented result after successful implementation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
      * @throws IllegalArgumentException for malformed input in the completed implementation
      * @throws NoSuchElementException for unknown IDs in the completed implementation
-     * @throws IllegalStateException for rejected business/state transitions in the completed implementation
+     * @throws IllegalStateException for rejected business/state transitions in the completed
+     *     implementation
      */
-public PricingConfiguration.FareTerms quoteTerms(Rider rider, VehicleType type, Instant at) {
+    public PricingConfiguration.FareTerms quoteTerms(Rider rider, VehicleType type, Instant at) {
 
-    if (rider == null || type == null || at == null) {
-        throw new IllegalArgumentException("Invalid pricing inputs");
-    }
+        if (rider == null || type == null || at == null) {
+            throw new IllegalArgumentException("Invalid pricing inputs");
+        }
 
-    for (PricingPolicy policy : policies) {
-    if (policy.supports(rider, at, configuration)) {
-        return policy.termsFor(type, configuration.getPricing());
+        for (PricingPolicy policy : policies) {
+            if (policy.supports(rider, at, configuration)) {
+                return policy.termsFor(type, configuration.getPricing());
+            }
+        }
+        throw new IllegalStateException("No matching pricing policy found");
     }
-}
-throw new IllegalStateException("No matching pricing policy found");
-}
 
     /**
-     * Use snapshotted fees and started-minute rounding. Apply one surcharge only when actual elapsed duration exceeds 120 minutes.
+     * Use snapshotted fees and started-minute rounding. Apply one surcharge only when actual
+     * elapsed duration exceeds 120 minutes.
+     *
      * @param trip required input; validate malformed values before mutation
      * @return the documented result after successful implementation
-     * @throws UnsupportedOperationException while this scaffold remains unimplemented
      * @throws IllegalArgumentException for malformed input in the completed implementation
      * @throws NoSuchElementException for unknown IDs in the completed implementation
-     * @throws IllegalStateException for rejected business/state transitions in the completed implementation
+     * @throws IllegalStateException for rejected business/state transitions in the completed
+     *     implementation
      */
-public FareBreakdown calculateFare(Trip trip) {
+    public FareBreakdown calculateFare(Trip trip) {
 
-    if (trip == null) {
-        throw new IllegalArgumentException("Trip cannot be null");
-    }
+        if (trip == null) {
+            throw new IllegalArgumentException("Trip cannot be null");
+        }
 
-    PricingConfiguration.FareTerms terms = trip.getPricingTerms();
+        PricingConfiguration.FareTerms terms = trip.getPricingTerms();
 
-if (terms == null) {
-    throw new IllegalStateException("Trip has no pricing terms");
-}
-Instant start = trip.getStartedAt();
-Instant end = trip.getEndedAt();
+        if (terms == null) {
+            throw new IllegalStateException("Trip has no pricing terms");
+        }
+        Instant start = trip.getStartedAt();
+        Instant end = trip.getEndedAt();
 
-if (start == null || end == null) {
-    throw new IllegalStateException("Trip must have a start and end time");
-}
+        if (start == null || end == null) {
+            throw new IllegalStateException("Trip must have a start and end time");
+        }
 
-if (end.isBefore(start)) {
-    throw new IllegalStateException("End time cannot be before start time");
-}
-long seconds = Duration.between(start, end).getSeconds();
+        if (end.isBefore(start)) {
+            throw new IllegalStateException("End time cannot be before start time");
+        }
+        Duration elapsed = Duration.between(start, end);
+        long seconds = elapsed.getSeconds();
+        long minutes = seconds / 60 + (seconds % 60 != 0 || elapsed.getNano() != 0 ? 1 : 0);
 
-long minutes = (seconds + 59) / 60;
+        BigDecimal unlockCharge = terms.unlockFee();
 
-BigDecimal unlockCharge = terms.unlockFee();
-
-BigDecimal durationCharge = terms.perMinute()
-        .multiply(BigDecimal.valueOf(minutes));
+        BigDecimal durationCharge = terms.perMinute().multiply(BigDecimal.valueOf(minutes));
 
         BigDecimal surcharge = BigDecimal.ZERO.setScale(terms.surcharge().scale());
 
-if (seconds > 120 * 60) {
-    surcharge = terms.surcharge();
-}
+        if (elapsed.compareTo(Duration.ofHours(2)) > 0) {
+            surcharge = terms.surcharge();
+        }
 
-BigDecimal total = unlockCharge.add(durationCharge).add(surcharge);
+        BigDecimal total = unlockCharge.add(durationCharge).add(surcharge);
 
-// A null minimum means the deployment has no minimum trip charge.
-if (terms.minimumTripCharge() != null && total.compareTo(terms.minimumTripCharge()) < 0) {
-    total = terms.minimumTripCharge();
-}
+        // A null minimum means the deployment has no minimum trip charge.
+        if (terms.minimumTripCharge() != null && total.compareTo(terms.minimumTripCharge()) < 0) {
+            total = terms.minimumTripCharge();
+        }
 
-return new FareBreakdown(
-    unlockCharge, minutes, durationCharge, surcharge, total
-);
-
-}
+        return new FareBreakdown(unlockCharge, minutes, durationCharge, surcharge, total);
+    }
 
     /**
      * Mechanical accessor; collections are immutable snapshots.
+     *
      * @return the recorded attribute
      */
     public List<PricingPolicy> getPolicies() {
@@ -128,6 +124,7 @@ return new FareBreakdown(
 
     /**
      * Mechanical accessor; collections are immutable snapshots.
+     *
      * @return the recorded attribute
      */
     public DeploymentConfiguration getConfiguration() {

@@ -70,9 +70,10 @@ class ConfigurationValidatorTest {
     }
 
     @Test
-    void ratesMustListExactlyTheKnownCategories() throws Exception {
+    void ratesRequireBaseCategoriesAndValidateExtensions() throws Exception {
         assertMentions(errorsAfter(t -> ((ObjectNode) t.at("/pricing/rates")).remove("STUDENT")), "pricing.rates.STUDENT");
-        assertMentions(errorsAfter(t -> ((ObjectNode) t.at("/pricing/rates")).put("VIP", "0.10")), "pricing.rates.VIP");
+        assertTrue(errorsAfter(t -> ((ObjectNode) t.at("/pricing/rates")).put("VIP", "0.10")).isEmpty());
+        assertMentions(errorsAfter(t -> ((ObjectNode) t.at("/pricing/rates")).put("VIP", "-0.10")), "pricing.rates.VIP");
     }
 
     @Test

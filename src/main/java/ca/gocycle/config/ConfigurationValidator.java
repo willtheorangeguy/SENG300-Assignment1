@@ -8,12 +8,12 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Checks a loaded {@link DeploymentConfiguration} against the team's agreed assumptions
- * (see {@code config/gocycle.schema.json} and the assumptions table in the report).
+ * Checks a loaded {@link DeploymentConfiguration} against the team's agreed assumptions (see {@code
+ * config/gocycle.schema.json} and the assumptions table in the report).
  *
- * <p>Every problem is reported as one line of the form {@code "<field path>: <what is wrong>"},
- * for example {@code "pricing.deposit: must be greater than zero"}. All problems are collected,
- * so a user can fix everything in one pass. An empty list means the configuration is valid.
+ * <p>Every problem is reported as one line of the form {@code "<field path>: <what is wrong>"}, for
+ * example {@code "pricing.deposit: must be greater than zero"}. All problems are collected, so a
+ * user can fix everything in one pass. An empty list means the configuration is valid.
  *
  * <p>This class only reads the configuration; it never changes it.
  */
@@ -21,12 +21,12 @@ public class ConfigurationValidator {
 
     private static final Set<String> RATE_CATEGORIES = Set.of("CASUAL", "MEMBER", "STUDENT");
 
-    public ConfigurationValidator() {
-    }
+    public ConfigurationValidator() {}
 
     /**
      * @param value the configuration to check
-     * @return one message per problem, each starting with the field path; empty if the configuration is valid
+     * @return one message per problem, each starting with the field path; empty if the
+     *     configuration is valid
      * @throws IllegalArgumentException if {@code value} is null
      */
     public List<String> validate(DeploymentConfiguration value) {
@@ -58,11 +58,16 @@ public class ConfigurationValidator {
         checkMoney("pricing.deposit", p.getDeposit(), true, errors);
         checkMoney("pricing.surcharge", p.getSurcharge(), true, errors);
         checkRates(p.getRates(), errors);
-        checkEquals("pricing.samePricesForAllVehicles", p.getSamePricesForAllVehicles(), true, errors);
+        checkEquals(
+                "pricing.samePricesForAllVehicles", p.getSamePricesForAllVehicles(), true, errors);
         checkEquals("pricing.billingUnit", p.getBillingUnit(), "MINUTE", errors);
         checkEquals("pricing.rounding", p.getRounding(), "UP", errors);
         checkEquals("pricing.minimumTripCharge", p.getMinimumTripCharge(), null, errors);
-        checkEquals("pricing.studentDiscountAppliesTo", p.getStudentDiscountAppliesTo(), "PER_MINUTE_ONLY", errors);
+        checkEquals(
+                "pricing.studentDiscountAppliesTo",
+                p.getStudentDiscountAppliesTo(),
+                "PER_MINUTE_ONLY",
+                errors);
     }
 
     private void checkRates(Map<String, BigDecimal> rates, List<String> errors) {
@@ -75,15 +80,11 @@ public class ConfigurationValidator {
                 errors.add("pricing.rates." + category + ": is missing");
             }
         }
-        for (String key : rates.keySet()) {
-            if (!RATE_CATEGORIES.contains(key)) {
-                errors.add("pricing.rates." + key + ": is not a known rider category");
+        for (String category : rates.keySet()) {
+            if (category == null || !category.matches("[A-Z][A-Z0-9_]*")) {
+                errors.add("pricing.rates." + category + ": must be an uppercase category key");
             }
-        }
-        for (String category : RATE_CATEGORIES) {
-            if (rates.containsKey(category)) {
-                checkMoney("pricing.rates." + category, rates.get(category), true, errors);
-            }
+            checkMoney("pricing.rates." + category, rates.get(category), true, errors);
         }
         BigDecimal casual = rates.get("CASUAL");
         for (String reduced : List.of("MEMBER", "STUDENT")) {
@@ -101,10 +102,12 @@ public class ConfigurationValidator {
         }
         checkEquals("students.emailDomain", s.emailDomain(), "ucalgary.ca", errors);
         checkEquals("students.ageRestriction", s.ageRestriction(), null, errors);
-        checkEquals("students.monthlyMembershipAllowed", s.monthlyMembershipAllowed(), false, errors);
+        checkEquals(
+                "students.monthlyMembershipAllowed", s.monthlyMembershipAllowed(), false, errors);
     }
 
-    private void validateMembership(DeploymentConfiguration.MembershipRules m, List<String> errors) {
+    private void validateMembership(
+            DeploymentConfiguration.MembershipRules m, List<String> errors) {
         if (m == null) {
             errors.add("membership: section is missing");
             return;
@@ -120,10 +123,21 @@ public class ConfigurationValidator {
             return;
         }
         checkEquals("riders.accountRequired", r.accountRequired(), true, errors);
-        checkEquals("riders.registrationFields", r.registrationFields(),
-                List.of("EMAIL_OR_USERNAME", "PASSWORD", "ACCOUNT_TYPE", "PAYMENT_METHOD"), errors);
-        checkEquals("riders.accountTypes", r.accountTypes(), List.of("CASUAL", "MEMBER", "STUDENT"), errors);
-        checkEquals("riders.stationIdentification", r.stationIdentification(), "EMAIL_OR_USERNAME_AND_PASSWORD", errors);
+        checkEquals(
+                "riders.registrationFields",
+                r.registrationFields(),
+                List.of("EMAIL_OR_USERNAME", "PASSWORD", "ACCOUNT_TYPE", "PAYMENT_METHOD"),
+                errors);
+        checkEquals(
+                "riders.accountTypes",
+                r.accountTypes(),
+                List.of("CASUAL", "MEMBER", "STUDENT"),
+                errors);
+        checkEquals(
+                "riders.stationIdentification",
+                r.stationIdentification(),
+                "EMAIL_OR_USERNAME_AND_PASSWORD",
+                errors);
         checkEquals("riders.maximumActiveTrips", r.maximumActiveTrips(), 1, errors);
     }
 
@@ -132,16 +146,27 @@ public class ConfigurationValidator {
             errors.add("trips: section is missing");
             return;
         }
-        checkEquals("trips.billableTimeStartsAt", t.billableTimeStartsAt(), "VEHICLE_UNLOCKED", errors);
+        checkEquals(
+                "trips.billableTimeStartsAt", t.billableTimeStartsAt(), "VEHICLE_UNLOCKED", errors);
         checkEquals("trips.removalTimeoutMinutes", t.removalTimeoutMinutes(), 2, errors);
         checkEquals("trips.notRemovedAction", t.notRemovedAction(), "STOP_TRIP_NO_CHARGE", errors);
         checkEquals("trips.pausingAllowed", t.pausingAllowed(), false, errors);
         checkEquals("trips.maximumDurationHours", t.maximumDurationHours(), 12, errors);
-        checkEquals("trips.overdueAction", t.overdueAction(), "MARK_LOST_NOTIFY_OPERATORS_CHARGE_DEPOSIT", errors);
-        checkEquals("trips.lostOrStolenAction", t.lostOrStolenAction(),
-                "MARK_LOST_BLOCK_RENTAL_CHARGE_LAST_USER_DEPOSIT", errors);
-        checkEquals("trips.emptyBatteryAction", t.emptyBatteryAction(),
-                "DIRECT_TO_NEAREST_STATION_FOR_CHARGING", errors);
+        checkEquals(
+                "trips.overdueAction",
+                t.overdueAction(),
+                "MARK_LOST_NOTIFY_OPERATORS_CHARGE_DEPOSIT",
+                errors);
+        checkEquals(
+                "trips.lostOrStolenAction",
+                t.lostOrStolenAction(),
+                "MARK_LOST_BLOCK_RENTAL_CHARGE_LAST_USER_DEPOSIT",
+                errors);
+        checkEquals(
+                "trips.emptyBatteryAction",
+                t.emptyBatteryAction(),
+                "DIRECT_TO_NEAREST_STATION_FOR_CHARGING",
+                errors);
     }
 
     private void validateStations(DeploymentConfiguration.StationRules s, List<String> errors) {
@@ -152,7 +177,11 @@ public class ConfigurationValidator {
         checkEquals("stations.count", s.count(), 5, errors);
         checkEquals("stations.stationsPerZone", s.stationsPerZone(), List.of(3, 2), errors);
         checkEquals("stations.dockingPointsPerStation", s.dockingPointsPerStation(), 5, errors);
-        checkEquals("stations.allDocksAcceptAllVehicleTypes", s.allDocksAcceptAllVehicleTypes(), true, errors);
+        checkEquals(
+                "stations.allDocksAcceptAllVehicleTypes",
+                s.allDocksAcceptAllVehicleTypes(),
+                true,
+                errors);
     }
 
     private void validateFaults(DeploymentConfiguration.FaultRules f, List<String> errors) {
@@ -160,7 +189,8 @@ public class ConfigurationValidator {
             errors.add("faults: section is missing");
             return;
         }
-        checkEquals("faults.outOfServiceTiming", f.outOfServiceTiming(), "AFTER_CURRENT_RIDE", errors);
+        checkEquals(
+                "faults.outOfServiceTiming", f.outOfServiceTiming(), "AFTER_CURRENT_RIDE", errors);
         checkEquals("faults.reportedBrokenRentable", f.reportedBrokenRentable(), false, errors);
         checkEquals("faults.duplicateReports", f.duplicateReports(), "DISCARD", errors);
     }
@@ -170,7 +200,8 @@ public class ConfigurationValidator {
             errors.add("operators: section is missing");
             return;
         }
-        checkEquals("operators.manualTripClosureAllowed", o.manualTripClosureAllowed(), true, errors);
+        checkEquals(
+                "operators.manualTripClosureAllowed", o.manualTripClosureAllowed(), true, errors);
         checkEquals("operators.batteryOverrideAllowed", o.batteryOverrideAllowed(), true, errors);
         checkEquals("operators.faultOverrideAllowed", o.faultOverrideAllowed(), true, errors);
     }
@@ -180,7 +211,11 @@ public class ConfigurationValidator {
             errors.add("interfaces: section is missing");
             return;
         }
-        checkEquals("interfaces.supportedLanguages", i.supportedLanguages(), List.of("en", "fr"), errors);
+        checkEquals(
+                "interfaces.supportedLanguages",
+                i.supportedLanguages(),
+                List.of("en", "fr"),
+                errors);
         checkEquals("interfaces.defaultLanguage", i.defaultLanguage(), "en", errors);
         checkEquals("interfaces.audioEnabledBy", i.audioEnabledBy(), "SCREEN_BUTTON", errors);
     }
@@ -191,17 +226,21 @@ public class ConfigurationValidator {
             return;
         }
         checkEquals("receipts.destinations", r.destinations(), List.of("EMAIL", "APP"), errors);
-        checkEquals("receipts.fields", r.fields(),
-                List.of("UNLOCK_FEE", "DURATION", "RATE", "SURCHARGE", "DEPOSIT_RELEASE"), errors);
+        checkEquals(
+                "receipts.fields",
+                r.fields(),
+                List.of("UNLOCK_FEE", "DURATION", "RATE", "SURCHARGE", "DEPOSIT_RELEASE"),
+                errors);
     }
 
     // ----------------------------------------------------------------- helpers
 
     /**
-     * A money amount must be present, never negative, written with exactly two decimal places
-     * (like {@code 5.00}), and, when {@code mustBePositive}, greater than zero.
+     * A money amount must be present, never negative, written with exactly two decimal places (like
+     * {@code 5.00}), and, when {@code mustBePositive}, greater than zero.
      */
-    private static void checkMoney(String path, BigDecimal amount, boolean mustBePositive, List<String> errors) {
+    private static void checkMoney(
+            String path, BigDecimal amount, boolean mustBePositive, List<String> errors) {
         if (amount == null) {
             errors.add(path + ": is missing");
             return;
@@ -216,7 +255,8 @@ public class ConfigurationValidator {
         }
     }
 
-    private static void checkEquals(String path, Object actual, Object expected, List<String> errors) {
+    private static void checkEquals(
+            String path, Object actual, Object expected, List<String> errors) {
         if (!Objects.equals(actual, expected)) {
             errors.add(path + ": must be " + describe(expected) + " but was " + describe(actual));
         }
