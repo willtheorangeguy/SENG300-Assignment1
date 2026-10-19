@@ -54,7 +54,7 @@ public FaultReport reportProblem(UUID vehicleId, FaultType type, String descript
     return createFaultReport(vehicleId, type, description, FaultSource.RIDER);
 }
 
-private FaultReport createFaultReport(UUID vehicleId, FaultType type,
+private synchronized FaultReport createFaultReport(UUID vehicleId, FaultType type,
                                      String description, FaultSource source) {
 
     if (vehicleId == null || type == null ||
@@ -139,7 +139,7 @@ return Optional.empty();
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-public void changeServiceStatus(UUID vehicleId, VehicleServiceStatus status, String repairNote) {
+public synchronized void changeServiceStatus(UUID vehicleId, VehicleServiceStatus status, String repairNote) {
 
     if (vehicleId == null || status == null) {
         throw new IllegalArgumentException("Invalid vehicle or status");
@@ -153,6 +153,14 @@ public void changeServiceStatus(UUID vehicleId, VehicleServiceStatus status, Str
     Vehicle vehicle = stations.findVehicle(vehicleId)
             .orElseThrow(() -> new NoSuchElementException("Vehicle not found"));
 
+    if (status == VehicleServiceStatus.IN_SERVICE) {
+        Instant repairedAt = clock.instant();
+        for (FaultReport report : reports.values()) {
+            if (report.getVehicle().getId().equals(vehicleId) && report.getResolvedAt() == null) {
+                report.resolve(repairedAt, repairNote);
+            }
+        }
+    }
     vehicle.setServiceStatus(status);
 }
 
