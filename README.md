@@ -36,13 +36,10 @@ Use `./mvnw clean verify` on macOS/Linux. Fleet, rider/membership and station/do
 
 ## Run the console
 
-Copy runtime dependencies after building:
+The package goal creates an executable jar with runtime dependencies included:
 
 ```powershell
-./mvnw.cmd dependency:copy-dependencies -DincludeScope=runtime
-java -cp "target/classes;target/dependency/*" ca.gocycle.presentation.ConsoleApplication --config config/gocycle.example.json
+java -jar target/gocycle-1.0.0.jar --config config/gocycle.example.json
 ```
 
-On macOS/Linux, use `./mvnw` and replace the classpath separator `;` with `:`.
-
-**Current integration status:** console startup still depends on unfinished configuration/application services. The commands above identify the entry point but the full app is not yet runnable end to end. `./mvnw.cmd -Pacceptance test` includes the pending integration scenarios and currently fails on those stubs; the default verification suite runs completed scenarios.
+On macOS/Linux, use the same `java -jar` command. Omit `--config PATH` to use the example deployment, or set `GOCYCLE_CONFIG` to select another configuration.
