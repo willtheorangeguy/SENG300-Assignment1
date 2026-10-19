@@ -104,14 +104,12 @@ return report;
      */
 public Optional<FaultReport> reportTelemetry(UUID vehicleId, Integer battery, FaultType type, Instant observedAt) {
 
-    if (vehicleId == null || observedAt == null ||
+    if (vehicleId == null || observedAt == null || observedAt.isAfter(clock.instant()) ||
         (battery == null && type == null)) {
         throw new IllegalArgumentException("Invalid telemetry");
     }
     Vehicle vehicle = stations.findVehicle(vehicleId)
         .orElseThrow(() -> new NoSuchElementException("Vehicle not found"));
-
-
 
 if (battery != null) {
     if (!(vehicle instanceof ElectricVehicle)) {
@@ -122,11 +120,17 @@ if (battery != null) {
     electric.updateBattery(battery, observedAt);
 }
 
-if (type != null) {
-FaultReport report = createFaultReport(vehicleId, type, "Telemetry fault", FaultSource.TELEMETRY);    return Optional.of(report);
+Optional<FaultReport> result = Optional.empty();
+if (battery != null && battery < 20) {
+    result = Optional.of(createFaultReport(vehicleId, FaultType.LOW_BATTERY,
+            "Battery below 20%", FaultSource.TELEMETRY));
 }
 
-return Optional.empty();
+if (type != null) {
+    result = Optional.of(createFaultReport(vehicleId, type, "Telemetry fault", FaultSource.TELEMETRY));
+}
+
+return result;
 }
 
     /**
