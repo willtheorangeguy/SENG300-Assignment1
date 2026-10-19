@@ -36,10 +36,10 @@ The console starts with five demo stations in two zones. Each station has a peda
 bike, an electric bike, an electric scooter, and two free docks. Payments and
 docking hardware are simulated.
 
-Use `network` to see vehicle IDs, then `register` to create a rider. Use `start`
-with the rider ID, vehicle ID, and payment method. Use `return` with the trip ID
-and a station such as `campus-1`, then `settle` with the trip ID and `APP` or
-`EMAIL`. Type `help` to see the commands or `quit` to exit.
+Use `network` to see vehicle IDs, then `register` and `login` to create and access
+a rider account. Use `start` and follow its prompts to rent a vehicle. Use
+`return` with the trip ID and a station such as `campus-1`, then `settle` with the
+trip ID and `APP` or `EMAIL`. Type `help` to see the commands or `quit` to exit.
 
 To use another configuration, add `--config path/to/config.json` to the run command.
 
