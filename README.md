@@ -26,20 +26,3 @@ Yogita Bamrah - 30265974
 ./mvnw clean package
 ```
 
-## Verify the implemented domain behavior
-
-```powershell
-./mvnw.cmd clean verify
-```
-
-Use `./mvnw clean verify` on macOS/Linux. Fleet, rider/membership and station/dock implementation details, issue coverage, and integration dependencies are documented in [the domain implementation notes](docs/implementation/elyas-domain.md).
-
-## Run the console
-
-The package goal creates an executable jar with runtime dependencies included:
-
-```powershell
-java -jar target/gocycle-1.0.0.jar --config config/gocycle.example.json
-```
-
-On macOS/Linux, use the same `java -jar` command. Omit `--config PATH` to use the example deployment, or set `GOCYCLE_CONFIG` to select another configuration.
