@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='utf-8'?>
 <mxfile host="app.diagrams.net" agent="GoCycle contract generator" version="29.0.0" type="device">
   <diagram id="domain-and-fleet" name="Domain and fleet">
-    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" background="#ffffff" pageScale="1" pageWidth="2400" pageHeight="5000" math="0" shadow="0">
+    <mxGraphModel dx="2660" dy="2014" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" background="#ffffff" pageScale="1" pageWidth="2660" pageHeight="2014" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="Vehicle" value="«abstract»&lt;br&gt;Vehicle" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="80" y="100" width="710" height="437" />
+          <mxGeometry as="geometry" x="80" y="190" width="710" height="432" />
         </mxCell>
         <mxCell id="Vehicle-fields" value="- id: UUID&lt;br&gt;- type: VehicleType&lt;br&gt;- serviceStatus: VehicleServiceStatus&lt;br&gt;- availability: VehicleAvailability" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="Vehicle">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="96" />
@@ -15,7 +15,7 @@
           <mxGeometry as="geometry" x="0" y="156" width="710" height="276" />
         </mxCell>
         <mxCell id="PedalBike" value="PedalBike" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="960" y="100" width="710" height="185" />
+          <mxGeometry as="geometry" x="960" y="190" width="710" height="180" />
         </mxCell>
         <mxCell id="PedalBike-fields" value="—" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="PedalBike">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="42" />
@@ -24,16 +24,16 @@
           <mxGeometry as="geometry" x="0" y="102" width="710" height="78" />
         </mxCell>
         <mxCell id="ElectricVehicle" value="«abstract»&lt;br&gt;ElectricVehicle" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1840" y="100" width="710" height="311" />
+          <mxGeometry as="geometry" x="1840" y="190" width="710" height="324" />
         </mxCell>
-        <mxCell id="ElectricVehicle-fields" value="- batteryPercent: Integer&lt;br&gt;- batteryObservedAt: Instant&lt;br&gt;- batteryMaxAgeSeconds: long" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="ElectricVehicle">
-          <mxGeometry as="geometry" x="0" y="60" width="710" height="78" />
+        <mxCell id="ElectricVehicle-fields" value="&lt;u&gt;- MINIMUM_RENTAL_BATTERY_PERCENT: int&lt;/u&gt;&lt;br&gt;- batteryPercent: Integer&lt;br&gt;- batteryObservedAt: Instant&lt;br&gt;- batteryMaxAgeSeconds: long" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="ElectricVehicle">
+          <mxGeometry as="geometry" x="0" y="60" width="710" height="96" />
         </mxCell>
         <mxCell id="ElectricVehicle-operations" value="+ ElectricVehicle(id: UUID, type: VehicleType, serviceStatus: VehicleServiceStatus,&lt;br&gt;availability: VehicleAvailability, batteryPercent: Integer, batteryObservedAt:&lt;br&gt;Instant, batteryMaxAgeSeconds: long)&lt;br&gt;+ updateBattery(percent: int, observedAt: Instant): void&lt;br&gt;+ isRentable(at: Instant): boolean&lt;br&gt;+ getBatteryPercent(): Integer&lt;br&gt;+ getBatteryObservedAt(): Instant&lt;br&gt;+ getBatteryMaxAgeSeconds(): long" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="ElectricVehicle">
-          <mxGeometry as="geometry" x="0" y="138" width="710" height="168" />
+          <mxGeometry as="geometry" x="0" y="156" width="710" height="168" />
         </mxCell>
         <mxCell id="ElectricBike" value="ElectricBike" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="960" y="465" width="710" height="203" />
+          <mxGeometry as="geometry" x="80" y="822" width="710" height="198" />
         </mxCell>
         <mxCell id="ElectricBike-fields" value="—" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="ElectricBike">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="42" />
@@ -42,7 +42,7 @@
           <mxGeometry as="geometry" x="0" y="102" width="710" height="96" />
         </mxCell>
         <mxCell id="ElectricScooter" value="ElectricScooter" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1840" y="591" width="710" height="203" />
+          <mxGeometry as="geometry" x="960" y="822" width="710" height="198" />
         </mxCell>
         <mxCell id="ElectricScooter-fields" value="—" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="ElectricScooter">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="42" />
@@ -51,16 +51,16 @@
           <mxGeometry as="geometry" x="0" y="102" width="710" height="96" />
         </mxCell>
         <mxCell id="Rider" value="Rider" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="80" y="699" width="710" height="509" />
+          <mxGeometry as="geometry" x="1840" y="822" width="710" height="540" />
         </mxCell>
         <mxCell id="Rider-fields" value="- id: UUID&lt;br&gt;- name: String&lt;br&gt;- email: String&lt;br&gt;- birthDate: LocalDate&lt;br&gt;- studentInstitutionId: String&lt;br&gt;- studentVerifiedUntil: Instant&lt;br&gt;- membership: Membership&lt;br&gt;- preferences: InterfacePreferences" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="Rider">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="168" />
         </mxCell>
-        <mxCell id="Rider-operations" value="+ Rider(id: UUID, name: String, email: String, birthDate: LocalDate,&lt;br&gt;studentInstitutionId: String, studentVerifiedUntil: Instant, membership: Membership,&lt;br&gt;preferences: InterfacePreferences)&lt;br&gt;+ hasActiveMembership(at: Instant): boolean&lt;br&gt;+ hasValidStudentEvidence(at: Instant): boolean&lt;br&gt;+ updatePreferences(value: InterfacePreferences): void&lt;br&gt;+ getId(): UUID&lt;br&gt;+ getName(): String&lt;br&gt;+ getEmail(): String&lt;br&gt;+ getBirthDate(): LocalDate&lt;br&gt;+ getStudentInstitutionId(): String&lt;br&gt;+ getStudentVerifiedUntil(): Instant&lt;br&gt;+ getMembership(): Membership&lt;br&gt;+ getPreferences(): InterfacePreferences" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="Rider">
-          <mxGeometry as="geometry" x="0" y="228" width="710" height="276" />
+        <mxCell id="Rider-operations" value="+ Rider(id: UUID, name: String, email: String, birthDate: LocalDate,&lt;br&gt;studentInstitutionId: String, studentVerifiedUntil: Instant, membership: Membership,&lt;br&gt;preferences: InterfacePreferences)&lt;br&gt;+ hasActiveMembership(at: Instant): boolean&lt;br&gt;+ hasValidStudentEvidence(at: Instant): boolean&lt;br&gt;+ updatePreferences(value: InterfacePreferences): void&lt;br&gt;+ getId(): UUID&lt;br&gt;+ getName(): String&lt;br&gt;+ getEmail(): String&lt;br&gt;+ getBirthDate(): LocalDate&lt;br&gt;+ getStudentInstitutionId(): String&lt;br&gt;+ getStudentVerifiedUntil(): Instant&lt;br&gt;+ getMembership(): Membership&lt;br&gt;+ getPreferences(): InterfacePreferences&lt;br&gt;+ setStudentVerification(institutionId: String, verifiedUntil: Instant): void&lt;br&gt;+ setMembership(membership: Membership): void" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="Rider">
+          <mxGeometry as="geometry" x="0" y="228" width="710" height="312" />
         </mxCell>
         <mxCell id="Membership" value="Membership" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="960" y="848" width="710" height="257" />
+          <mxGeometry as="geometry" x="80" y="1562" width="710" height="252" />
         </mxCell>
         <mxCell id="Membership-fields" value="- validFrom: Instant&lt;br&gt;- validUntil: Instant&lt;br&gt;- paymentReference: String" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="Membership">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="78" />
@@ -69,13 +69,13 @@
           <mxGeometry as="geometry" x="0" y="138" width="710" height="114" />
         </mxCell>
         <mxCell id="InterfacePreferences" value="«record»&lt;br&gt;InterfacePreferences" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1840" y="974" width="710" height="167" />
+          <mxGeometry as="geometry" x="960" y="1562" width="710" height="198" />
         </mxCell>
-        <mxCell id="InterfacePreferences-fields" value="+ language: String&lt;br&gt;+ audioEnabled: boolean" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="InterfacePreferences">
+        <mxCell id="InterfacePreferences-fields" value="- language: String&lt;br&gt;- audioEnabled: boolean" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="InterfacePreferences">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="60" />
         </mxCell>
-        <mxCell id="InterfacePreferences-operations" value="+ InterfacePreferences(language: String, audioEnabled: boolean)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="InterfacePreferences">
-          <mxGeometry as="geometry" x="0" y="120" width="710" height="42" />
+        <mxCell id="InterfacePreferences-operations" value="+ InterfacePreferences(language: String, audioEnabled: boolean)&lt;br&gt;+ language(): String&lt;br&gt;+ audioEnabled(): boolean" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="InterfacePreferences">
+          <mxGeometry as="geometry" x="0" y="120" width="710" height="78" />
         </mxCell>
         <mxCell id="edge-0" value="inherits" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=block;endFill=0;exitX=0;exitY=0.13513513513513514;entryX=1;entryY=0.059665871121718374;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="PedalBike" target="Vehicle">
           <mxGeometry as="geometry" relative="1">
@@ -119,7 +119,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge-5" value="preferences [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;startArrow=diamond;startFill=1;endArrow=open;endFill=0;exitX=1;exitY=0.08840864440078586;entryX=0;entryY=0.2694610778443114;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="Rider" target="InterfacePreferences">
+        <mxCell id="edge-5" value="preferences [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;exitX=1;exitY=0.08840864440078586;entryX=0;entryY=0.2694610778443114;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="Rider" target="InterfacePreferences">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="830" y="744" />
@@ -129,16 +129,19 @@
             </Array>
           </mxGeometry>
         </mxCell>
+        <mxCell id="notation-note" value="Implementation class diagram. «reference» repeats a class defined on another page.&lt;br&gt;Solid arrows: stored references; dashed arrows: dependencies; hollow triangles: inheritance / realization.&lt;br&gt;Filled diamonds: exclusive composition. Multiplicity is at the target. Underlined members are static.&lt;br&gt;Private helper methods, enum definitions and JDK types are omitted. Record accessors are public; generated equals/hashCode/toString are omitted." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="80" y="20" width="2470" height="135" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
   <diagram id="stations" name="Stations">
-    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" background="#ffffff" pageScale="1" pageWidth="2400" pageHeight="5000" math="0" shadow="0">
+    <mxGraphModel dx="2660" dy="2194" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" background="#ffffff" pageScale="1" pageWidth="2660" pageHeight="2194" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="Station" value="Station" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="80" y="100" width="710" height="437" />
+          <mxGeometry as="geometry" x="80" y="190" width="710" height="432" />
         </mxCell>
         <mxCell id="Station-fields" value="- id: String&lt;br&gt;- name: String&lt;br&gt;- latitude: double&lt;br&gt;- longitude: double&lt;br&gt;- zone: Zone&lt;br&gt;- open: boolean&lt;br&gt;- dockingPoints: List&amp;lt;DockingPoint&amp;gt;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="Station">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="150" />
@@ -147,16 +150,16 @@
           <mxGeometry as="geometry" x="0" y="210" width="710" height="222" />
         </mxCell>
         <mxCell id="DockingPoint" value="DockingPoint" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="960" y="100" width="710" height="401" />
+          <mxGeometry as="geometry" x="960" y="190" width="710" height="414" />
         </mxCell>
-        <mxCell id="DockingPoint-fields" value="- id: String&lt;br&gt;- usable: boolean&lt;br&gt;- acceptedTypes: Set&amp;lt;VehicleType&amp;gt;&lt;br&gt;- vehicle: Vehicle&lt;br&gt;- lockConfirmed: boolean" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="DockingPoint">
-          <mxGeometry as="geometry" x="0" y="60" width="710" height="114" />
+        <mxCell id="DockingPoint-fields" value="- id: String&lt;br&gt;- usable: boolean&lt;br&gt;- acceptedTypes: Set&amp;lt;VehicleType&amp;gt;&lt;br&gt;- vehicle: Vehicle&lt;br&gt;- lockConfirmed: boolean&lt;br&gt;- owner: Station" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="DockingPoint">
+          <mxGeometry as="geometry" x="0" y="60" width="710" height="132" />
         </mxCell>
         <mxCell id="DockingPoint-operations" value="+ DockingPoint(id: String, usable: boolean, acceptedTypes: Set&amp;lt;VehicleType&amp;gt;, vehicle:&lt;br&gt;Vehicle, lockConfirmed: boolean)&lt;br&gt;+ canAccept(type: VehicleType): boolean&lt;br&gt;+ attach(vehicle: Vehicle, confirmed: boolean): void&lt;br&gt;+ detach(): Vehicle&lt;br&gt;+ confirmLock(vehicleId: UUID): void&lt;br&gt;+ getId(): String&lt;br&gt;+ getUsable(): boolean&lt;br&gt;+ getAcceptedTypes(): Set&amp;lt;VehicleType&amp;gt;&lt;br&gt;+ getVehicle(): Vehicle&lt;br&gt;+ getLockConfirmed(): boolean" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="DockingPoint">
-          <mxGeometry as="geometry" x="0" y="174" width="710" height="222" />
+          <mxGeometry as="geometry" x="0" y="192" width="710" height="222" />
         </mxCell>
         <mxCell id="Zone" value="Zone" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1840" y="100" width="710" height="311" />
+          <mxGeometry as="geometry" x="1840" y="190" width="710" height="306" />
         </mxCell>
         <mxCell id="Zone-fields" value="- id: String&lt;br&gt;- allowedPaymentMethods: Set&amp;lt;PaymentMethod&amp;gt;&lt;br&gt;- display: DisplayConfiguration" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="Zone">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="78" />
@@ -165,7 +168,7 @@
           <mxGeometry as="geometry" x="0" y="138" width="710" height="168" />
         </mxCell>
         <mxCell id="Vehicle" value="«reference»&lt;br&gt;«abstract»&lt;br&gt;Vehicle" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#eaf2f8;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1840" y="591" width="710" height="437" />
+          <mxGeometry as="geometry" x="80" y="822" width="710" height="432" />
         </mxCell>
         <mxCell id="Vehicle-fields" value="- id: UUID&lt;br&gt;- type: VehicleType&lt;br&gt;- serviceStatus: VehicleServiceStatus&lt;br&gt;- availability: VehicleAvailability" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="Vehicle">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="96" />
@@ -174,16 +177,16 @@
           <mxGeometry as="geometry" x="0" y="156" width="710" height="276" />
         </mxCell>
         <mxCell id="DisplayConfiguration" value="«record»&lt;br&gt;DisplayConfiguration" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="960" y="681" width="710" height="203" />
+          <mxGeometry as="geometry" x="960" y="822" width="710" height="270" />
         </mxCell>
-        <mxCell id="DisplayConfiguration-fields" value="+ primaryColour: String&lt;br&gt;+ secondaryColour: String&lt;br&gt;+ logoPath: String" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="DisplayConfiguration">
-          <mxGeometry as="geometry" x="0" y="60" width="710" height="78" />
+        <mxCell id="DisplayConfiguration-fields" value="- primaryColour: String&lt;br&gt;- secondaryColour: String&lt;br&gt;- logoPath: String&lt;br&gt;&lt;u&gt;- HEX_COLOUR: Pattern&lt;/u&gt;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="DisplayConfiguration">
+          <mxGeometry as="geometry" x="0" y="60" width="710" height="96" />
         </mxCell>
-        <mxCell id="DisplayConfiguration-operations" value="+ DisplayConfiguration(primaryColour: String, secondaryColour: String, logoPath:&lt;br&gt;String)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="DisplayConfiguration">
-          <mxGeometry as="geometry" x="0" y="138" width="710" height="60" />
+        <mxCell id="DisplayConfiguration-operations" value="+ DisplayConfiguration(primaryColour: String, secondaryColour: String, logoPath:&lt;br&gt;String)&lt;br&gt;+ primaryColour(): String&lt;br&gt;+ secondaryColour(): String&lt;br&gt;+ logoPath(): String" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="DisplayConfiguration">
+          <mxGeometry as="geometry" x="0" y="156" width="710" height="114" />
         </mxCell>
         <mxCell id="StationService" value="StationService" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="80" y="717" width="710" height="437" />
+          <mxGeometry as="geometry" x="1840" y="822" width="710" height="432" />
         </mxCell>
         <mxCell id="StationService-fields" value="- stations: Map&amp;lt;String, Station&amp;gt;&lt;br&gt;- vehicles: Map&amp;lt;UUID, Vehicle&amp;gt;&lt;br&gt;- configuration: DeploymentConfiguration&lt;br&gt;- clock: Clock&lt;br&gt;- coordinationLock: ReentrantLock" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="StationService">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="114" />
@@ -191,7 +194,7 @@
         <mxCell id="StationService-operations" value="+ StationService(stations: Map&amp;lt;String, Station&amp;gt;, vehicles: Map&amp;lt;UUID, Vehicle&amp;gt;,&lt;br&gt;configuration: DeploymentConfiguration, clock: Clock, coordinationLock: ReentrantLock)&lt;br&gt;+ findVehicle(id: UUID): Optional&amp;lt;Vehicle&amp;gt;&lt;br&gt;+ findVehicleDock(id: UUID): Optional&amp;lt;DockingPoint&amp;gt;&lt;br&gt;+ findStation(id: String): Optional&amp;lt;Station&amp;gt;&lt;br&gt;+ nearestAvailable(fromId: String, type: VehicleType): Optional&amp;lt;Station&amp;gt;&lt;br&gt;+ relocate(vehicleId: UUID, destinationId: String): void&lt;br&gt;+ updateZone(zoneId: String, methods: Set&amp;lt;PaymentMethod&amp;gt;, display:&lt;br&gt;DisplayConfiguration): void&lt;br&gt;+ listStations(): List&amp;lt;Station&amp;gt;&lt;br&gt;+ listVehicles(): List&amp;lt;Vehicle&amp;gt;&lt;br&gt;+ getConfiguration(): DeploymentConfiguration&lt;br&gt;+ getClock(): Clock" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="StationService">
           <mxGeometry as="geometry" x="0" y="174" width="710" height="258" />
         </mxCell>
-        <mxCell id="edge-0" value="dockingPoints [1..*]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;startArrow=diamond;startFill=1;endArrow=open;endFill=0;exitX=1;exitY=0.057208237986270026;entryX=0;entryY=0.06234413965087282;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="Station" target="DockingPoint">
+        <mxCell id="edge-0" value="dockingPoints [0..*]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;startArrow=diamond;startFill=1;endArrow=open;endFill=0;exitX=1;exitY=0.057208237986270026;entryX=0;entryY=0.06234413965087282;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="Station" target="DockingPoint">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="855.0" y="125" />
@@ -217,7 +220,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge-3" value="display [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;startArrow=diamond;startFill=1;endArrow=open;endFill=0;exitX=0;exitY=0.08038585209003216;entryX=1;entryY=0.12315270935960591;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="Zone" target="DisplayConfiguration">
+        <mxCell id="edge-3" value="display [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;exitX=0;exitY=0.08038585209003216;entryX=1;entryY=0.12315270935960591;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="Zone" target="DisplayConfiguration">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="1765.0" y="125" />
@@ -225,7 +228,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="dep-StationService-Station" value="uses" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;dashed=1;exitX=1;exitY=0.08009153318077804;entryX=1;entryY=0.08009153318077804;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="StationService" target="Station">
+        <mxCell id="dep-StationService-Station" value="stations [0..*]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;exitX=1;exitY=0.08009153318077804;entryX=1;entryY=0.08009153318077804;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="StationService" target="Station">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="883" y="752" />
@@ -233,7 +236,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="dep-StationService-Vehicle" value="uses" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;dashed=1;exitX=1;exitY=0.10297482837528604;entryX=0;entryY=0.10739856801909307;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="StationService" target="Vehicle">
+        <mxCell id="dep-StationService-Vehicle" value="vehicles [0..*]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;exitX=1;exitY=0.10297482837528604;entryX=0;entryY=0.10739856801909307;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="StationService" target="Vehicle">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="830" y="762" />
@@ -243,16 +246,34 @@
             </Array>
           </mxGeometry>
         </mxCell>
+        <mxCell id="assoc-dock-owner" value="owner [0..1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;" edge="1" parent="1" source="DockingPoint" target="Station">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="DeploymentConfiguration" value="«reference»&lt;br&gt;DeploymentConfiguration" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="80" y="1454" width="710" height="540" />
+        </mxCell>
+        <mxCell id="DeploymentConfiguration-fields" value="- pricing: PricingConfiguration&lt;br&gt;- students: DeploymentConfiguration.StudentRules&lt;br&gt;- membership: DeploymentConfiguration.MembershipRules&lt;br&gt;- riders: DeploymentConfiguration.RiderRules&lt;br&gt;- trips: DeploymentConfiguration.TripRules&lt;br&gt;- stations: DeploymentConfiguration.StationRules&lt;br&gt;- faults: DeploymentConfiguration.FaultRules&lt;br&gt;- operators: DeploymentConfiguration.OperatorRules&lt;br&gt;- interfaces: DeploymentConfiguration.InterfaceRules&lt;br&gt;- receipts: DeploymentConfiguration.ReceiptRules" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="DeploymentConfiguration">
+          <mxGeometry as="geometry" x="0" y="60" width="710" height="204" />
+        </mxCell>
+        <mxCell id="DeploymentConfiguration-operations" value="+ DeploymentConfiguration(pricing: PricingConfiguration, students: StudentRules,&lt;br&gt;membership: MembershipRules, riders: RiderRules, trips: TripRules, stations:&lt;br&gt;StationRules, faults: FaultRules, operators: OperatorRules, interfaces:&lt;br&gt;InterfaceRules, receipts: ReceiptRules)&lt;br&gt;+ getPricing(): PricingConfiguration&lt;br&gt;+ getStudents(): StudentRules&lt;br&gt;+ getMembership(): MembershipRules&lt;br&gt;+ getRiders(): RiderRules&lt;br&gt;+ getTrips(): TripRules&lt;br&gt;+ getStations(): StationRules&lt;br&gt;+ getFaults(): FaultRules&lt;br&gt;+ getOperators(): OperatorRules&lt;br&gt;+ getInterfaces(): InterfaceRules&lt;br&gt;+ getReceipts(): ReceiptRules" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="DeploymentConfiguration">
+          <mxGeometry as="geometry" x="0" y="264" width="710" height="276" />
+        </mxCell>
+        <mxCell id="assoc-stations-config" value="configuration [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;" edge="1" parent="1" source="StationService" target="DeploymentConfiguration">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="notation-note" value="Implementation class diagram. «reference» repeats a class defined on another page.&lt;br&gt;Solid arrows: stored references; dashed arrows: dependencies; hollow triangles: inheritance / realization.&lt;br&gt;Filled diamonds: exclusive composition. Multiplicity is at the target. Underlined members are static.&lt;br&gt;Private helper methods, enum definitions and JDK types are omitted. Record accessors are public; generated equals/hashCode/toString are omitted." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="80" y="20" width="2470" height="135" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
   <diagram id="pricing-and-payments" name="Pricing and payments">
-    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" background="#ffffff" pageScale="1" pageWidth="2400" pageHeight="5000" math="0" shadow="0">
+    <mxGraphModel dx="2660" dy="3928" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" background="#ffffff" pageScale="1" pageWidth="2660" pageHeight="3928" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="PricingPolicy" value="«interface»&lt;br&gt;PricingPolicy" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="80" y="100" width="710" height="185" />
+          <mxGeometry as="geometry" x="80" y="190" width="710" height="180" />
         </mxCell>
         <mxCell id="PricingPolicy-fields" value="—" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="PricingPolicy">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="42" />
@@ -261,34 +282,34 @@
           <mxGeometry as="geometry" x="0" y="102" width="710" height="78" />
         </mxCell>
         <mxCell id="CasualPricingPolicy" value="CasualPricingPolicy" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="960" y="100" width="710" height="203" />
+          <mxGeometry as="geometry" x="960" y="190" width="710" height="198" />
         </mxCell>
-        <mxCell id="CasualPricingPolicy-fields" value="—" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="CasualPricingPolicy">
+        <mxCell id="CasualPricingPolicy-fields" value="&lt;u&gt;- CATEGORY: String&lt;/u&gt;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="CasualPricingPolicy">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="42" />
         </mxCell>
         <mxCell id="CasualPricingPolicy-operations" value="+ CasualPricingPolicy()&lt;br&gt;+ supports(rider: Rider, at: Instant, config: DeploymentConfiguration): boolean&lt;br&gt;+ termsFor(type: VehicleType, config: PricingConfiguration):&lt;br&gt;PricingConfiguration.FareTerms" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="CasualPricingPolicy">
           <mxGeometry as="geometry" x="0" y="102" width="710" height="96" />
         </mxCell>
         <mxCell id="MemberPricingPolicy" value="MemberPricingPolicy" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1840" y="100" width="710" height="203" />
+          <mxGeometry as="geometry" x="1840" y="190" width="710" height="198" />
         </mxCell>
-        <mxCell id="MemberPricingPolicy-fields" value="—" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="MemberPricingPolicy">
+        <mxCell id="MemberPricingPolicy-fields" value="&lt;u&gt;- CATEGORY: String&lt;/u&gt;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="MemberPricingPolicy">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="42" />
         </mxCell>
         <mxCell id="MemberPricingPolicy-operations" value="+ MemberPricingPolicy()&lt;br&gt;+ supports(rider: Rider, at: Instant, config: DeploymentConfiguration): boolean&lt;br&gt;+ termsFor(type: VehicleType, config: PricingConfiguration):&lt;br&gt;PricingConfiguration.FareTerms" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="MemberPricingPolicy">
           <mxGeometry as="geometry" x="0" y="102" width="710" height="96" />
         </mxCell>
         <mxCell id="StudentPricingPolicy" value="StudentPricingPolicy" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="80" y="465" width="710" height="203" />
+          <mxGeometry as="geometry" x="80" y="588" width="710" height="216" />
         </mxCell>
-        <mxCell id="StudentPricingPolicy-fields" value="—" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="StudentPricingPolicy">
-          <mxGeometry as="geometry" x="0" y="60" width="710" height="42" />
+        <mxCell id="StudentPricingPolicy-fields" value="&lt;u&gt;- CATEGORY: String&lt;/u&gt;&lt;br&gt;&lt;u&gt;- PER_MINUTE_ONLY: String&lt;/u&gt;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="StudentPricingPolicy">
+          <mxGeometry as="geometry" x="0" y="60" width="710" height="60" />
         </mxCell>
         <mxCell id="StudentPricingPolicy-operations" value="+ StudentPricingPolicy()&lt;br&gt;+ supports(rider: Rider, at: Instant, config: DeploymentConfiguration): boolean&lt;br&gt;+ termsFor(type: VehicleType, config: PricingConfiguration):&lt;br&gt;PricingConfiguration.FareTerms" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="StudentPricingPolicy">
-          <mxGeometry as="geometry" x="0" y="102" width="710" height="96" />
+          <mxGeometry as="geometry" x="0" y="120" width="710" height="96" />
         </mxCell>
         <mxCell id="PricingService" value="PricingService" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="960" y="483" width="710" height="275" />
+          <mxGeometry as="geometry" x="960" y="588" width="710" height="270" />
         </mxCell>
         <mxCell id="PricingService-fields" value="- policies: List&amp;lt;PricingPolicy&amp;gt;&lt;br&gt;- configuration: DeploymentConfiguration" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="PricingService">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="60" />
@@ -297,7 +318,7 @@
           <mxGeometry as="geometry" x="0" y="120" width="710" height="150" />
         </mxCell>
         <mxCell id="PricingConfiguration" value="PricingConfiguration" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1840" y="483" width="710" height="527" />
+          <mxGeometry as="geometry" x="1840" y="588" width="710" height="522" />
         </mxCell>
         <mxCell id="PricingConfiguration-fields" value="- unlockFee: BigDecimal&lt;br&gt;- rates: Map&amp;lt;String, BigDecimal&amp;gt;&lt;br&gt;- samePricesForAllVehicles: boolean&lt;br&gt;- deposit: BigDecimal&lt;br&gt;- billingUnit: String&lt;br&gt;- rounding: String&lt;br&gt;- minimumTripCharge: BigDecimal&lt;br&gt;- surcharge: BigDecimal&lt;br&gt;- studentDiscountAppliesTo: String" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="PricingConfiguration">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="186" />
@@ -305,29 +326,26 @@
         <mxCell id="PricingConfiguration-operations" value="+ PricingConfiguration(unlockFee: BigDecimal, rates: Map&amp;lt;String, BigDecimal&amp;gt;,&lt;br&gt;samePricesForAllVehicles: boolean, deposit: BigDecimal, billingUnit: String, rounding:&lt;br&gt;String, minimumTripCharge: BigDecimal, surcharge: BigDecimal,&lt;br&gt;studentDiscountAppliesTo: String)&lt;br&gt;+ snapshot(category: String, type: VehicleType): FareTerms&lt;br&gt;+ getUnlockFee(): BigDecimal&lt;br&gt;+ getRates(): Map&amp;lt;String, BigDecimal&amp;gt;&lt;br&gt;+ getSamePricesForAllVehicles(): boolean&lt;br&gt;+ getDeposit(): BigDecimal&lt;br&gt;+ getBillingUnit(): String&lt;br&gt;+ getRounding(): String&lt;br&gt;+ getMinimumTripCharge(): BigDecimal&lt;br&gt;+ getSurcharge(): BigDecimal&lt;br&gt;+ getStudentDiscountAppliesTo(): String" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="PricingConfiguration">
           <mxGeometry as="geometry" x="0" y="246" width="710" height="276" />
         </mxCell>
-        <mxCell id="PricingConfiguration-nested" value="Owned nested records: FareTerms" style="shape=note;whiteSpace=wrap;html=1;fontSize=12;fillColor=#fff2cc;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1840" y="1025" width="710" height="90" />
-        </mxCell>
         <mxCell id="FareBreakdown" value="«record»&lt;br&gt;FareBreakdown" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="80" y="848" width="710" height="239" />
+          <mxGeometry as="geometry" x="80" y="1310" width="710" height="324" />
         </mxCell>
-        <mxCell id="FareBreakdown-fields" value="+ unlockCharge: BigDecimal&lt;br&gt;+ billableMinutes: long&lt;br&gt;+ durationCharge: BigDecimal&lt;br&gt;+ surcharge: BigDecimal&lt;br&gt;+ total: BigDecimal" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="FareBreakdown">
+        <mxCell id="FareBreakdown-fields" value="- unlockCharge: BigDecimal&lt;br&gt;- billableMinutes: long&lt;br&gt;- durationCharge: BigDecimal&lt;br&gt;- surcharge: BigDecimal&lt;br&gt;- total: BigDecimal" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="FareBreakdown">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="114" />
         </mxCell>
-        <mxCell id="FareBreakdown-operations" value="+ FareBreakdown(unlockCharge: BigDecimal, billableMinutes: long, durationCharge:&lt;br&gt;BigDecimal, surcharge: BigDecimal, total: BigDecimal)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="FareBreakdown">
-          <mxGeometry as="geometry" x="0" y="174" width="710" height="60" />
+        <mxCell id="FareBreakdown-operations" value="+ FareBreakdown(unlockCharge: BigDecimal, billableMinutes: long, durationCharge:&lt;br&gt;BigDecimal, surcharge: BigDecimal, total: BigDecimal)&lt;br&gt;+ unlockCharge(): BigDecimal&lt;br&gt;+ billableMinutes(): long&lt;br&gt;+ durationCharge(): BigDecimal&lt;br&gt;+ surcharge(): BigDecimal&lt;br&gt;+ total(): BigDecimal" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="FareBreakdown">
+          <mxGeometry as="geometry" x="0" y="174" width="710" height="150" />
         </mxCell>
         <mxCell id="PaymentService" value="PaymentService" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="960" y="938" width="710" height="437" />
+          <mxGeometry as="geometry" x="960" y="1310" width="710" height="450" />
         </mxCell>
-        <mxCell id="PaymentService-fields" value="- gateway: PaymentGateway&lt;br&gt;- receiptDelivery: ReceiptDelivery&lt;br&gt;- configuration: DeploymentConfiguration&lt;br&gt;- clock: Clock&lt;br&gt;- attemptsByOperation: Map&amp;lt;String, Integer&amp;gt;&lt;br&gt;- receiptsByTrip: Map&amp;lt;UUID, Receipt&amp;gt;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="PaymentService">
-          <mxGeometry as="geometry" x="0" y="60" width="710" height="132" />
+        <mxCell id="PaymentService-fields" value="- gateway: PaymentGateway&lt;br&gt;- receiptDelivery: ReceiptDelivery&lt;br&gt;- configuration: DeploymentConfiguration&lt;br&gt;- clock: Clock&lt;br&gt;- attemptsByOperation: Map&amp;lt;String, Integer&amp;gt;&lt;br&gt;- receiptsByTrip: Map&amp;lt;UUID, Receipt&amp;gt;&lt;br&gt;- deliveredReceipts: Set&amp;lt;UUID&amp;gt;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="PaymentService">
+          <mxGeometry as="geometry" x="0" y="60" width="710" height="150" />
         </mxCell>
         <mxCell id="PaymentService-operations" value="+ PaymentService(gateway: PaymentGateway, receiptDelivery: ReceiptDelivery,&lt;br&gt;configuration: DeploymentConfiguration, clock: Clock)&lt;br&gt;+ payMembership(rider: Rider, method: PaymentMethod, zone: Zone, requestId: String):&lt;br&gt;PaymentResult&lt;br&gt;+ holdDeposit(trip: Trip, zone: Zone): PaymentResult&lt;br&gt;+ releaseDeposit(trip: Trip): PaymentResult&lt;br&gt;+ chargeFare(trip: Trip, fare: FareBreakdown): PaymentResult&lt;br&gt;+ sendReceipt(trip: Trip, channel: ReceiptChannel): boolean&lt;br&gt;+ getGateway(): PaymentGateway&lt;br&gt;+ getReceiptDelivery(): ReceiptDelivery&lt;br&gt;+ getConfiguration(): DeploymentConfiguration&lt;br&gt;+ getClock(): Clock" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="PaymentService">
-          <mxGeometry as="geometry" x="0" y="192" width="710" height="240" />
+          <mxGeometry as="geometry" x="0" y="210" width="710" height="240" />
         </mxCell>
         <mxCell id="PaymentGateway" value="«interface»&lt;br&gt;PaymentGateway" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1840" y="1190" width="710" height="221" />
+          <mxGeometry as="geometry" x="1840" y="1310" width="710" height="216" />
         </mxCell>
         <mxCell id="PaymentGateway-fields" value="—" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="PaymentGateway">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="42" />
@@ -336,7 +354,7 @@
           <mxGeometry as="geometry" x="0" y="102" width="710" height="114" />
         </mxCell>
         <mxCell id="ReceiptDelivery" value="«interface»&lt;br&gt;ReceiptDelivery" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="80" y="1267" width="710" height="149" />
+          <mxGeometry as="geometry" x="80" y="1960" width="710" height="144" />
         </mxCell>
         <mxCell id="ReceiptDelivery-fields" value="—" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="ReceiptDelivery">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="42" />
@@ -345,25 +363,25 @@
           <mxGeometry as="geometry" x="0" y="102" width="710" height="42" />
         </mxCell>
         <mxCell id="PaymentResult" value="«record»&lt;br&gt;PaymentResult" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="960" y="1555" width="710" height="221" />
+          <mxGeometry as="geometry" x="960" y="1960" width="710" height="288" />
         </mxCell>
-        <mxCell id="PaymentResult-fields" value="+ success: boolean&lt;br&gt;+ reference: String&lt;br&gt;+ failureCode: String&lt;br&gt;+ failureMessage: String" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="PaymentResult">
+        <mxCell id="PaymentResult-fields" value="- success: boolean&lt;br&gt;- reference: String&lt;br&gt;- failureCode: String&lt;br&gt;- failureMessage: String" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="PaymentResult">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="96" />
         </mxCell>
-        <mxCell id="PaymentResult-operations" value="+ PaymentResult(success: boolean, reference: String, failureCode: String,&lt;br&gt;failureMessage: String)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="PaymentResult">
-          <mxGeometry as="geometry" x="0" y="156" width="710" height="60" />
+        <mxCell id="PaymentResult-operations" value="+ PaymentResult(success: boolean, reference: String, failureCode: String,&lt;br&gt;failureMessage: String)&lt;br&gt;+ success(): boolean&lt;br&gt;+ reference(): String&lt;br&gt;+ failureCode(): String&lt;br&gt;+ failureMessage(): String" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="PaymentResult">
+          <mxGeometry as="geometry" x="0" y="156" width="710" height="132" />
         </mxCell>
         <mxCell id="Receipt" value="«record»&lt;br&gt;Receipt" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1840" y="1591" width="710" height="257" />
+          <mxGeometry as="geometry" x="1840" y="1960" width="710" height="360" />
         </mxCell>
-        <mxCell id="Receipt-fields" value="+ id: UUID&lt;br&gt;+ tripId: UUID&lt;br&gt;+ paidAt: Instant&lt;br&gt;+ currency: String&lt;br&gt;+ fare: FareBreakdown&lt;br&gt;+ depositStatus: DepositStatus" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="Receipt">
+        <mxCell id="Receipt-fields" value="- id: UUID&lt;br&gt;- tripId: UUID&lt;br&gt;- paidAt: Instant&lt;br&gt;- currency: String&lt;br&gt;- fare: FareBreakdown&lt;br&gt;- depositStatus: DepositStatus" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="Receipt">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="132" />
         </mxCell>
-        <mxCell id="Receipt-operations" value="+ Receipt(id: UUID, tripId: UUID, paidAt: Instant, currency: String, fare:&lt;br&gt;FareBreakdown, depositStatus: DepositStatus)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="Receipt">
-          <mxGeometry as="geometry" x="0" y="192" width="710" height="60" />
+        <mxCell id="Receipt-operations" value="+ Receipt(id: UUID, tripId: UUID, paidAt: Instant, currency: String, fare:&lt;br&gt;FareBreakdown, depositStatus: DepositStatus)&lt;br&gt;+ id(): UUID&lt;br&gt;+ tripId(): UUID&lt;br&gt;+ paidAt(): Instant&lt;br&gt;+ currency(): String&lt;br&gt;+ fare(): FareBreakdown&lt;br&gt;+ depositStatus(): DepositStatus" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="Receipt">
+          <mxGeometry as="geometry" x="0" y="192" width="710" height="168" />
         </mxCell>
         <mxCell id="SimulatedPaymentGateway" value="SimulatedPaymentGateway" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="80" y="1596" width="710" height="383" />
+          <mxGeometry as="geometry" x="80" y="2520" width="710" height="378" />
         </mxCell>
         <mxCell id="SimulatedPaymentGateway-fields" value="- holdOutcome: boolean&lt;br&gt;- chargeOutcome: boolean&lt;br&gt;- releaseOutcome: boolean&lt;br&gt;- resultsByRequestId: Map&amp;lt;String, PaymentResult&amp;gt;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="SimulatedPaymentGateway">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="96" />
@@ -372,7 +390,7 @@
           <mxGeometry as="geometry" x="0" y="156" width="710" height="222" />
         </mxCell>
         <mxCell id="SimulatedReceiptDelivery" value="SimulatedReceiptDelivery" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="960" y="1956" width="710" height="221" />
+          <mxGeometry as="geometry" x="960" y="2520" width="710" height="216" />
         </mxCell>
         <mxCell id="SimulatedReceiptDelivery-fields" value="- deliveryOutcome: boolean&lt;br&gt;- deliveredReceipts: List&amp;lt;Receipt&amp;gt;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="SimulatedReceiptDelivery">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="60" />
@@ -424,7 +442,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge-5" value="registered strategies [1..*]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;exitX=0;exitY=0.16363636363636364;entryX=1;entryY=0.24324324324324326;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="PricingService" target="PricingPolicy">
+        <mxCell id="edge-5" value="policies [0..*]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;exitX=0;exitY=0.16363636363636364;entryX=1;entryY=0.24324324324324326;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="PricingService" target="PricingPolicy">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="855.0" y="528" />
@@ -432,7 +450,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge-6" value="configured terms [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;dashed=1;exitX=1;exitY=0.09090909090909091;entryX=0;entryY=0.04743833017077799;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="PricingService" target="PricingConfiguration">
+        <mxCell id="edge-6" value="configuration [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;dashed=1;exitX=1;exitY=0.09090909090909091;entryX=0;entryY=0.04743833017077799;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="PricingService" target="DeploymentConfiguration">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="1745.0" y="508" />
@@ -440,7 +458,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge-7" value="calculates [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;dashed=1;exitX=0;exitY=0.12727272727272726;entryX=1;entryY=0.14644351464435146;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="PricingService" target="FareBreakdown">
+        <mxCell id="edge-7" value="creates" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;exitX=0;exitY=0.12727272727272726;entryX=1;entryY=0.14644351464435146;exitPerimeter=1;entryPerimeter=1;dashed=1;" edge="1" parent="1" source="PricingService" target="FareBreakdown">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="875.0" y="518" />
@@ -518,16 +536,52 @@
             </Array>
           </mxGeometry>
         </mxCell>
+        <mxCell id="DeploymentConfiguration" value="«reference»&lt;br&gt;DeploymentConfiguration" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1840" y="2520" width="710" height="540" />
+        </mxCell>
+        <mxCell id="DeploymentConfiguration-fields" value="- pricing: PricingConfiguration&lt;br&gt;- students: DeploymentConfiguration.StudentRules&lt;br&gt;- membership: DeploymentConfiguration.MembershipRules&lt;br&gt;- riders: DeploymentConfiguration.RiderRules&lt;br&gt;- trips: DeploymentConfiguration.TripRules&lt;br&gt;- stations: DeploymentConfiguration.StationRules&lt;br&gt;- faults: DeploymentConfiguration.FaultRules&lt;br&gt;- operators: DeploymentConfiguration.OperatorRules&lt;br&gt;- interfaces: DeploymentConfiguration.InterfaceRules&lt;br&gt;- receipts: DeploymentConfiguration.ReceiptRules" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="DeploymentConfiguration">
+          <mxGeometry as="geometry" x="0" y="60" width="710" height="204" />
+        </mxCell>
+        <mxCell id="DeploymentConfiguration-operations" value="+ DeploymentConfiguration(pricing: PricingConfiguration, students: StudentRules,&lt;br&gt;membership: MembershipRules, riders: RiderRules, trips: TripRules, stations:&lt;br&gt;StationRules, faults: FaultRules, operators: OperatorRules, interfaces:&lt;br&gt;InterfaceRules, receipts: ReceiptRules)&lt;br&gt;+ getPricing(): PricingConfiguration&lt;br&gt;+ getStudents(): StudentRules&lt;br&gt;+ getMembership(): MembershipRules&lt;br&gt;+ getRiders(): RiderRules&lt;br&gt;+ getTrips(): TripRules&lt;br&gt;+ getStations(): StationRules&lt;br&gt;+ getFaults(): FaultRules&lt;br&gt;+ getOperators(): OperatorRules&lt;br&gt;+ getInterfaces(): InterfaceRules&lt;br&gt;+ getReceipts(): ReceiptRules" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="DeploymentConfiguration">
+          <mxGeometry as="geometry" x="0" y="264" width="710" height="276" />
+        </mxCell>
+        <mxCell id="assoc-pricing-settings" value="pricing [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;" edge="1" parent="1" source="DeploymentConfiguration" target="PricingConfiguration">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dep-policy-config" value="eligibility rules" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;dashed=1;" edge="1" parent="1" source="PricingPolicy" target="DeploymentConfiguration">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc-sim-receipts" value="deliveredReceipts [0..*]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;" edge="1" parent="1" source="SimulatedReceiptDelivery" target="Receipt">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc-sim-results" value="resultsByRequestId [0..*]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;" edge="1" parent="1" source="SimulatedPaymentGateway" target="PaymentResult">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="FareTerms" value="«record»&lt;br&gt;PricingConfiguration.FareTerms" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="80" y="3260" width="710" height="468" />
+        </mxCell>
+        <mxCell id="FareTerms-fields" value="- category: String&lt;br&gt;- unlockFee: BigDecimal&lt;br&gt;- perMinute: BigDecimal&lt;br&gt;- deposit: BigDecimal&lt;br&gt;- surcharge: BigDecimal&lt;br&gt;- billingUnit: String&lt;br&gt;- rounding: String&lt;br&gt;- minimumTripCharge: BigDecimal" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="FareTerms">
+          <mxGeometry as="geometry" x="0" y="60" width="710" height="168" />
+        </mxCell>
+        <mxCell id="FareTerms-operations" value="+ FareTerms(category: String, unlockFee: BigDecimal, perMinute: BigDecimal, deposit:&lt;br&gt;BigDecimal, surcharge: BigDecimal, billingUnit: String, rounding: String, minimumTripCharge:&lt;br&gt;BigDecimal)&lt;br&gt;+ category(): String&lt;br&gt;+ unlockFee(): BigDecimal&lt;br&gt;+ perMinute(): BigDecimal&lt;br&gt;+ deposit(): BigDecimal&lt;br&gt;+ surcharge(): BigDecimal&lt;br&gt;+ billingUnit(): String&lt;br&gt;+ rounding(): String&lt;br&gt;+ minimumTripCharge(): BigDecimal" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="FareTerms">
+          <mxGeometry as="geometry" x="0" y="228" width="710" height="240" />
+        </mxCell>
+        <mxCell id="dep-snapshot-terms" value="creates snapshot" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;dashed=1;" edge="1" parent="1" source="PricingConfiguration" target="FareTerms">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="notation-note" value="Implementation class diagram. «reference» repeats a class defined on another page.&lt;br&gt;Solid arrows: stored references; dashed arrows: dependencies; hollow triangles: inheritance / realization.&lt;br&gt;Filled diamonds: exclusive composition. Multiplicity is at the target. Underlined members are static.&lt;br&gt;Private helper methods, enum definitions and JDK types are omitted. Record accessors are public; generated equals/hashCode/toString are omitted." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="80" y="20" width="2470" height="135" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
   <diagram id="services-and-observer" name="Services and Observer">
-    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" background="#ffffff" pageScale="1" pageWidth="2400" pageHeight="5000" math="0" shadow="0">
+    <mxGraphModel dx="2660" dy="5280" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" background="#ffffff" pageScale="1" pageWidth="2660" pageHeight="5280" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="TripService" value="TripService" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="80" y="100" width="710" height="527" />
+          <mxGeometry as="geometry" x="80" y="190" width="710" height="522" />
         </mxCell>
         <mxCell id="TripService-fields" value="- trips: Map&amp;lt;UUID, Trip&amp;gt;&lt;br&gt;- riders: RiderService&lt;br&gt;- stations: StationService&lt;br&gt;- pricing: PricingService&lt;br&gt;- payments: PaymentService&lt;br&gt;- docking: DockingGateway&lt;br&gt;- configuration: DeploymentConfiguration&lt;br&gt;- clock: Clock&lt;br&gt;- coordinationLock: ReentrantLock" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="TripService">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="186" />
@@ -536,16 +590,16 @@
           <mxGeometry as="geometry" x="0" y="246" width="710" height="276" />
         </mxCell>
         <mxCell id="RiderService" value="RiderService" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="960" y="100" width="710" height="365" />
+          <mxGeometry as="geometry" x="960" y="190" width="710" height="378" />
         </mxCell>
-        <mxCell id="RiderService-fields" value="- riders: Map&amp;lt;UUID, Rider&amp;gt;&lt;br&gt;- paymentService: PaymentService&lt;br&gt;- configuration: DeploymentConfiguration&lt;br&gt;- clock: Clock" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="RiderService">
-          <mxGeometry as="geometry" x="0" y="60" width="710" height="96" />
+        <mxCell id="RiderService-fields" value="- riders: Map&amp;lt;UUID, Rider&amp;gt;&lt;br&gt;- registrationTimes: Map&amp;lt;UUID, Instant&amp;gt;&lt;br&gt;- paymentService: PaymentService&lt;br&gt;- configuration: DeploymentConfiguration&lt;br&gt;- clock: Clock" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="RiderService">
+          <mxGeometry as="geometry" x="0" y="60" width="710" height="114" />
         </mxCell>
         <mxCell id="RiderService-operations" value="+ RiderService(paymentService: PaymentService, configuration: DeploymentConfiguration,&lt;br&gt;clock: Clock)&lt;br&gt;+ register(name: String, email: String, birthDate: LocalDate): Rider&lt;br&gt;+ verifyStudent(riderId: UUID, institutionId: String, partTime: boolean): void&lt;br&gt;+ activateMembership(riderId: UUID, method: PaymentMethod, zone: Zone): Membership&lt;br&gt;+ updatePreferences(riderId: UUID, value: InterfacePreferences): void&lt;br&gt;+ findRider(id: UUID): Optional&amp;lt;Rider&amp;gt;&lt;br&gt;+ getPaymentService(): PaymentService&lt;br&gt;+ getConfiguration(): DeploymentConfiguration&lt;br&gt;+ getClock(): Clock" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="RiderService">
-          <mxGeometry as="geometry" x="0" y="156" width="710" height="204" />
+          <mxGeometry as="geometry" x="0" y="174" width="710" height="204" />
         </mxCell>
         <mxCell id="StationService" value="«reference»&lt;br&gt;StationService" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#eaf2f8;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1840" y="100" width="710" height="437" />
+          <mxGeometry as="geometry" x="1840" y="190" width="710" height="432" />
         </mxCell>
         <mxCell id="StationService-fields" value="- stations: Map&amp;lt;String, Station&amp;gt;&lt;br&gt;- vehicles: Map&amp;lt;UUID, Vehicle&amp;gt;&lt;br&gt;- configuration: DeploymentConfiguration&lt;br&gt;- clock: Clock&lt;br&gt;- coordinationLock: ReentrantLock" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="StationService">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="114" />
@@ -554,7 +608,7 @@
           <mxGeometry as="geometry" x="0" y="174" width="710" height="258" />
         </mxCell>
         <mxCell id="FaultService" value="FaultService" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="960" y="645" width="710" height="473" />
+          <mxGeometry as="geometry" x="80" y="912" width="710" height="468" />
         </mxCell>
         <mxCell id="FaultService-fields" value="- reports: Map&amp;lt;UUID, FaultReport&amp;gt;&lt;br&gt;- observers: List&amp;lt;FaultObserver&amp;gt;&lt;br&gt;- stations: StationService&lt;br&gt;- configuration: DeploymentConfiguration&lt;br&gt;- clock: Clock&lt;br&gt;- failedDeliveries: Map&amp;lt;UUID, List&amp;lt;FaultObserver&amp;gt;&amp;gt;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="FaultService">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="132" />
@@ -563,7 +617,7 @@
           <mxGeometry as="geometry" x="0" y="192" width="710" height="276" />
         </mxCell>
         <mxCell id="FaultObserver" value="«interface»&lt;br&gt;FaultObserver" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1840" y="717" width="710" height="149" />
+          <mxGeometry as="geometry" x="960" y="912" width="710" height="144" />
         </mxCell>
         <mxCell id="FaultObserver-fields" value="—" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="FaultObserver">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="42" />
@@ -572,7 +626,7 @@
           <mxGeometry as="geometry" x="0" y="102" width="710" height="42" />
         </mxCell>
         <mxCell id="MaintenanceNotifier" value="MaintenanceNotifier" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="80" y="807" width="710" height="185" />
+          <mxGeometry as="geometry" x="1840" y="912" width="710" height="180" />
         </mxCell>
         <mxCell id="MaintenanceNotifier-fields" value="- receivedReports: List&amp;lt;FaultReport&amp;gt;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="MaintenanceNotifier">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="42" />
@@ -581,7 +635,7 @@
           <mxGeometry as="geometry" x="0" y="102" width="710" height="78" />
         </mxCell>
         <mxCell id="OperatorDashboard" value="OperatorDashboard" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1840" y="1046" width="710" height="239" />
+          <mxGeometry as="geometry" x="80" y="1580" width="710" height="234" />
         </mxCell>
         <mxCell id="OperatorDashboard-fields" value="- stationService: StationService&lt;br&gt;- faultReports: List&amp;lt;FaultReport&amp;gt;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="OperatorDashboard">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="60" />
@@ -590,16 +644,16 @@
           <mxGeometry as="geometry" x="0" y="120" width="710" height="114" />
         </mxCell>
         <mxCell id="ConsoleApplication" value="ConsoleApplication" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="80" y="1172" width="710" height="419" />
+          <mxGeometry as="geometry" x="960" y="1580" width="710" height="468" />
         </mxCell>
-        <mxCell id="ConsoleApplication-fields" value="- configuration: DeploymentConfiguration&lt;br&gt;- riderService: RiderService&lt;br&gt;- tripService: TripService&lt;br&gt;- faultService: FaultService&lt;br&gt;- stationService: StationService&lt;br&gt;- dashboard: OperatorDashboard" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="ConsoleApplication">
-          <mxGeometry as="geometry" x="0" y="60" width="710" height="132" />
+        <mxCell id="ConsoleApplication-fields" value="- configuration: DeploymentConfiguration&lt;br&gt;- riderService: RiderService&lt;br&gt;- tripService: TripService&lt;br&gt;- faultService: FaultService&lt;br&gt;- stationService: StationService&lt;br&gt;- dashboard: OperatorDashboard&lt;br&gt;- activeRider: Rider&lt;br&gt;- audioEnabled: boolean&lt;br&gt;- accountsByLogin: Map&amp;lt;String, ConsoleApplication.ConsoleAccount&amp;gt;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="ConsoleApplication">
+          <mxGeometry as="geometry" x="0" y="60" width="710" height="186" />
         </mxCell>
-        <mxCell id="ConsoleApplication-operations" value="+ ConsoleApplication(configuration: DeploymentConfiguration, riderService:&lt;br&gt;RiderService, tripService: TripService, faultService: FaultService, stationService:&lt;br&gt;StationService, dashboard: OperatorDashboard)&lt;br&gt;+ main(args: String[]): void&lt;br&gt;+ run(): void&lt;br&gt;+ getConfiguration(): DeploymentConfiguration&lt;br&gt;+ getRiderService(): RiderService&lt;br&gt;+ getTripService(): TripService&lt;br&gt;+ getFaultService(): FaultService&lt;br&gt;+ getStationService(): StationService&lt;br&gt;+ getDashboard(): OperatorDashboard" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="ConsoleApplication">
-          <mxGeometry as="geometry" x="0" y="192" width="710" height="222" />
+        <mxCell id="ConsoleApplication-operations" value="+ ConsoleApplication(configuration: DeploymentConfiguration, riderService:&lt;br&gt;RiderService, tripService: TripService, faultService: FaultService, stationService:&lt;br&gt;StationService, dashboard: OperatorDashboard)&lt;br&gt;&lt;u&gt;+ main(args: String[]): void&lt;/u&gt;&lt;br&gt;+ run(): void&lt;br&gt;+ getConfiguration(): DeploymentConfiguration&lt;br&gt;+ getRiderService(): RiderService&lt;br&gt;+ getTripService(): TripService&lt;br&gt;+ getFaultService(): FaultService&lt;br&gt;+ getStationService(): StationService&lt;br&gt;+ getDashboard(): OperatorDashboard" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="ConsoleApplication">
+          <mxGeometry as="geometry" x="0" y="246" width="710" height="222" />
         </mxCell>
         <mxCell id="Trip" value="Trip" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="960" y="1298" width="710" height="923" />
+          <mxGeometry as="geometry" x="1840" y="1580" width="710" height="918" />
         </mxCell>
         <mxCell id="Trip-fields" value="- id: UUID&lt;br&gt;- rider: Rider&lt;br&gt;- vehicle: Vehicle&lt;br&gt;- originStationId: String&lt;br&gt;- returnDockId: String&lt;br&gt;- startedAt: Instant&lt;br&gt;- endedAt: Instant&lt;br&gt;- status: TripStatus&lt;br&gt;- paymentStatus: PaymentStatus&lt;br&gt;- depositStatus: DepositStatus&lt;br&gt;- pricingTerms: PricingConfiguration.FareTerms&lt;br&gt;- depositReference: String&lt;br&gt;- paymentReference: String&lt;br&gt;- paymentMethod: PaymentMethod&lt;br&gt;- allowedMethodsAtStart: Set&amp;lt;PaymentMethod&amp;gt;&lt;br&gt;- fare: FareBreakdown" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="Trip">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="312" />
@@ -608,7 +662,7 @@
           <mxGeometry as="geometry" x="0" y="372" width="710" height="546" />
         </mxCell>
         <mxCell id="FaultReport" value="FaultReport" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1840" y="1465" width="710" height="455" />
+          <mxGeometry as="geometry" x="80" y="2698" width="710" height="450" />
         </mxCell>
         <mxCell id="FaultReport-fields" value="- id: UUID&lt;br&gt;- vehicle: Vehicle&lt;br&gt;- source: FaultSource&lt;br&gt;- type: FaultType&lt;br&gt;- description: String&lt;br&gt;- reportedAt: Instant&lt;br&gt;- resolvedAt: Instant&lt;br&gt;- resolution: String" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="FaultReport">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="168" />
@@ -617,7 +671,7 @@
           <mxGeometry as="geometry" x="0" y="228" width="710" height="222" />
         </mxCell>
         <mxCell id="DockingGateway" value="«interface»&lt;br&gt;DockingGateway" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="80" y="1771" width="710" height="167" />
+          <mxGeometry as="geometry" x="960" y="2698" width="710" height="162" />
         </mxCell>
         <mxCell id="DockingGateway-fields" value="—" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="DockingGateway">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="42" />
@@ -626,7 +680,7 @@
           <mxGeometry as="geometry" x="0" y="102" width="710" height="60" />
         </mxCell>
         <mxCell id="SimulatedDockingGateway" value="SimulatedDockingGateway" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1840" y="2100" width="710" height="239" />
+          <mxGeometry as="geometry" x="1840" y="2698" width="710" height="234" />
         </mxCell>
         <mxCell id="SimulatedDockingGateway-fields" value="- unlockOutcome: boolean&lt;br&gt;- lockOutcome: boolean" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="SimulatedDockingGateway">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="60" />
@@ -720,15 +774,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge-10" value="active trip preserved [0..1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;dashed=1;exitX=0;exitY=0.07692307692307693;entryX=1;entryY=0.03791982665222102;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="FaultReport" target="Trip">
-          <mxGeometry as="geometry" relative="1">
-            <Array as="points">
-              <mxPoint x="1735.0" y="1500" />
-              <mxPoint x="1735.0" y="1333" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="edge-11" value="wires [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;dashed=1;exitX=1;exitY=0.10739856801909307;entryX=1;entryY=0.08538899430740038;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="ConsoleApplication" target="TripService">
+        <mxCell id="edge-11" value="tripService [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;exitX=1;exitY=0.10739856801909307;entryX=1;entryY=0.08538899430740038;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="ConsoleApplication" target="TripService">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="847" y="1217" />
@@ -736,7 +782,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge-12" value="wires observers [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;dashed=1;exitX=1;exitY=0.059665871121718374;entryX=0;entryY=0.052854122621564484;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="ConsoleApplication" target="FaultService">
+        <mxCell id="edge-12" value="faultService [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;exitX=1;exitY=0.059665871121718374;entryX=0;entryY=0.052854122621564484;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="ConsoleApplication" target="FaultService">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="875.0" y="1197" />
@@ -744,7 +790,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge-13" value="wires [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;dashed=1;exitX=1;exitY=0.08353221957040573;entryX=0;entryY=0.0958904109589041;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="ConsoleApplication" target="RiderService">
+        <mxCell id="edge-13" value="riderService [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;exitX=1;exitY=0.08353221957040573;entryX=0;entryY=0.0958904109589041;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="ConsoleApplication" target="RiderService">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="885.0" y="1207" />
@@ -752,7 +798,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="dep-FaultService-StationService" value="uses" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;dashed=1;exitX=1;exitY=0.09513742071881606;entryX=0;entryY=0.10297482837528604;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="FaultService" target="StationService">
+        <mxCell id="dep-FaultService-StationService" value="stations [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;exitX=1;exitY=0.09513742071881606;entryX=0;entryY=0.10297482837528604;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="FaultService" target="StationService">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="1775.0" y="690" />
@@ -768,7 +814,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="dep-ConsoleApplication-StationService" value="uses" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;dashed=1;exitX=1;exitY=0.08353221957040573;entryX=0;entryY=0.08009153318077804;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="ConsoleApplication" target="StationService">
+        <mxCell id="dep-ConsoleApplication-StationService" value="stationService [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;exitX=1;exitY=0.08353221957040573;entryX=0;entryY=0.08009153318077804;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="ConsoleApplication" target="StationService">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="830" y="1207" />
@@ -778,7 +824,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="dep-ConsoleApplication-OperatorDashboard" value="uses" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;dashed=1;exitX=1;exitY=0.10739856801909307;entryX=0;entryY=0.18828451882845187;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="ConsoleApplication" target="OperatorDashboard">
+        <mxCell id="dep-ConsoleApplication-OperatorDashboard" value="dashboard [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;exitX=1;exitY=0.10739856801909307;entryX=0;entryY=0.18828451882845187;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="ConsoleApplication" target="OperatorDashboard">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="830" y="1217" />
@@ -788,46 +834,172 @@
             </Array>
           </mxGeometry>
         </mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
-  <diagram id="configuration" name="Configuration">
-    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" background="#ffffff" pageScale="1" pageWidth="2400" pageHeight="5000" math="0" shadow="0">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-        <mxCell id="DeploymentConfiguration" value="DeploymentConfiguration" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="80" y="100" width="710" height="545" />
+        <mxCell id="FareTerms" value="«record»&lt;br&gt;PricingConfiguration.FareTerms" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="80" y="3348" width="710" height="468" />
         </mxCell>
-        <mxCell id="DeploymentConfiguration-fields" value="- pricing: PricingConfiguration&lt;br&gt;- students: StudentRules&lt;br&gt;- membership: MembershipRules&lt;br&gt;- riders: RiderRules&lt;br&gt;- trips: TripRules&lt;br&gt;- stations: StationRules&lt;br&gt;- faults: FaultRules&lt;br&gt;- operators: OperatorRules&lt;br&gt;- interfaces: InterfaceRules&lt;br&gt;- receipts: ReceiptRules" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="DeploymentConfiguration">
+        <mxCell id="FareTerms-fields" value="- category: String&lt;br&gt;- unlockFee: BigDecimal&lt;br&gt;- perMinute: BigDecimal&lt;br&gt;- deposit: BigDecimal&lt;br&gt;- surcharge: BigDecimal&lt;br&gt;- billingUnit: String&lt;br&gt;- rounding: String&lt;br&gt;- minimumTripCharge: BigDecimal" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="FareTerms">
+          <mxGeometry as="geometry" x="0" y="60" width="710" height="168" />
+        </mxCell>
+        <mxCell id="FareTerms-operations" value="+ FareTerms(category: String, unlockFee: BigDecimal, perMinute: BigDecimal, deposit:&lt;br&gt;BigDecimal, surcharge: BigDecimal, billingUnit: String, rounding: String, minimumTripCharge:&lt;br&gt;BigDecimal)&lt;br&gt;+ category(): String&lt;br&gt;+ unlockFee(): BigDecimal&lt;br&gt;+ perMinute(): BigDecimal&lt;br&gt;+ deposit(): BigDecimal&lt;br&gt;+ surcharge(): BigDecimal&lt;br&gt;+ billingUnit(): String&lt;br&gt;+ rounding(): String&lt;br&gt;+ minimumTripCharge(): BigDecimal" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="FareTerms">
+          <mxGeometry as="geometry" x="0" y="228" width="710" height="240" />
+        </mxCell>
+        <mxCell id="PricingService" value="«reference»&lt;br&gt;PricingService" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="960" y="3348" width="710" height="270" />
+        </mxCell>
+        <mxCell id="PricingService-fields" value="- policies: List&amp;lt;PricingPolicy&amp;gt;&lt;br&gt;- configuration: DeploymentConfiguration" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="PricingService">
+          <mxGeometry as="geometry" x="0" y="60" width="710" height="60" />
+        </mxCell>
+        <mxCell id="PricingService-operations" value="+ PricingService(policies: List&amp;lt;PricingPolicy&amp;gt;, configuration:&lt;br&gt;DeploymentConfiguration)&lt;br&gt;+ quoteTerms(rider: Rider, type: VehicleType, at: Instant):&lt;br&gt;PricingConfiguration.FareTerms&lt;br&gt;+ calculateFare(trip: Trip): FareBreakdown&lt;br&gt;+ getPolicies(): List&amp;lt;PricingPolicy&amp;gt;&lt;br&gt;+ getConfiguration(): DeploymentConfiguration" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="PricingService">
+          <mxGeometry as="geometry" x="0" y="120" width="710" height="150" />
+        </mxCell>
+        <mxCell id="PaymentService" value="«reference»&lt;br&gt;PaymentService" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1840" y="3348" width="710" height="450" />
+        </mxCell>
+        <mxCell id="PaymentService-fields" value="- gateway: PaymentGateway&lt;br&gt;- receiptDelivery: ReceiptDelivery&lt;br&gt;- configuration: DeploymentConfiguration&lt;br&gt;- clock: Clock&lt;br&gt;- attemptsByOperation: Map&amp;lt;String, Integer&amp;gt;&lt;br&gt;- receiptsByTrip: Map&amp;lt;UUID, Receipt&amp;gt;&lt;br&gt;- deliveredReceipts: Set&amp;lt;UUID&amp;gt;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="PaymentService">
+          <mxGeometry as="geometry" x="0" y="60" width="710" height="150" />
+        </mxCell>
+        <mxCell id="PaymentService-operations" value="+ PaymentService(gateway: PaymentGateway, receiptDelivery: ReceiptDelivery,&lt;br&gt;configuration: DeploymentConfiguration, clock: Clock)&lt;br&gt;+ payMembership(rider: Rider, method: PaymentMethod, zone: Zone, requestId: String):&lt;br&gt;PaymentResult&lt;br&gt;+ holdDeposit(trip: Trip, zone: Zone): PaymentResult&lt;br&gt;+ releaseDeposit(trip: Trip): PaymentResult&lt;br&gt;+ chargeFare(trip: Trip, fare: FareBreakdown): PaymentResult&lt;br&gt;+ sendReceipt(trip: Trip, channel: ReceiptChannel): boolean&lt;br&gt;+ getGateway(): PaymentGateway&lt;br&gt;+ getReceiptDelivery(): ReceiptDelivery&lt;br&gt;+ getConfiguration(): DeploymentConfiguration&lt;br&gt;+ getClock(): Clock" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="PaymentService">
+          <mxGeometry as="geometry" x="0" y="210" width="710" height="240" />
+        </mxCell>
+        <mxCell id="DeploymentConfiguration" value="«reference»&lt;br&gt;DeploymentConfiguration" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="80" y="4016" width="710" height="540" />
+        </mxCell>
+        <mxCell id="DeploymentConfiguration-fields" value="- pricing: PricingConfiguration&lt;br&gt;- students: DeploymentConfiguration.StudentRules&lt;br&gt;- membership: DeploymentConfiguration.MembershipRules&lt;br&gt;- riders: DeploymentConfiguration.RiderRules&lt;br&gt;- trips: DeploymentConfiguration.TripRules&lt;br&gt;- stations: DeploymentConfiguration.StationRules&lt;br&gt;- faults: DeploymentConfiguration.FaultRules&lt;br&gt;- operators: DeploymentConfiguration.OperatorRules&lt;br&gt;- interfaces: DeploymentConfiguration.InterfaceRules&lt;br&gt;- receipts: DeploymentConfiguration.ReceiptRules" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="DeploymentConfiguration">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="204" />
         </mxCell>
         <mxCell id="DeploymentConfiguration-operations" value="+ DeploymentConfiguration(pricing: PricingConfiguration, students: StudentRules,&lt;br&gt;membership: MembershipRules, riders: RiderRules, trips: TripRules, stations:&lt;br&gt;StationRules, faults: FaultRules, operators: OperatorRules, interfaces:&lt;br&gt;InterfaceRules, receipts: ReceiptRules)&lt;br&gt;+ getPricing(): PricingConfiguration&lt;br&gt;+ getStudents(): StudentRules&lt;br&gt;+ getMembership(): MembershipRules&lt;br&gt;+ getRiders(): RiderRules&lt;br&gt;+ getTrips(): TripRules&lt;br&gt;+ getStations(): StationRules&lt;br&gt;+ getFaults(): FaultRules&lt;br&gt;+ getOperators(): OperatorRules&lt;br&gt;+ getInterfaces(): InterfaceRules&lt;br&gt;+ getReceipts(): ReceiptRules" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="DeploymentConfiguration">
           <mxGeometry as="geometry" x="0" y="264" width="710" height="276" />
         </mxCell>
-        <mxCell id="DeploymentConfiguration-nested" value="Owned nested records: StudentRules, MembershipRules, RiderRules, TripRules, StationRules, FaultRules, OperatorRules, InterfaceRules, ReceiptRules" style="shape=note;whiteSpace=wrap;html=1;fontSize=12;fillColor=#fff2cc;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="80" y="660" width="710" height="90" />
+        <mxCell id="Rider" value="«reference»&lt;br&gt;Rider" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="960" y="4016" width="710" height="540" />
+        </mxCell>
+        <mxCell id="Rider-fields" value="- id: UUID&lt;br&gt;- name: String&lt;br&gt;- email: String&lt;br&gt;- birthDate: LocalDate&lt;br&gt;- studentInstitutionId: String&lt;br&gt;- studentVerifiedUntil: Instant&lt;br&gt;- membership: Membership&lt;br&gt;- preferences: InterfacePreferences" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="Rider">
+          <mxGeometry as="geometry" x="0" y="60" width="710" height="168" />
+        </mxCell>
+        <mxCell id="Rider-operations" value="+ Rider(id: UUID, name: String, email: String, birthDate: LocalDate,&lt;br&gt;studentInstitutionId: String, studentVerifiedUntil: Instant, membership: Membership,&lt;br&gt;preferences: InterfacePreferences)&lt;br&gt;+ hasActiveMembership(at: Instant): boolean&lt;br&gt;+ hasValidStudentEvidence(at: Instant): boolean&lt;br&gt;+ updatePreferences(value: InterfacePreferences): void&lt;br&gt;+ getId(): UUID&lt;br&gt;+ getName(): String&lt;br&gt;+ getEmail(): String&lt;br&gt;+ getBirthDate(): LocalDate&lt;br&gt;+ getStudentInstitutionId(): String&lt;br&gt;+ getStudentVerifiedUntil(): Instant&lt;br&gt;+ getMembership(): Membership&lt;br&gt;+ getPreferences(): InterfacePreferences&lt;br&gt;+ setStudentVerification(institutionId: String, verifiedUntil: Instant): void&lt;br&gt;+ setMembership(membership: Membership): void" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="Rider">
+          <mxGeometry as="geometry" x="0" y="228" width="710" height="312" />
+        </mxCell>
+        <mxCell id="Vehicle" value="«reference»&lt;br&gt;«abstract»&lt;br&gt;Vehicle" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1840" y="4016" width="710" height="432" />
+        </mxCell>
+        <mxCell id="Vehicle-fields" value="- id: UUID&lt;br&gt;- type: VehicleType&lt;br&gt;- serviceStatus: VehicleServiceStatus&lt;br&gt;- availability: VehicleAvailability" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="Vehicle">
+          <mxGeometry as="geometry" x="0" y="60" width="710" height="96" />
+        </mxCell>
+        <mxCell id="Vehicle-operations" value="+ Vehicle(id: UUID, type: VehicleType, serviceStatus: VehicleServiceStatus,&lt;br&gt;availability: VehicleAvailability)&lt;br&gt;+ getId(): UUID&lt;br&gt;+ getType(): VehicleType&lt;br&gt;+ isRentable(at: Instant): boolean&lt;br&gt;+ setServiceStatus(status: VehicleServiceStatus): void&lt;br&gt;+ reserve(): void&lt;br&gt;+ reserve(at: Instant): void&lt;br&gt;+ releaseReservation(): void&lt;br&gt;+ markRented(): void&lt;br&gt;+ markRelocating(): void&lt;br&gt;+ markDocked(): void&lt;br&gt;+ getServiceStatus(): VehicleServiceStatus&lt;br&gt;+ getAvailability(): VehicleAvailability" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="Vehicle">
+          <mxGeometry as="geometry" x="0" y="156" width="710" height="276" />
+        </mxCell>
+        <mxCell id="FareBreakdown" value="«reference»&lt;br&gt;«record»&lt;br&gt;FareBreakdown" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="80" y="4756" width="710" height="324" />
+        </mxCell>
+        <mxCell id="FareBreakdown-fields" value="- unlockCharge: BigDecimal&lt;br&gt;- billableMinutes: long&lt;br&gt;- durationCharge: BigDecimal&lt;br&gt;- surcharge: BigDecimal&lt;br&gt;- total: BigDecimal" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="FareBreakdown">
+          <mxGeometry as="geometry" x="0" y="60" width="710" height="114" />
+        </mxCell>
+        <mxCell id="FareBreakdown-operations" value="+ FareBreakdown(unlockCharge: BigDecimal, billableMinutes: long, durationCharge:&lt;br&gt;BigDecimal, surcharge: BigDecimal, total: BigDecimal)&lt;br&gt;+ unlockCharge(): BigDecimal&lt;br&gt;+ billableMinutes(): long&lt;br&gt;+ durationCharge(): BigDecimal&lt;br&gt;+ surcharge(): BigDecimal&lt;br&gt;+ total(): BigDecimal" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="FareBreakdown">
+          <mxGeometry as="geometry" x="0" y="174" width="710" height="150" />
+        </mxCell>
+        <mxCell id="assoc-trip-pricing" value="pricing [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;" edge="1" parent="1" source="TripService" target="PricingService">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc-trip-payment" value="payments [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;" edge="1" parent="1" source="TripService" target="PaymentService">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc-trip-config" value="configuration [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;" edge="1" parent="1" source="TripService" target="DeploymentConfiguration">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc-rider-payment" value="paymentService [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;" edge="1" parent="1" source="RiderService" target="PaymentService">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc-rider-config" value="configuration [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;" edge="1" parent="1" source="RiderService" target="DeploymentConfiguration">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc-rider-store" value="riders [0..*]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;" edge="1" parent="1" source="RiderService" target="Rider">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc-fault-config" value="configuration [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;" edge="1" parent="1" source="FaultService" target="DeploymentConfiguration">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc-trip-rider" value="rider [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;" edge="1" parent="1" source="Trip" target="Rider">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc-trip-vehicle" value="vehicle [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;" edge="1" parent="1" source="Trip" target="Vehicle">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc-trip-terms" value="pricingTerms [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;" edge="1" parent="1" source="Trip" target="FareTerms">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc-trip-fare" value="fare [0..1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;" edge="1" parent="1" source="Trip" target="FareBreakdown">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc-report-vehicle" value="vehicle [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;" edge="1" parent="1" source="FaultReport" target="Vehicle">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc-maintenance-reports" value="receivedReports [0..*]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;" edge="1" parent="1" source="MaintenanceNotifier" target="FaultReport">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc-dashboard-reports" value="faultReports [0..*]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;" edge="1" parent="1" source="OperatorDashboard" target="FaultReport">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc-console-rider" value="activeRider [0..1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;" edge="1" parent="1" source="ConsoleApplication" target="Rider">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc-console-config" value="configuration [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;" edge="1" parent="1" source="ConsoleApplication" target="DeploymentConfiguration">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ConsoleAccount" value="«record»&lt;br&gt;ConsoleApplication.ConsoleAccount {private}" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="960" y="4756" width="710" height="288" />
+        </mxCell>
+        <mxCell id="ConsoleAccount-fields" value="- riderId: UUID&lt;br&gt;- password: String&lt;br&gt;- accountType: String&lt;br&gt;- paymentMethod: PaymentMethod" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="ConsoleAccount">
+          <mxGeometry as="geometry" x="0" y="60" width="710" height="96" />
+        </mxCell>
+        <mxCell id="ConsoleAccount-operations" value="- ConsoleAccount(riderId: UUID, password: String, accountType: String, paymentMethod:&lt;br&gt;PaymentMethod)&lt;br&gt;+ riderId(): UUID&lt;br&gt;+ password(): String&lt;br&gt;+ accountType(): String&lt;br&gt;+ paymentMethod(): PaymentMethod" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="ConsoleAccount">
+          <mxGeometry as="geometry" x="0" y="156" width="710" height="132" />
+        </mxCell>
+        <mxCell id="assoc-console-accounts" value="accountsByLogin [0..*]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;" edge="1" parent="1" source="ConsoleApplication" target="ConsoleAccount">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="notation-note" value="Implementation class diagram. «reference» repeats a class defined on another page.&lt;br&gt;Solid arrows: stored references; dashed arrows: dependencies; hollow triangles: inheritance / realization.&lt;br&gt;Filled diamonds: exclusive composition. Multiplicity is at the target. Underlined members are static.&lt;br&gt;Private helper methods, enum definitions and JDK types are omitted. Record accessors are public; generated equals/hashCode/toString are omitted." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="80" y="20" width="2470" height="135" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="configuration" name="Configuration">
+    <mxGraphModel dx="2660" dy="2320" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" background="#ffffff" pageScale="1" pageWidth="2660" pageHeight="2320" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="DeploymentConfiguration" value="DeploymentConfiguration" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="80" y="190" width="710" height="540" />
+        </mxCell>
+        <mxCell id="DeploymentConfiguration-fields" value="- pricing: PricingConfiguration&lt;br&gt;- students: DeploymentConfiguration.StudentRules&lt;br&gt;- membership: DeploymentConfiguration.MembershipRules&lt;br&gt;- riders: DeploymentConfiguration.RiderRules&lt;br&gt;- trips: DeploymentConfiguration.TripRules&lt;br&gt;- stations: DeploymentConfiguration.StationRules&lt;br&gt;- faults: DeploymentConfiguration.FaultRules&lt;br&gt;- operators: DeploymentConfiguration.OperatorRules&lt;br&gt;- interfaces: DeploymentConfiguration.InterfaceRules&lt;br&gt;- receipts: DeploymentConfiguration.ReceiptRules" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="DeploymentConfiguration">
+          <mxGeometry as="geometry" x="0" y="60" width="710" height="204" />
+        </mxCell>
+        <mxCell id="DeploymentConfiguration-operations" value="+ DeploymentConfiguration(pricing: PricingConfiguration, students: StudentRules,&lt;br&gt;membership: MembershipRules, riders: RiderRules, trips: TripRules, stations:&lt;br&gt;StationRules, faults: FaultRules, operators: OperatorRules, interfaces:&lt;br&gt;InterfaceRules, receipts: ReceiptRules)&lt;br&gt;+ getPricing(): PricingConfiguration&lt;br&gt;+ getStudents(): StudentRules&lt;br&gt;+ getMembership(): MembershipRules&lt;br&gt;+ getRiders(): RiderRules&lt;br&gt;+ getTrips(): TripRules&lt;br&gt;+ getStations(): StationRules&lt;br&gt;+ getFaults(): FaultRules&lt;br&gt;+ getOperators(): OperatorRules&lt;br&gt;+ getInterfaces(): InterfaceRules&lt;br&gt;+ getReceipts(): ReceiptRules" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="DeploymentConfiguration">
+          <mxGeometry as="geometry" x="0" y="264" width="710" height="276" />
+        </mxCell>
+        <mxCell id="DeploymentConfiguration-nested" value="Nested record types (details omitted):&lt;br&gt;StudentRules, MembershipRules, RiderRules, TripRules, StationRules,&lt;br&gt;FaultRules, OperatorRules, InterfaceRules, ReceiptRules" style="shape=note;whiteSpace=wrap;html=1;fontSize=12;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="960" y="190" width="710" height="90" />
         </mxCell>
         <mxCell id="ConfigurationLoader" value="ConfigurationLoader" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="960" y="100" width="710" height="185" />
+          <mxGeometry as="geometry" x="1840" y="190" width="710" height="198" />
         </mxCell>
-        <mxCell id="ConfigurationLoader-fields" value="- validator: ConfigurationValidator" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="ConfigurationLoader">
-          <mxGeometry as="geometry" x="0" y="60" width="710" height="42" />
+        <mxCell id="ConfigurationLoader-fields" value="&lt;u&gt;- MAPPER: ObjectMapper&lt;/u&gt;&lt;br&gt;- validator: ConfigurationValidator" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="ConfigurationLoader">
+          <mxGeometry as="geometry" x="0" y="60" width="710" height="60" />
         </mxCell>
         <mxCell id="ConfigurationLoader-operations" value="+ ConfigurationLoader(validator: ConfigurationValidator)&lt;br&gt;+ load(path: Path): DeploymentConfiguration&lt;br&gt;+ getValidator(): ConfigurationValidator" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="ConfigurationLoader">
-          <mxGeometry as="geometry" x="0" y="102" width="710" height="78" />
+          <mxGeometry as="geometry" x="0" y="120" width="710" height="78" />
         </mxCell>
         <mxCell id="ConfigurationValidator" value="ConfigurationValidator" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1840" y="100" width="710" height="167" />
+          <mxGeometry as="geometry" x="80" y="930" width="710" height="162" />
         </mxCell>
-        <mxCell id="ConfigurationValidator-fields" value="—" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="ConfigurationValidator">
+        <mxCell id="ConfigurationValidator-fields" value="&lt;u&gt;- RATE_CATEGORIES: Set&amp;lt;String&amp;gt;&lt;/u&gt;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="ConfigurationValidator">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="42" />
         </mxCell>
         <mxCell id="ConfigurationValidator-operations" value="+ ConfigurationValidator()&lt;br&gt;+ validate(value: DeploymentConfiguration): List&amp;lt;String&amp;gt;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="ConfigurationValidator">
           <mxGeometry as="geometry" x="0" y="102" width="710" height="60" />
         </mxCell>
         <mxCell id="PricingConfiguration" value="«reference»&lt;br&gt;PricingConfiguration" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#eaf2f8;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1840" y="447" width="710" height="527" />
+          <mxGeometry as="geometry" x="960" y="930" width="710" height="522" />
         </mxCell>
         <mxCell id="PricingConfiguration-fields" value="- unlockFee: BigDecimal&lt;br&gt;- rates: Map&amp;lt;String, BigDecimal&amp;gt;&lt;br&gt;- samePricesForAllVehicles: boolean&lt;br&gt;- deposit: BigDecimal&lt;br&gt;- billingUnit: String&lt;br&gt;- rounding: String&lt;br&gt;- minimumTripCharge: BigDecimal&lt;br&gt;- surcharge: BigDecimal&lt;br&gt;- studentDiscountAppliesTo: String" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="PricingConfiguration">
           <mxGeometry as="geometry" x="0" y="60" width="710" height="186" />
@@ -835,26 +1007,23 @@
         <mxCell id="PricingConfiguration-operations" value="+ PricingConfiguration(unlockFee: BigDecimal, rates: Map&amp;lt;String, BigDecimal&amp;gt;,&lt;br&gt;samePricesForAllVehicles: boolean, deposit: BigDecimal, billingUnit: String, rounding:&lt;br&gt;String, minimumTripCharge: BigDecimal, surcharge: BigDecimal,&lt;br&gt;studentDiscountAppliesTo: String)&lt;br&gt;+ snapshot(category: String, type: VehicleType): FareTerms&lt;br&gt;+ getUnlockFee(): BigDecimal&lt;br&gt;+ getRates(): Map&amp;lt;String, BigDecimal&amp;gt;&lt;br&gt;+ getSamePricesForAllVehicles(): boolean&lt;br&gt;+ getDeposit(): BigDecimal&lt;br&gt;+ getBillingUnit(): String&lt;br&gt;+ getRounding(): String&lt;br&gt;+ getMinimumTripCharge(): BigDecimal&lt;br&gt;+ getSurcharge(): BigDecimal&lt;br&gt;+ getStudentDiscountAppliesTo(): String" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="PricingConfiguration">
           <mxGeometry as="geometry" x="0" y="246" width="710" height="276" />
         </mxCell>
-        <mxCell id="PricingConfiguration-nested" value="Owned nested records: FareTerms" style="shape=note;whiteSpace=wrap;html=1;fontSize=12;fillColor=#fff2cc;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="1840" y="989" width="710" height="90" />
-        </mxCell>
         <mxCell id="DisplayConfiguration" value="«reference»&lt;br&gt;«record»&lt;br&gt;DisplayConfiguration" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#eaf2f8;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="960" y="465" width="710" height="203" />
+          <mxGeometry as="geometry" x="1840" y="930" width="710" height="270" />
         </mxCell>
-        <mxCell id="DisplayConfiguration-fields" value="+ primaryColour: String&lt;br&gt;+ secondaryColour: String&lt;br&gt;+ logoPath: String" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="DisplayConfiguration">
-          <mxGeometry as="geometry" x="0" y="60" width="710" height="78" />
+        <mxCell id="DisplayConfiguration-fields" value="- primaryColour: String&lt;br&gt;- secondaryColour: String&lt;br&gt;- logoPath: String&lt;br&gt;&lt;u&gt;- HEX_COLOUR: Pattern&lt;/u&gt;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="DisplayConfiguration">
+          <mxGeometry as="geometry" x="0" y="60" width="710" height="96" />
         </mxCell>
-        <mxCell id="DisplayConfiguration-operations" value="+ DisplayConfiguration(primaryColour: String, secondaryColour: String, logoPath:&lt;br&gt;String)" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="DisplayConfiguration">
-          <mxGeometry as="geometry" x="0" y="138" width="710" height="60" />
+        <mxCell id="DisplayConfiguration-operations" value="+ DisplayConfiguration(primaryColour: String, secondaryColour: String, logoPath:&lt;br&gt;String)&lt;br&gt;+ primaryColour(): String&lt;br&gt;+ secondaryColour(): String&lt;br&gt;+ logoPath(): String" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="DisplayConfiguration">
+          <mxGeometry as="geometry" x="0" y="156" width="710" height="114" />
         </mxCell>
         <mxCell id="ConsoleApplication" value="«reference»&lt;br&gt;ConsoleApplication" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#eaf2f8;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry as="geometry" x="80" y="825" width="710" height="419" />
+          <mxGeometry as="geometry" x="80" y="1652" width="710" height="468" />
         </mxCell>
-        <mxCell id="ConsoleApplication-fields" value="- configuration: DeploymentConfiguration&lt;br&gt;- riderService: RiderService&lt;br&gt;- tripService: TripService&lt;br&gt;- faultService: FaultService&lt;br&gt;- stationService: StationService&lt;br&gt;- dashboard: OperatorDashboard" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="ConsoleApplication">
-          <mxGeometry as="geometry" x="0" y="60" width="710" height="132" />
+        <mxCell id="ConsoleApplication-fields" value="- configuration: DeploymentConfiguration&lt;br&gt;- riderService: RiderService&lt;br&gt;- tripService: TripService&lt;br&gt;- faultService: FaultService&lt;br&gt;- stationService: StationService&lt;br&gt;- dashboard: OperatorDashboard&lt;br&gt;- activeRider: Rider&lt;br&gt;- audioEnabled: boolean&lt;br&gt;- accountsByLogin: Map&amp;lt;String, ConsoleApplication.ConsoleAccount&amp;gt;" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="ConsoleApplication">
+          <mxGeometry as="geometry" x="0" y="60" width="710" height="186" />
         </mxCell>
-        <mxCell id="ConsoleApplication-operations" value="+ ConsoleApplication(configuration: DeploymentConfiguration, riderService:&lt;br&gt;RiderService, tripService: TripService, faultService: FaultService, stationService:&lt;br&gt;StationService, dashboard: OperatorDashboard)&lt;br&gt;+ main(args: String[]): void&lt;br&gt;+ run(): void&lt;br&gt;+ getConfiguration(): DeploymentConfiguration&lt;br&gt;+ getRiderService(): RiderService&lt;br&gt;+ getTripService(): TripService&lt;br&gt;+ getFaultService(): FaultService&lt;br&gt;+ getStationService(): StationService&lt;br&gt;+ getDashboard(): OperatorDashboard" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="ConsoleApplication">
-          <mxGeometry as="geometry" x="0" y="192" width="710" height="222" />
+        <mxCell id="ConsoleApplication-operations" value="+ ConsoleApplication(configuration: DeploymentConfiguration, riderService:&lt;br&gt;RiderService, tripService: TripService, faultService: FaultService, stationService:&lt;br&gt;StationService, dashboard: OperatorDashboard)&lt;br&gt;&lt;u&gt;+ main(args: String[]): void&lt;/u&gt;&lt;br&gt;+ run(): void&lt;br&gt;+ getConfiguration(): DeploymentConfiguration&lt;br&gt;+ getRiderService(): RiderService&lt;br&gt;+ getTripService(): TripService&lt;br&gt;+ getFaultService(): FaultService&lt;br&gt;+ getStationService(): StationService&lt;br&gt;+ getDashboard(): OperatorDashboard" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="ConsoleApplication">
+          <mxGeometry as="geometry" x="0" y="246" width="710" height="222" />
         </mxCell>
         <mxCell id="edge-0" value="validator [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;exitX=1;exitY=0.13513513513513514;entryX=0;entryY=0.1497005988023952;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="ConfigurationLoader" target="ConfigurationValidator">
           <mxGeometry as="geometry" relative="1">
@@ -872,7 +1041,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge-2" value="pricing [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;startArrow=diamond;startFill=1;endArrow=open;endFill=0;exitX=1;exitY=0.08256880733944955;entryX=0;entryY=0.08538899430740038;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="DeploymentConfiguration" target="PricingConfiguration">
+        <mxCell id="edge-2" value="pricing [1]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;exitX=1;exitY=0.08256880733944955;entryX=0;entryY=0.08538899430740038;exitPerimeter=1;entryPerimeter=1;" edge="1" parent="1" source="DeploymentConfiguration" target="PricingConfiguration">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="830" y="145" />
@@ -907,6 +1076,33 @@
               <mxPoint x="830" y="145" />
             </Array>
           </mxGeometry>
+        </mxCell>
+        <mxCell id="FareTerms" value="«record»&lt;br&gt;PricingConfiguration.FareTerms" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="960" y="1652" width="710" height="468" />
+        </mxCell>
+        <mxCell id="FareTerms-fields" value="- category: String&lt;br&gt;- unlockFee: BigDecimal&lt;br&gt;- perMinute: BigDecimal&lt;br&gt;- deposit: BigDecimal&lt;br&gt;- surcharge: BigDecimal&lt;br&gt;- billingUnit: String&lt;br&gt;- rounding: String&lt;br&gt;- minimumTripCharge: BigDecimal" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="FareTerms">
+          <mxGeometry as="geometry" x="0" y="60" width="710" height="168" />
+        </mxCell>
+        <mxCell id="FareTerms-operations" value="+ FareTerms(category: String, unlockFee: BigDecimal, perMinute: BigDecimal, deposit:&lt;br&gt;BigDecimal, surcharge: BigDecimal, billingUnit: String, rounding: String, minimumTripCharge:&lt;br&gt;BigDecimal)&lt;br&gt;+ category(): String&lt;br&gt;+ unlockFee(): BigDecimal&lt;br&gt;+ perMinute(): BigDecimal&lt;br&gt;+ deposit(): BigDecimal&lt;br&gt;+ surcharge(): BigDecimal&lt;br&gt;+ billingUnit(): String&lt;br&gt;+ rounding(): String&lt;br&gt;+ minimumTripCharge(): BigDecimal" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="FareTerms">
+          <mxGeometry as="geometry" x="0" y="228" width="710" height="240" />
+        </mxCell>
+        <mxCell id="dep-snapshot-terms" value="creates snapshot" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;dashed=1;" edge="1" parent="1" source="PricingConfiguration" target="FareTerms">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ConsoleAccount" value="«record»&lt;br&gt;ConsoleApplication.ConsoleAccount {private}" style="swimlane;html=1;startSize=60;horizontal=1;rounded=0;whiteSpace=wrap;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fillColor=#ffffff;strokeColor=#243447;swimlaneFillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1840" y="1652" width="710" height="288" />
+        </mxCell>
+        <mxCell id="ConsoleAccount-fields" value="- riderId: UUID&lt;br&gt;- password: String&lt;br&gt;- accountType: String&lt;br&gt;- paymentMethod: PaymentMethod" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="ConsoleAccount">
+          <mxGeometry as="geometry" x="0" y="60" width="710" height="96" />
+        </mxCell>
+        <mxCell id="ConsoleAccount-operations" value="- ConsoleAccount(riderId: UUID, password: String, accountType: String, paymentMethod:&lt;br&gt;PaymentMethod)&lt;br&gt;+ riderId(): UUID&lt;br&gt;+ password(): String&lt;br&gt;+ accountType(): String&lt;br&gt;+ paymentMethod(): PaymentMethod" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=12;spacingTop=8;fontFamily=monospace;fontSize=12;strokeColor=#243447;fillColor=#ffffff;overflow=hidden;" vertex="1" parent="ConsoleAccount">
+          <mxGeometry as="geometry" x="0" y="156" width="710" height="132" />
+        </mxCell>
+        <mxCell id="assoc-console-accounts" value="accountsByLogin [0..*]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;labelBackgroundColor=#ffffff;strokeColor=#486581;endArrow=open;endFill=0;" edge="1" parent="1" source="ConsoleApplication" target="ConsoleAccount">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="notation-note" value="Implementation class diagram. «reference» repeats a class defined on another page.&lt;br&gt;Solid arrows: stored references; dashed arrows: dependencies; hollow triangles: inheritance / realization.&lt;br&gt;Filled diamonds: exclusive composition. Multiplicity is at the target. Underlined members are static.&lt;br&gt;Private helper methods, enum definitions and JDK types are omitted. Record accessors are public; generated equals/hashCode/toString are omitted." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="80" y="20" width="2470" height="135" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
