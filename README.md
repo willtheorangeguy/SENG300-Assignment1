@@ -1,5 +1,7 @@
 # GoCycle — SENG 300 Assignment 1
 
+Original Repository URL: [https://github.com/willtheorangeguy/SENG300-Assignment1](https://github.com/willtheorangeguy/SENG300-Assignment1)
+
 ```text
 William Vandergraaf - 30222999
 Kahan Raval - 30245804
@@ -40,6 +42,3 @@ Use `network` to see vehicle IDs, then `register` and `login` to create and acce
 a rider account. Use `start` and follow its prompts to rent a vehicle. Use
 `return` with the trip ID and a station such as `campus-1`, then `settle` with the
 trip ID and `APP` or `EMAIL`. Type `help` to see the commands or `quit` to exit.
-
-To use another configuration, add `--config path/to/config.json` to the run command.
-
