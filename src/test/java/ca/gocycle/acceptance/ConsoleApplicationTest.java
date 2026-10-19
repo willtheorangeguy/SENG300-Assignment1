@@ -130,7 +130,7 @@ class ConsoleApplicationTest {
         var dashboard = new OperatorDashboard(stations);
         var faults = new FaultService(List.of(dashboard), stations, configuration, clock);
         var app = new ConsoleApplication(configuration, riders, trips, faults, stations, dashboard);
-        var output = run(app, "register\nTest Rider\n2000-01-01\nrider@ucalgary.ca\nsecret\nCASUAL\nCREDIT_CARD\n"
+        var output = run(app, "language\nen\nregister\nTest Rider\n2000-01-01\nrider@ucalgary.ca\nsecret\nCASUAL\nCREDIT_CARD\n"
                 + "login\nrider@ucalgary.ca\nsecret\nsettle\n" + trip.getId() + " APP\nquit\n");
         assertTrue(output.contains("Bienvenue, Test Rider"));
         assertTrue(output.contains("[audio]"));
@@ -139,6 +139,11 @@ class ConsoleApplicationTest {
         assertTrue(output.contains("Tarif: 0.50 / minute"));
         assertTrue(output.contains("Supplément: 0"));
         assertTrue(output.contains("Dépôt: 50.00 RELEASED"));
+        assertTrue(output.contains("Account type [CASUAL, MEMBER, STUDENT]:"), output);
+        assertTrue(output.contains("Payment method [CREDIT_CARD, TRANSIT_CARD, PHONE_WALLET]:"), output);
+        assertTrue(output.contains("destination du reçu [APP, EMAIL]:"), output);
+        assertTrue(output.contains("Language [en, fr]:"), output);
+        assertTrue(output.contains("[help, aide, register, login, start, return"), output);
     }
 
     @Test
