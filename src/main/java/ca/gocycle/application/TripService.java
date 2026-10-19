@@ -112,7 +112,7 @@ Trip trip = new Trip(
     TripStatus.PENDING,
     PaymentStatus.NOT_DUE,
     DepositStatus.NONE,
-configuration.getPricing().snapshot("CASUAL", vehicle.getType()),
+    pricing.quoteTerms(rider, vehicle.getType(), clock.instant()),
     null,
     null,
     method,
