@@ -107,7 +107,7 @@ public class ConsoleApplication {
         while (true) {
             System.out.print(withOptions(language.equals("fr") ? "Commande (aide pour les options)" : "Command (help for options)",
                     List.of("help", "aide", "register", "login", "start", "return", "close", "settle", "fault",
-                            "repair", "battery", "preferences", "language", "network", "audio on", "audio off",
+                            "repair", "battery", "preferences", "language", "network", "relocate", "audio on", "audio off",
                             "quit", "quitter", "exit")) + ": ");
             if (!scanner.hasNextLine()) {
                 return;
@@ -117,8 +117,8 @@ public class ConsoleApplication {
                 case "quit", "exit", "quitter" -> { return; }
                 case "help", "aide" -> {
                     System.out.println(language.equals("fr")
-                            ? "Choisissez: register, login, start, return, close, settle, fault, repair, battery, preferences, language, network, audio on/off, quit"
-                            : "Choose: register, login, start, return, close, settle, fault, repair, battery, preferences, language, network, audio on/off, quit");
+                            ? "Choisissez: register, login, start, return, close, settle, fault, repair, battery, preferences, language, network, relocate, audio on/off, quit"
+                            : "Choose: register, login, start, return, close, settle, fault, repair, battery, preferences, language, network, relocate, audio on/off, quit");
                     showBranding();
                     if (audioEnabled) System.out.println("[audio]");
                 }
@@ -136,6 +136,7 @@ public class ConsoleApplication {
                     System.out.println(language.equals("fr") ? "Audio désactivé" : "Audio disabled");
                 }
                 case "network" -> System.out.println(dashboard.showNetworkState());
+                case "relocate" -> relocateVehicle(scanner, language);
                 case "register" -> registerRider(scanner, language);
                 case "start" -> startTrip(scanner, language);
                 case "return" -> returnTrip(scanner, language);
@@ -370,6 +371,19 @@ public class ConsoleApplication {
             faultService.reportTelemetry(UUID.fromString(fields[0]), Integer.parseInt(fields[1]),
                     null, faultService.getClock().instant());
             System.out.println(language.equals("fr") ? "Batterie mise à jour" : "Battery updated");
+        } catch (RuntimeException exception) {
+            showError(exception, language);
+        }
+    }
+
+    private void relocateVehicle(Scanner scanner, String language) {
+        try {
+            System.out.print(withOptions(language.equals("fr") ? "ID du véhicule, station de destination"
+                    : "Vehicle ID, destination station", stationOptions()) + ": ");
+            var fields = scanner.nextLine().trim().split("\\s+");
+            if (fields.length != 2) throw new IllegalArgumentException("Enter both values");
+            stationService.relocate(UUID.fromString(fields[0]), fields[1]);
+            System.out.println((language.equals("fr") ? "Véhicule déplacé vers " : "Vehicle relocated to ") + fields[1]);
         } catch (RuntimeException exception) {
             showError(exception, language);
         }

@@ -58,18 +58,42 @@ public class OperatorDashboard implements FaultObserver {
      */
     public String showNetworkState() {
         StringBuilder output = new StringBuilder("Network state\nStations:\n");
+        Map<UUID, String> locations = new HashMap<>();
         for (var station : stationService.listStations()) {
+            long occupied = station.getDockingPoints().stream().filter(dock -> dock.getVehicle() != null).count();
+            long free = station.getDockingPoints().stream()
+                    .filter(dock -> dock.getUsable() && dock.getVehicle() == null).count();
             output.append("- ").append(station.getName())
                     .append(" (").append(station.getId()).append(")")
                     .append(station.getOpen() ? " open" : " closed")
+                    .append(" occupied=").append(occupied).append("/").append(station.getDockingPoints().size())
+                    .append(" free=").append(station.getOpen() ? free : 0)
                     .append('\n');
+            for (var dock : station.getDockingPoints()) {
+                var vehicle = dock.getVehicle();
+                if (vehicle != null) {
+                    locations.put(vehicle.getId(), station.getId() + "/" + dock.getId());
+                }
+                output.append("  ").append(dock.getId()).append(": ")
+                        .append(vehicle == null ? "empty" : vehicle.getId())
+                        .append(dock.getUsable() ? "" : " unusable")
+                        .append(vehicle != null && !dock.getLockConfirmed() ? " unlocked" : "")
+                        .append('\n');
+            }
         }
         output.append("Vehicles:\n");
         for (var vehicle : stationService.listVehicles()) {
             output.append("- ").append(vehicle.getId()).append(" ")
                     .append(vehicle.getType()).append(" ")
                     .append(vehicle.getAvailability()).append(" ")
-                    .append(vehicle.getServiceStatus()).append('\n');
+                    .append(vehicle.getServiceStatus())
+                    .append(" location=").append(locations.getOrDefault(vehicle.getId(),
+                            vehicle.getAvailability() == VehicleAvailability.RENTED ? "on trip" : "undocked"));
+            if (vehicle instanceof ElectricVehicle electric) {
+                output.append(" battery=").append(electric.getBatteryPercent() == null
+                        ? "unknown" : electric.getBatteryPercent() + "%");
+            }
+            output.append('\n');
         }
         output.append("Unresolved faults:\n");
         for (var report : faultReports) {
