@@ -360,7 +360,7 @@ public class ConsoleApplication {
             var fields = scanner.nextLine().trim().split("\\s+");
             if (fields.length != 2) throw new IllegalArgumentException("Enter both values");
             faultService.reportTelemetry(UUID.fromString(fields[0]), Integer.parseInt(fields[1]),
-                    FaultType.LOW_BATTERY, faultService.getClock().instant());
+                    null, faultService.getClock().instant());
             System.out.println(language.equals("fr") ? "Batterie mise à jour" : "Battery updated");
         } catch (RuntimeException exception) {
             showError(exception, language);
