@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static ca.gocycle.acceptance.Fixtures.*;
 
 class PresentationAcceptanceTest {
-    @Test @Tag("pending-implementation") void preferencesPersistSupportedLanguageAndAudio() throws Exception {
+    @Test void preferencesPersistSupportedLanguageAndAudio() throws Exception {
         var n=new Network();var r=n.registered();n.riders.updatePreferences(r.getId(),new InterfacePreferences("fr",true));
         assertEquals(new InterfacePreferences("fr",true),n.riders.findRider(r.getId()).orElseThrow().getPreferences());
         assertThrows(IllegalArgumentException.class,()->n.riders.updatePreferences(r.getId(),new InterfacePreferences("unsupported",false)));

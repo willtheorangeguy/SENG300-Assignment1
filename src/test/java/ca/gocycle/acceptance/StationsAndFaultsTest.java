@@ -29,7 +29,7 @@ class StationsAndFaultsTest {
         assertEquals(n.vehicle,n.origin.getDockingPoints().getFirst().getVehicle());
         assertEquals("origin-dock",n.stations.findVehicleDock(n.vehicle.getId()).orElseThrow().getId());
     }
-    @Test @Tag("pending-implementation") void rentedVehicleCannotRelocate() throws Exception {
+    @Test void rentedVehicleCannotRelocate() throws Exception {
         var n=new Network();n.start(n.registered());
         assertThrows(IllegalStateException.class,()->n.stations.relocate(n.vehicle.getId(),"destination"));assertEquals(VehicleAvailability.RENTED,n.vehicle.getAvailability());
     }
@@ -47,7 +47,7 @@ class StationsAndFaultsTest {
         var report=assertDoesNotThrow(()->service.reportProblem(n.vehicle.getId(),FaultType.FLAT_TIRE,"flat"));
         assertEquals(List.of(report),received);assertEquals(VehicleServiceStatus.OUT_OF_SERVICE,n.vehicle.getServiceStatus());
     }
-    @Test @Tag("pending-implementation") void faultOnActiveTripPreservesTripAndBlocksFutureRentals() throws Exception {
+    @Test void faultOnActiveTripPreservesTripAndBlocksFutureRentals() throws Exception {
         var n=new Network();var t=n.start(n.registered());var service=new FaultService(List.of(),n.stations,n.config,n.clock);
         service.reportProblem(n.vehicle.getId(),FaultType.BROKEN_BRAKES,"bad brakes");
         assertEquals(TripStatus.ACTIVE,t.getStatus());assertNull(t.getEndedAt());assertEquals(VehicleServiceStatus.OUT_OF_SERVICE,n.vehicle.getServiceStatus());
