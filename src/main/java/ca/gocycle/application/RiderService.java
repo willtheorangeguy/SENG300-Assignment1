@@ -48,7 +48,7 @@ public class RiderService {
      * @throws NoSuchElementException for unknown IDs in the completed implementation
      * @throws IllegalStateException for rejected business/state transitions in the completed implementation
      */
-public Rider register(String name, String email, LocalDate birthDate) {
+public synchronized Rider register(String name, String email, LocalDate birthDate) {
 
     if (name == null || name.isBlank()) {
         throw new IllegalArgumentException("Invalid name");
@@ -60,6 +60,10 @@ public Rider register(String name, String email, LocalDate birthDate) {
 
     if (birthDate == null || birthDate.isAfter(LocalDate.now(clock))) {
         throw new IllegalArgumentException("Invalid birth date");
+    }
+
+    if (riders.values().stream().anyMatch(rider -> rider.getEmail().equalsIgnoreCase(email))) {
+        throw new IllegalArgumentException("An account already uses this email");
     }
 
 

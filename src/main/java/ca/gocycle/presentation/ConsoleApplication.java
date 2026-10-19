@@ -180,6 +180,10 @@ public class ConsoleApplication {
             if (!configuration.getRiders().accountTypes().contains(accountType)) {
                 throw new IllegalArgumentException("Unsupported account type: " + accountType);
             }
+            login = login.toLowerCase(Locale.ROOT);
+            if (accountsByLogin.containsKey(login)) {
+                throw new IllegalArgumentException("An account already uses this login");
+            }
             var method = PaymentMethod.valueOf(paymentText.toUpperCase(Locale.ROOT));
             var rider = riderService.register(name, login, birthDate);
             accountsByLogin.put(login, new ConsoleAccount(rider.getId(), password, accountType, method));
@@ -213,12 +217,16 @@ public class ConsoleApplication {
 
     private void startTrip(Scanner scanner, String language) {
         try {
-            System.out.print(withOptions(language.equals("fr") ? "ID du client, ID du vélo, mode de paiement"
-                    : "Rider ID, vehicle ID, payment method", enumOptions(PaymentMethod.values())) + ": ");
+            if (activeRider == null) {
+                throw new IllegalStateException(language.equals("fr")
+                        ? "Connectez-vous avant de commencer un trajet" : "Log in before starting a trip");
+            }
+            System.out.print(withOptions(language.equals("fr") ? "ID du vélo, mode de paiement"
+                    : "Vehicle ID, payment method", enumOptions(PaymentMethod.values())) + ": ");
             var fields = scanner.nextLine().trim().split("\\s+");
-            if (fields.length != 3) throw new IllegalArgumentException("Enter all three values");
-            var trip = tripService.startTrip(UUID.fromString(fields[0]), UUID.fromString(fields[1]),
-                    PaymentMethod.valueOf(fields[2].toUpperCase(Locale.ROOT)));
+            if (fields.length != 2) throw new IllegalArgumentException("Enter both values");
+            var trip = tripService.startTrip(activeRider.getId(), UUID.fromString(fields[0]),
+                    PaymentMethod.valueOf(fields[1].toUpperCase(Locale.ROOT)));
             System.out.println("Trip ID: " + trip.getId());
         } catch (RuntimeException exception) {
             showError(exception, language);
@@ -308,7 +316,7 @@ public class ConsoleApplication {
     private String loginRider(Scanner scanner, String language) {
         try {
             System.out.print(language.equals("fr") ? "Courriel ou nom d'utilisateur: " : "Email or username: ");
-            var login = scanner.nextLine().trim();
+            var login = scanner.nextLine().trim().toLowerCase(Locale.ROOT);
             System.out.print(language.equals("fr") ? "Mot de passe: " : "Password: ");
             var password = scanner.nextLine();
             var account = accountsByLogin.get(login);
